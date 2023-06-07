@@ -70,6 +70,6 @@ A framework for gathering open-source intelligence on GitHub users, repositories
 # Donations
 If you like OctoSuite and would like to show support, you can Buy A Coffee for the developer using the button below
 
-<a href="https://www.buymeacoffee.com/189381184" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+<a href="https://www.buymeacoffee.com/_rly0nheart" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 Your support will be much appreciated😊
