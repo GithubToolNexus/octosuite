@@ -1,5 +1,5 @@
 #!usr/bin/python
-
+import argparse
 import re
 import os
 import sys
@@ -9,64 +9,26 @@ import getpass
 import requests
 import platform
 import subprocess
+from rich.tree import Tree
 from datetime import datetime
+from rich.prompt import Prompt, Confirm
+from rich import print as xprint
 from requests.auth import HTTPBasicAuth
-from octosuite.banner import version_tag, banner
-from octosuite.config import Tree, Text, Table, Prompt, Confirm, Markdown, xprint, create_parser, setup_readline, args, red, white, green, yellow, header_title, reset
-from octosuite.message_prefixes import ERROR, WARNING, PROMPT, POSITIVE, NEGATIVE, INFO
-from octosuite.helper import help_command, source_command, search_command, user_command, repo_command, \
-    logs_command, csv_command, org_command, source, org, repo, user, search, logs, csv
-from octosuite.log_roller import ctrl_c, error, session_opened, session_closed, viewing_logs, viewing_csv, \
-    deleted, reading, file_downloading, file_downloaded, info_not_found, \
-    user_not_found, org_not_found, repo_or_user_not_found, limit_output, prompt_log_csv
-from octosuite.csv_loggers import log_org_profile, log_user_profile, log_repo_profile, log_repo_path_contents, \
+from octosuite.attributes import Attributes
+from octosuite.miscellaneous import send_request, clear_screen, list_files_and_directories, about
+from octosuite.config import setup_cli_completion, Colours, Messages, Version
+from octosuite.helper import help_command, search_help_command_table, user_help_command_table, repo_help_command_table, \
+    org_help_command_table, logs_help_command_table, csv_help_command_table
+from octosuite.csv_loggers import log_organisation_profile, log_user_profile, log_repo_profile, log_repo_path_contents, \
     log_repo_contributors, log_repo_stargazers, log_repo_forks, log_repo_issues, log_repo_releases, log_org_repos, \
-    log_org_profile, log_user_repos, log_user_gists, log_user_orgs, log_user_events, log_user_subscriptions, \
+    log_user_repos, log_user_gists, log_user_orgs, log_user_events, log_user_subscriptions, \
     log_user_following, log_user_followers, log_repos_search, log_users_search, log_topics_search, log_issues_search, \
     log_commits_search
 
+attribute = Attributes()
+colour = Colours()
+message = Messages()
 
-# path_finder()
-# This function is responsible for creating/checking the availability of  the (.logs, output, downloads) folders,
-# enabling logging to automatically log network/user activity to a file, and logging the start of a session.
-def path_finder():
-    """
-    Check 3 directories (.logs, output, downloads) on startup
-    If they exist, ignore, otherwise, create them
-    """
-    directory_list = ['.logs', 'output', 'downloads']
-    for directory in directory_list:
-        os.makedirs(directory, exist_ok=True)
-
-
-# Configure logging to log user activities
-def configure_logging():
-    now = datetime.now()
-    now_formatted = now.strftime("%Y-%m-%d %H-%M-%S%p")
-    logging.basicConfig(filename=f".logs/{now_formatted}.log", format="[%(asctime)s] [%(levelname)s] %(message)s",
-                        datefmt="%Y-%m-%d %H:%M:%S%p", level=logging.DEBUG)
-    # Log the start of a session
-    logging.info(session_opened.format(platform.node(), getpass.getuser()))
-
-
-# Check if the remote tag_name from the latest release matches the one in the program
-# if it does, it means the program is up-to-date.
-# If it doesn't match, notify the user about a new release
-def check_updates():
-    global markdown_release_notes
-    
-    response = requests.get("https://api.github.com/repos/bellingcat/octosuite/releases/latest").json()
-    if response['tag_name'] == version_tag:
-        pass
-    else:
-        raw_release_notes = response['body']
-        markdown_release_notes = Markdown(raw_release_notes)
-        xprint(f"[{green}UPDATE{reset}] A new release of Octosuite is available ({response['tag_name']}).\n")
-        xprint(markdown_release_notes)
-
-
-def list_dir_and_files():
-    subprocess.call('cmd.exe /c dir' if os.name == "nt" else 'ls')
 
 
 # Delete a specified csv file
@@ -170,41 +132,56 @@ def exit_session():
         pass
 
 
-# Clear screen
-def clear_screen():
-    # Using 'cls' on Windows machines to clear the screen,
-    # otherwise, use 'clear'
-    subprocess.call('cmd.exe /c cls' if os.name == "nt" else 'clear')
+def get_email_from_contributor(username: str, repository: str, contributor: str) -> str:
+    """
+    Get the email address of a contributor in a GitHub repository.
 
+    :param username: GitHub username
+    :param repository: GitHub repository name
+    :param contributor: Contributor's username
+    :return: Email address of the contributor (None if not found)
 
-def about():
-    about_text = f"""
-    OCTOSUITE © 2023 Richard Mwewa
-        
-An advanced and lightning fast framework for gathering open-source intelligence on GitHub users and organisations.
-
-Read the wiki: https://github.com/bellingcat/octosuite/wiki
-GitHub REST API documentation: https://docs.github.com/rest
-
-"""
-    xprint(about_text)
-    xprint(markdown_release_notes)
-
-
-def get_email_from_contributor(username, repo, contributor):
-    response = requests.get(f"https://github.com/{username}/{repo}/commits?author={contributor}",
-                            auth=HTTPBasicAuth(username, '')).text
-    latest_commit = re.search(rf'href="/{username}/{repo}/commit/(.*?)"', response)
-    if latest_commit:
-        latest_commit = latest_commit.group(1)
-    else:
-        latest_commit = 'dummy'
-    commit_details = requests.get(f"https://github.com/{username}/{repo}/commit/{latest_commit}.patch",
-                                  auth=HTTPBasicAuth(username, '')).text
-    email = re.search(r'<(.*)>', commit_details)
-    if email:
-        email = email.group(1)
+    https://github.com/s0md3v/Zen/blob/master/zen.py#L84-L105
+    """
+    commits_url = f"https://github.com/{username}/{repository}/commits?author={contributor}"
+    response = requests.get(commits_url, auth=HTTPBasicAuth(username, '')).text
+    latest_commit_match = re.search(rf'href="/{username}/{repository}/commit/(.*?)"', response)
+    latest_commit = latest_commit_match.group(1) if latest_commit_match else 'dummy'
+    commit_details_url = f"https://github.com/{username}/{repository}/commit/{latest_commit}.patch"
+    commit_details = requests.get(commit_details_url, auth=HTTPBasicAuth(username, '')).text
+    email_match = re.search(r'<(.*)>', commit_details)
+    email = email_match.group(1) if email_match else None
     return email
+
+
+def get_unforked_repositories(username: str) -> list:
+    """
+    Get a list of unforked repositories for a GitHub user.
+
+    :param username: GitHub username
+    :return: List of unforked repository names
+    """
+    repos_url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=pushed"
+    response = requests.get(repos_url, auth=HTTPBasicAuth(username, '')).json()
+    unforked_repositories = [repo['name'] for repo in response if not repo['fork']]
+    return unforked_repositories
+
+
+def get_user_email() -> None:
+    """
+    Prompt the user for a GitHub username and retrieve the email address for the user's latest commit.
+
+    :return: None
+
+    https://github.com/s0md3v/Zen/blob/master/zen.py#L107-L113
+    """
+    username = input("Username: ")
+    repos = get_unforked_repositories(username)
+    for repo in repos:
+        email = get_email_from_contributor(username, repo, username)
+        if email:
+            xprint(f"{username}: {email}")
+            break
 
 
 class Octosuite:
@@ -213,37 +190,29 @@ class Octosuite:
         self.endpoint = 'https://api.github.com'
 
         # A list of tuples mapping commands to their methods
-        self.command_map = [('ls', list_dir_and_files),
-                            ("exit", exit_session),
+        self.command_map = [("exit", exit_session),
                             ("clear", clear_screen),
                             ("about", about),
                             ("author", self.author),
                             ("help", help_command),
-                            ("help:source", source_command),
-                            ("help:search", search_command),
-                            ("help:user", user_command),
-                            ("help:repo", repo_command),
-                            ("help:logs", logs_command),
-                            ("help:csv", csv_command),
-                            ("help:org", org_command),
-                            ("source", source),
-                            ("source:tarball", self.download_tarball),
-                            ("source:zipball", self.download_zipball),
-                            ("org", org),
+                            ("help:search", search_help_command_table),
+                            ("help:user", user_help_command_table),
+                            ("help:repo", repo_help_command_table),
+                            ("help:logs", logs_help_command_table),
+                            ("help:csv", csv_help_command_table),
+                            ("help:org", org_help_command_table),
                             ("org:events", self.org_events),
-                            ("org:profile", self.org_profile),
+                            ("org:profile", self.organisation_profile),
                             ("org:repos", self.org_repos),
                             ("org:member", self.org_member),
-                            ("repo", repo),
                             ("repo:path_contents", self.path_contents),
-                            ("repo:profile", self.repo_profile),
-                            ("repo:contributors", self.repo_contributors),
+                            ("repo:profile", self.repository_profile),
+                            ("repo:contributors", self.repository_contributors),
                             ("repo:stargazers", self.repo_stargazers),
                             ("repo:forks", self.repo_forks),
                             ("repo:issues", self.repo_issues),
                             ("repo:releases", self.repo_releases),
-                            ("user", user),
-                            ("user:email", self.get_user_email),
+                            ("user:email", get_user_email),
                             ("user:repos", self.user_repos),
                             ("user:gists", self.user_gists),
                             ("user:orgs", self.user_orgs),
@@ -253,26 +222,23 @@ class Octosuite:
                             ("user:follows", self.user_follows),
                             ("user:following", self.user_following),
                             ("user:subscriptions", self.user_subscriptions),
-                            ("search", search),
                             ("search:users", self.users_search),
                             ("search:repos", self.repos_search),
                             ("search:topics", self.topics_search),
                             ("search:issues", self.issues_search),
                             ("search:commits", self.commits_search),
-                            ("logs", logs),
                             ("logs:view", view_logs),
                             ("logs:read", read_log),
                             ("logs:delete", delete_log),
                             ("logs:clear", clear_logs),
-                            ("csv", csv),
                             ("csv:view", view_csv),
                             ("csv:read", read_csv),
                             ("csv:delete", delete_csv),
                             ("csv:clear", clear_csv)]
 
-        # Arguments map will be used to run Octosuite with argparse
+        # Arguments map will be used to run Octosuite with command-line arguments/options
         self.argument_map = [("user_profile", self.user_profile),
-                             ("user_email", self.get_user_email),
+                             ("user_email", get_user_email),
                              ("user_repos", self.user_repos),
                              ("user_gists", self.user_gists),
                              ("user_orgs", self.user_orgs),
@@ -286,12 +252,12 @@ class Octosuite:
                              ("commits_search", self.commits_search),
                              ("topics_search", self.topics_search),
                              ("repos_search", self.repos_search),
-                             ("org_profile", self.org_profile),
+                             ("org_profile", self.organisation_profile),
                              ("org_repos", self.org_repos),
                              ("org_events", self.org_events),
                              ("org_member", self.org_member),
-                             ("repo_profile", self.repo_profile),
-                             ("repo_contributors", self.repo_contributors),
+                             ("repo_profile", self.repository_profile),
+                             ("repo_contributors", self.repository_contributors),
                              ("repo_stargazers", self.repo_stargazers),
                              ("repo_forks", self.repo_forks),
                              ("repo_issues", self.repo_issues),
@@ -308,370 +274,178 @@ class Octosuite:
                              ("about", about),
                              ("author", self.author)]
 
-        # Path attribute
-        self.path_attrs = ['size', 'type', 'path', 'sha', 'html_url']
-        # Path attribute dictionary
-        self.path_attr_dict = {'size': 'Size (bytes)',
-                               'type': 'Type',
-                               'path': 'Path',
-                               'sha': 'SHA',
-                               'html_url': 'URL'}
+    def organisation_profile(self, args) -> None:
+        """
+        Query the organisation profile endpoint and process the response.
 
-        # organisation attributes
-        self.org_attrs = ['avatar_url', 'login', 'id', 'node_id', 'email', 'description', 'blog', 'location',
-                          'followers',
-                          'following', 'twitter_username', 'public_gists', 'public_repos', 'type', 'is_verified',
-                          'has_organisation_projects', 'has_repository_projects', 'created_at', 'updated_at']
-        # organisation attribute dictionary
-        self.org_attr_dict = {'avatar_url': 'Profile Photo',
-                              'login': 'Username',
-                              'id': 'ID',
-                              'node_id': 'Node ID',
-                              'email': 'Email',
-                              'description': 'About',
-                              'location': 'Location',
-                              'blog': 'Blog',
-                              'followers': 'Followers',
-                              'following': 'Following',
-                              'twitter_username': 'Twitter handle',
-                              'public_gists': 'Gists',
-                              'public_repos': 'Repositories',
-                              'type': 'Account type',
-                              'is_verified': 'Is verified?',
-                              'has_organisation_projects': 'Has organisation projects?',
-                              'has_repository_projects': 'Has repository projects?',
-                              'created_at': 'Created at',
-                              'updated_at': 'Updated at'}
+        If the status code is 404, assume the specified organisation was not found.
+        If the status code is 200, display the organisation's profile information in a tree view.
+        Otherwise, print the raw JSON response.
 
-        # Repository attributes
-        self.repo_attrs = ['id', 'description', 'forks', 'stargazers_count', 'watchers', 'license', 'default_branch',
-                           'visibility',
-                           'language', 'open_issues', 'topics', 'homepage', 'clone_url', 'ssh_url', 'fork',
-                           'allow_forking',
-                           'private', 'archived', 'has_downloads', 'has_issues', 'has_pages', 'has_projects',
-                           'has_wiki',
-                           'pushed_at', 'created_at', 'updated_at']
-        # Repository attribute dictionary
-        self.repo_attr_dict = {'id': 'ID',
-                               'description': 'About',
-                               'forks': 'Forks',
-                               'stargazers_count': 'Stars',
-                               'watchers': 'Watchers',
-                               'license': 'License',
-                               'default_branch': 'Branch',
-                               'visibility': 'Visibility',
-                               'language': 'Language(s)',
-                               'open_issues': 'Open issues',
-                               'topics': 'Topics',
-                               'homepage': 'Homepage',
-                               'clone_url': 'Clone URL',
-                               'ssh_url': 'SSH URL',
-                               'fork': 'Is fork?',
-                               'allow_forking': 'Is forkable?',
-                               'private': 'Is private?',
-                               'archived': 'Is archived?',
-                               'is_template': 'Is template?',
-                               'has_wiki': 'Has wiki?',
-                               'has_pages': 'Has pages?',
-                               'has_projects': 'Has projects?',
-                               'has_issues': 'Has issues?',
-                               'has_downloads': 'Has downloads?',
-                               'pushed_at': 'Pushed at',
-                               'created_at': 'Created at',
-                               'updated_at': 'Updated at'}
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        organisation = args.organisation or Prompt.ask("@Organisation")
+        response = send_request(f"{self.endpoint}/orgs/{organisation}")
 
-        # Repo releases attributes
-        self.repo_releases_attrs = ['id', 'node_id', 'tag_name', 'target_commitish', 'assets', 'draft', 'prerelease',
-                                    'created_at',
-                                    'published_at']
-        # Repo releases attribute dictionary
-        self.repo_releases_attr_dict = {'id': 'ID',
-                                        'node_id': 'Node ID',
-                                        'tag_name': 'Tag',
-                                        'target_commitish': 'Branch',
-                                        'assets': 'Assets',
-                                        'draft': 'Is draft?',
-                                        'prerelease': 'Is prerelease?',
-                                        'created_at': 'Created at',
-                                        'published_at': 'Published at'}
+        if response[0] == 404:
+            xprint(f"{colour.YELLOW}{message.org_not_found(organisation)}{colour.RESET}")
+        elif response[0] == 200:
+            organisation_profile_tree = Tree(f"\n{response[1]['name']}")
+            for attr in attribute.organisation_profile_attributes()[0]:
+                organisation_profile_tree.add(f"{attribute.organisation_profile_attributes()[1][attr]}: {response[1][attr]}")
+            xprint(organisation_profile_tree)
 
-        # Profile attributes
-        self.profile_attrs = ['avatar_url', 'login', 'id', 'node_id', 'bio', 'blog', 'location', 'followers',
-                              'following',
-                              'twitter_username', 'public_gists', 'public_repos', 'company', 'hireable', 'site_admin',
-                              'created_at',
-                              'updated_at']
-        # Profile attribute dictionary
-        self.profile_attr_dict = {'avatar_url': 'Profile Photo',
-                                  'login': 'Username',
-                                  'id': 'ID',
-                                  'node_id': 'Node ID',
-                                  'bio': 'Bio',
-                                  'blog': 'Blog',
-                                  'location': 'Location',
-                                  'followers': 'Followers',
-                                  'following': 'Following',
-                                  'twitter_username': 'Twitter Handle',
-                                  'public_gists': 'Gists (public)',
-                                  'public_repos': 'Repositories (public)',
-                                  'company': 'organisation',
-                                  'hireable': 'Is hireable?',
-                                  'site_admin': 'Is site admin?',
-                                  'created_at': 'Joined at',
-                                  'updated_at': 'Updated at'}
-
-        # User attributes
-        self.user_attrs = ['avatar_url', 'id', 'node_id', 'gravatar_id', 'site_admin', 'type', 'html_url']
-        # User attribute dictionary
-        self.user_attr_dict = {'avatar_url': 'Profile Photo',
-                               'id': 'ID',
-                               'node_id': 'Node ID',
-                               'gravatar_id': 'Gravatar ID',
-                               'site_admin': 'Is site admin?',
-                               'type': 'Account type',
-                               'html_url': 'URL'}
-
-        # Topic attributes
-        self.topic_attrs = ['score', 'curated', 'featured', 'display_name', 'created_by', 'created_at', 'updated_at']
-        # Topic attribute dictionary
-        self.topic_attr_dict = {'score': 'Score',
-                                'curated': 'Curated',
-                                'featured': 'Featured',
-                                'display_name': 'Display name',
-                                'created_by': 'Created by',
-                                'created_at': 'Created at',
-                                'updated_at': 'Updated at'}
-
-        # Gists attribute
-        self.gists_attrs = ['node_id', 'description', 'comments', 'files', 'git_push_url', 'public', 'truncated',
-                            'updated_at']
-        # Gists attribute dictionary
-        self.gists_attr_dict = {'node_id': 'Node ID',
-                                'description': 'About',
-                                'comments': 'Comments',
-                                'files': 'Files',
-                                'git_push_url': 'Git Push URL',
-                                'public': 'Is public?',
-                                'truncated': 'Is truncated?',
-                                'updated_at': 'Updated at'}
-
-        # Issue attributes
-        self.issue_attrs = ['id', 'node_id', 'score', 'state', 'number', 'comments', 'milestone', 'assignee',
-                            'assignees', 'labels',
-                            'locked', 'draft', 'closed_at']
-        # Issue attribute dict
-        self.issue_attr_dict = {'id': 'ID',
-                                'node_id': 'Node ID',
-                                'score': 'Score',
-                                'state': 'State',
-                                'closed_at': 'Closed at',
-                                'number': 'Number',
-                                'comments': 'Comments',
-                                'milestone': 'Milestone',
-                                'assignee': 'Assignee',
-                                'assignees': 'Assignees',
-                                'labels': 'Labels',
-                                'draft': 'Is draft?',
-                                'locked': 'Is locked?',
-                                'created_at': 'Created at'}
-
-        # Repo issues attributes
-        self.repo_issues_attrs = ['id', 'node_id', 'state', 'reactions', 'number', 'comments', 'milestone', 'assignee',
-                                  'active_lock_reason', 'author_association', 'assignees', 'labels', 'locked',
-                                  'closed_at',
-                                  'created_at', 'updated_at']
-        # Issue attribute dict
-        self.repo_issues_attr_dict = {'id': 'ID',
-                                      'node_id': 'Node ID',
-                                      'number': 'Number',
-                                      'state': 'State',
-                                      'reactions': 'Reactions',
-                                      'comments': 'Comments',
-                                      'milestone': 'Milestone',
-                                      'assignee': 'Assignee',
-                                      'assignees': 'Assignees',
-                                      'author_association': 'Author association',
-                                      'labels': 'Labels',
-                                      'locked': 'Is locked?',
-                                      'active_lock_reason': 'Lock reason',
-                                      'closed_at': 'Closed at',
-                                      'created_at': 'Created at',
-                                      'updated_at': 'Updated at'}
-
-        # User organisations attributes
-        self.user_orgs_attrs = ['avatar_url', 'id', 'node_id', 'url', 'description']
-        self.user_orgs_attr_dict = {'avatar_url': 'Profile Photo',
-                                    'id': 'ID',
-                                    'node_id': 'Node ID',
-                                    'url': 'URL',
-                                    'description': 'About'}
-
-        # Author dictionary
-        self.author_dict = {'Alias': 'rly0nheart',
-                            'Country': ':zambia: Zambia, Africa',
-                            'About.me': 'https://about.me/rly0nheart',
-                            'Buy Me A Coffee': 'https://buymeacoffee.com/189381184'}
-
-    def get_repos_from_username(self, username):
-        response = requests.get(f"{self.endpoint}/users/{username}/repos?per_page=100&sort=pushed",
-                                auth=HTTPBasicAuth(username, '')).text
-        repositories = re.findall(rf'"full_name":"{username}/(.*?)",.*?"fork":(.*?),', response)
-        unforked_repos = []
-        for repository in repositories:
-            if repository[1] == 'false':
-                unforked_repos.append(repository[0])
-        return unforked_repos
-
-    def get_user_email(self):
-        if args.username:
-            username = args.username
+            if args.log_to_csv or Confirm.ask(message.prompt_log_csv()):
+                log_organisation_profile(response)
         else:
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-        repos = self.get_repos_from_username(username)
-        for repo in repos:
-            email = get_email_from_contributor(username, repo, username)
-            if email:
-                xprint(f"{username}: {email}")
-                break
+            xprint(response[1])
 
-    # Fetching organisation info
-    def org_profile(self):
-        if args.organisation:
-            organisation = args.organisation
-        else:
-            organisation = Prompt.ask(f"{white}@{green}Organisation{reset}")
-        response = requests.get(f"{self.endpoint}/orgs/{organisation}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {org_not_found.format(organisation)}")
-        elif response.status_code == 200:
-            org_profile_tree = Tree(f"\n{response.json()['name']}")
-            for attr in self.org_attrs:
-                org_profile_tree.add(f"{self.org_attr_dict[attr]}: {response.json()[attr]}")
-            xprint(org_profile_tree)
+    def user_profile(self, args) -> None:
+        """
+        Query the user profile endpoint and process the response.
 
-            if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
-                log_org_profile(response)
-        else:
-            xprint(response.json())
+        If the status code is 404, assume the specified user was not found.
+        If the status code is 200, display the user's profile information in a tree view.
+        Otherwise, print the raw JSON response.
 
-    # Fetching user information
-    def user_profile(self):
-        if args.username:
-            username = args.username
-        else:
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-        response = requests.get(f"{self.endpoint}/users/{username}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {user_not_found.format(username)}")
-        elif response.status_code == 200:
-            user_profile_tree = Tree(f"\n{response.json()['name']}")
-            for attr in self.profile_attrs:
-                user_profile_tree.add(f"{self.profile_attr_dict[attr]}: {response.json()[attr]}")
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        username = args.username or Prompt.ask("@Username")
+        response = send_request(f"{self.endpoint}/users/{username}")
+
+        if response[1] == 404:
+            xprint(message.user_not_found(username))
+        elif response[1] == 200:
+            user_profile_tree = Tree(f"\n{response[0]['name']}")
+            for attr in attribute.user_profile_attributes()[0]:
+                user_profile_tree.add(f"{attribute.user_profile_attributes()[1][attr]}: {response[1][attr]}")
             xprint(user_profile_tree)
 
-            # Logging output to a csv file
-            if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
+            if args.log_to_csv or Confirm.ask(message.prompt_log_csv()):
                 log_user_profile(response)
         else:
-            xprint(response.json())
+            xprint(response[1])
 
-    # Fetching repository information
-    def repo_profile(self):
-        if args.repository and args.username and args.limit:
-            repo_name = args.repository
-            username = args.username
-        else:
-            repo_name = Prompt.ask(f"{white}%{green}Repository{reset}")
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-        response = requests.get(f"{self.endpoint}/repos/{username}/{repo_name}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {repo_or_user_not_found.format(repo_name, username)}")
-        elif response.status_code == 200:
-            repo_profile_tree = Tree(f"\n{response.json()['full_name']}")
-            for attr in self.repo_attrs:
-                repo_profile_tree.add(f"{self.repo_attr_dict[attr]}: {response.json()[attr]}")
-            xprint(repo_profile_tree)
+    def repository_profile(self, args) -> None:
+        """
+        Query the repository profile endpoint and process the response.
 
-            if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
+        If the status code is 404, assume the specified repository was not found.
+        If the status code is 200, display the repository's profile information in a tree view.
+        Otherwise, print the raw JSON response.
+
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        username = args.username or Prompt.ask("@Username")
+        repository = args.repository or Prompt.ask("%Repository")
+
+        response = send_request(f"{self.endpoint}/repos/{username}/{repository}")
+        if response[0] == 404:
+            xprint(message.repo_or_user_not_found(repository, username))
+        elif response[0] == 200:
+            repository_profile_tree = Tree(f"\n{response[1]['full_name']}")
+            for attr in attribute.repository_profile_attributes()[0]:
+                repository_profile_tree.add(
+                    f"{attribute.repository_profile_attributes()[1][attr]}: {response[1][attr]}")
+            xprint(repository_profile_tree)
+
+            if args.log_to_csv or Confirm.ask(message.prompt_log_csv()):
                 log_repo_profile(response)
         else:
-            xprint(response.json())
+            xprint(response[1])
 
-    # Get path contents
-    def path_contents(self):
-        if args.repository and args.username and args.path_name:
-            repo_name = args.repository
-            username = args.username
-            path_name = args.path_name
-        else:
-            repo_name = Prompt.ask(f"{white}%{green}Repository{reset}")
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-            path_name = Prompt.ask("~/path/name ")
-        response = requests.get(f"{self.endpoint}/repos/{username}/{repo_name}/contents/{path_name}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {info_not_found.format(repo_name, username, path_name)}")
-        elif response.status_code == 200:
-            for content_count, content in enumerate(response.json(), start=1):
-                path_contents_tree = Tree("\n" + content['name'])
-                for attr in self.path_attrs:
-                    path_contents_tree.add(f"{self.path_attr_dict[attr]}: {content[attr]}")
+    def path_contents(self, args) -> None:
+        """
+        Query the path contents endpoint and process the response.
+
+        If the status code is 404, assume the specified repository, user or path name was not found.
+        If the status code is 200, display the repository path contents' information in a tree view.
+        Otherwise, print the raw JSON response.
+
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        repository = args.repository or Prompt.ask(f"%Repository")
+        repository_owner = args.username or Prompt.ask("@Owner (username)")
+        path_name = args.path_name or Prompt.ask("~/path/name")
+        response = send_request(f"{self.endpoint}/repos/{repository_owner}/{repository}/contents/{path_name}")
+        if response[0] == 404:
+            xprint(message.information_not_found(repository, path_name, repository_owner))
+        elif response[0] == 200:
+            for content_count, content in enumerate(response[1], start=1):
+                path_contents_tree = Tree(f"\n{content['name']}")
+                for attr in attribute.path_attributes()[0]:
+                    path_contents_tree.add(f"{attribute.path_attributes()[1][attr]}: {content[attr]}")
                 xprint(path_contents_tree)
-                log_repo_path_contents(content, repo_name)
-                xprint(INFO, f"Found {content_count} file(s) in {repo_name}/{path_name}.")
+                log_repo_path_contents(content, repository)
+                xprint(f"Found {content_count} file(s) in {repository}/{path_name}.")
         else:
-            xprint(response.json())
+            xprint(response[1])
 
-    # repo contributors
-    def repo_contributors(self):
-        if args.repository and args.username and args.limit:
-            repo_name = args.repository
-            username = args.username
-            limit = args.limit
-        else:
-            repo_name = Prompt.ask(f"{white}%{green}Repository{reset}")
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-            limit = Prompt.ask(limit_output.format("contributors"))
-        response = requests.get(f"{self.endpoint}/repos/{username}/{repo_name}/contributors?per_page={limit}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {repo_or_user_not_found.format(repo_name, username)}")
-        elif response.status_code == 200:
-            for contributor in response.json():
-                contributor_tree = Tree("\n" + contributor['login'])
-                for attr in self.user_attrs:
-                    contributor_tree.add(f"{self.user_attr_dict[attr]}: {contributor[attr]}")
+    def repository_contributors(self, args) -> None:
+        """
+        Query the repository contributors endpoint and process the response.
+
+        If the status code is 404, assume the specified repository or user was not found.
+        If the status code is 200, display the repository's contributors information in a tree view.
+        Otherwise, print the raw JSON response.
+
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        repository = args.repository or Prompt.ask("%Repository")
+        repository_owner = args.repository or Prompt.ask("@Owner (username)")
+        limit = args.limit or Prompt.ask(message.limit_output("Contributors"))
+
+        response = send_request(f"{self.endpoint}/repos/{repository_owner}/{repository}/contributors?per_page={limit}")
+        if response[0] == 404:
+            xprint(message.repo_or_user_not_found(repository, repository_owner))
+        elif response[0] == 200:
+            for contributor in response[1]:
+                contributor_tree = Tree(f"\n{contributor['login']}")
+                for attr in attribute.user_information_attributes()[0]:
+                    contributor_tree.add(f"{attribute.user_information_attributes()[1][attr]}: {contributor[attr]}")
                 xprint(contributor_tree)
 
-                if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
-                    log_repo_contributors(contributor, repo_name)
+                if args.log_to_csv or Confirm.ask(message.prompt_log_csv()):
+                    log_repo_contributors(contributor, repository_owner)
             else:
-                xprint(response.json())
+                xprint(response[1])
 
     # repo stargazers
-    def repo_stargazers(self):
-        if args.repository and args.username and args.limit:
-            repo_name = args.repository
-            username = args.username
-            limit = args.limit
-        else:
-            repo_name = Prompt.ask(f"{white}%{green}Repository{reset}")
-            username = Prompt.ask(f"{white}@{green}Username{reset}")
-            limit = Prompt.ask(limit_output.format("stargazers"))
-        response = requests.get(f"{self.endpoint}/repos/{username}/{repo_name}/stargazers?per_page={limit}")
-        if response.status_code == 404:
-            xprint(f"{NEGATIVE} {repo_or_user_not_found.format(repo_name, username)}")
-        elif response.json() == {}:
-            xprint(f"{NEGATIVE} Repository does not have any stargazers -> ({repo_name})")
-        elif response.status_code == 200:
-            for stargazer in response.json():
-                stargazer_tree = Tree("\n" + stargazer['login'])
-                for attr in self.user_attrs:
-                    stargazer_tree.add(f"{self.user_attr_dict[attr]}: {stargazer[attr]}")
+    def repository_stargazers(self, args) -> None:
+        """
+        Query the repository stargazers endpoint and process the response.
+
+        If the status code is 404, assume the specified repository or user was not found.
+        If the status code is 200, display the repository's stargazers information in a tree view.
+        Otherwise, print the raw JSON response.
+
+        :param args: Command-line arguments or options.
+        :return: None
+        """
+        repository = args.repository or Prompt.ask("%Repository")
+        repository_owner = args.username or Prompt.ask("@Owner (username)")
+        limit = args.limit or Prompt.ask(message.limit_output("Stargazers"))
+        response = send_request(f"{self.endpoint}/repos/{repository_owner}/{repository}/stargazers?per_page={limit}")
+        if response[0] == 404:
+            xprint(message.repo_or_user_not_found(repository, repository_owner))
+        elif response[0] == {}:
+            xprint(message.repo_does_not_have_stargazers(repository, repository_owner))
+        elif response[0] == 200:
+            for stargazer in response[1]:
+                stargazer_tree = Tree(f"\n{stargazer['login']}")
+                for attr in attribute.user_information_attributes()[0]:
+                    stargazer_tree.add(f"{attribute.user_information_attributes()[1][attr]}: {stargazer[attr]}")
                 xprint(stargazer_tree)
                 
-                if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
-                    log_repo_stargazers(stargazer, repo_name)
+                if args.log_csv or Confirm.ask(message.prompt_log_csv()):
+                    log_repo_stargazers(stargazer, repository)
         else:
-            xprint(response.json())
+            xprint(response[1])
 
     # repo forks
     def repo_forks(self):
@@ -1094,30 +868,6 @@ class Octosuite:
             
             if args.log_csv or Confirm.ask(f"\n{PROMPT} {prompt_log_csv}"):
                 log_commits_search(commit, query)
-
-    # Downloading release tarball
-    def download_tarball(self):
-        logging.info(file_downloading.format(f"octosuite.v{version_tag}.tar"))
-        xprint(INFO, file_downloading.format(f"octosuite.v{version_tag}.tar"))
-        data = requests.get(f"{self.endpoint}/repos/bellingcat/octosuite/tarball/{version_tag}")
-        with open(os.path.join("downloads", f"octosuite.v{version_tag}.tar"), "wb") as file:
-            file.write(data.content)
-            file.close()
-
-        logging.info(file_downloaded.format(f"octosuite.v{version_tag}.tar"))
-        xprint(POSITIVE, file_downloaded.format(f"octosuite.v{version_tag}.tar"))
-
-    # Downloading release zip ball
-    def download_zipball(self):
-        logging.info(file_downloading.format(f"octosuite.v{version_tag}.zip"))
-        xprint(INFO, file_downloading.format(f"octosuite.v{version_tag}.zip"))
-        data = requests.get(f"{self.endpoint}/repos/rly0nheart/octosuite/zipball/{version_tag}")
-        with open(os.path.join("downloads", f"octosuite.v{version_tag}.zip"), "wb") as file:
-            file.write(data.content)
-            file.close()
-
-        logging.info(file_downloaded.format(f"octosuite.v{version_tag}.zip"))
-        xprint(POSITIVE, file_downloaded.format(f"octosuite.v{version_tag}.zip"))
 
     # Author info
     def author(self):
