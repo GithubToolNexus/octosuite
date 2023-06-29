@@ -1,171 +1,151 @@
-from rich.table import Table
-from octosuite.config import Tree, xprint, white, green, white_bold, green_bold, header_title, reset
-
-# helper.py
-# This file holds the help text for available commands.
-usage_text = 'Use syntax {} to get started with %s{}%s.' % (green_bold, reset)
-usage_text_1 = '%sUse {} to view all available subcommands.%s' % (white, reset)
-usage_text_2 = "%sThe {} command works with subcommands. %s" % (white, reset)
+from rich import print as xprint
+from octosuite.config import create_table
 
 
-def org():
-    xprint(usage_text_2.format(f"{green_bold}org{reset}") + usage_text_1.format(f"{green_bold}help:org{reset}"))
+def search_help_command_table() -> None:
+    """
+    Display a table with search subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":magnifying_glass_tilted_left:Target Discovery" 
+                                     "\ncommand syntax: `search:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("commits", "Search commits"),
+                                     ("issues", "Search issues"),
+                                     ("repos", "Search repositories"),
+                                     ("topics", "Search topics"),
+                                     ("users", "Search users")
+                                     ])
+    xprint(table)
 
 
-def repo():
-    xprint(usage_text_2.format(f"{green_bold}repo{reset}") + usage_text_1.format(f"{green_bold}help:repo{reset}"))
+def user_help_command_table() -> None:
+    """
+    Display a table with user subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":bust_in_silhouette:User Investigation\ncommand syntax: `user:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("email", "Get a user's email"),
+                                     ("events", "Get a user's events"),
+                                     ("followers", "Get a user's followers"),
+                                     ("following", "Get a list of users the target user is following"),
+                                     ("follows", "Check if target user follows the specified user"),
+                                     ("gists", "Get a user's gists (shared code snippets)"),
+                                     ("orgs", "Get organisations that the target user follows/owns"),
+                                     ("profile", "Get a user's profile information"),
+                                     ("repos", "Get a user's repositories"),
+                                     ("subscriptions", "Get a user's subscriptions (starred repositories)")
+                                     ])
+    xprint(table)
 
 
-def user():
-    xprint(usage_text_2.format(f"{green_bold}user{reset}") + usage_text_1.format(f"{green_bold}help:user{reset}"))
+def org_help_command_table() -> None:
+    """
+    Display a table with org subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":office_building:Organisation Investigation\n" 
+                                     "command syntax: `org:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("events", "Get an organisation;s events"),
+                                     ("member", "Check if a specified user is a "
+                                                "public member of the target organisation"),
+                                     ("profile", "Get an organisation's profile information"),
+                                     ("repos", "Get an organisation's repositories"),
+                                     ])
+    xprint(table)
 
 
-def search():
-    xprint(usage_text_2.format(f"{green_bold}search{reset}") + usage_text_1.format(f"{green_bold}help:search{reset}"))
+def repo_help_command_table() -> None:
+    """
+    Display a table with repo subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":file_cabinet:Repository Investigation\n"
+                                     "command syntax: `repo:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("contributors", "Get a repository's contributors"),
+                                     ("forks", "Get a repository's forks"),
+                                     ("issues", "Get a repository's issues"),
+                                     ("path_contents", "Get contents of a specified path from the target repository"),
+                                     ("profile", "Get a repository's profile information"),
+                                     ("releases", "Get a repository's releases"),
+                                     ("stargazers", "Get a repository's stargazers "
+                                                    "(users that have starred the target repository)")])
+    xprint(table)
 
 
-def source():
-    xprint(usage_text_2.format(f"{green_bold}source{reset}") + usage_text_1.format(f"{green_bold}help:source{reset}"))
+def logs_help_command_table() -> None:
+    """
+    Display a table with logs subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":spiral_note_pad:Logs Management\n"
+                                     "command syntax: `logs:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("clear", "Clear/Delete all logs"),
+                                     ("delete", "Delete a specified log file"),
+                                     ("read", "Read a specified log file"),
+                                     ("view", "View all generated log files")
+                                     ])
+    xprint(table)
 
 
-def logs():
-    xprint(usage_text_2.format(f"{green_bold}logs{reset}") + usage_text_1.format(f"{green_bold}help:logs{reset}"))
+def csv_help_command_table() -> None:
+    """
+    Display a table with logs subcommands.
+    The table includes the available commands and their descriptions.
+
+    :return: None
+    """
+    table = create_table(table_title=":page_facing_up:CSV File Management\n"
+                                     "command syntax: `csv:<subcommand>`",
+                         column_headers=["Command", "Description"],
+                         table_data=[("clear", "Clear/Delete all csv files"),
+                                     ("delete", "Delete a specified csvfile"),
+                                     ("read", "Read a specified csv file"),
+                                     ("view", "View all generated csv files")
+                                     ])
+    xprint(table)
 
 
-def csv():
-    xprint(usage_text_2.format(f"{green_bold}csv{reset}") + usage_text_1.format(f"{green_bold}help:csv{reset}"))
+def help_command() -> None:
+    """
+    Display a table with basic commands and help subcommands.
+    The table includes the available commands and their descriptions.
 
-
-def source_command():
-    source_cmd_table = Table(show_header=True, header_style=header_title)
-    source_cmd_table.add_column("Command", style="dim")
-    source_cmd_table.add_column("Description")
-    source_cmd_table.add_row("zipball", "Download source code Zipball")
-    source_cmd_table.add_row("tarball", "Download source code Tarball")
-
-    syntax = f"{green}source:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'source code downloads')}")
-    xprint(source_cmd_table)
-
-
-def search_command():
-    search_cmd_table = Table(show_header=True, header_style=header_title)
-    search_cmd_table.add_column("Command", style="dim")
-    search_cmd_table.add_column("Description")
-    search_cmd_table.add_row("users", "Search user(s)")
-    search_cmd_table.add_row("repos", "Search repositor[y][ies]")
-    search_cmd_table.add_row("topics", "Search topic(s)")
-    search_cmd_table.add_row("issues", "Search issue(s)")
-    search_cmd_table.add_row("commits", "Search commit(s)")
-
-    syntax = f"{green}search:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'target discovery')}")
-    xprint(search_cmd_table)
-
-
-def user_command():
-    user_cmd_table = Table(show_header=True, header_style=header_title)
-    user_cmd_table.add_column("Command", style="dim")
-    user_cmd_table.add_column("Description")
-    user_cmd_table.add_row("email", "Return a target's email")
-    user_cmd_table.add_row("profile", "Get a target's profile info")
-    user_cmd_table.add_row("gists", "Return a users's gists")
-    user_cmd_table.add_row("orgs", "Return organisations that a target belongs to/owns")
-    user_cmd_table.add_row("repos", "Return a target's repositories")
-    user_cmd_table.add_row("events", "Return a target's events")
-    user_cmd_table.add_row("follows", "Check if user(A) follows user(B)")
-    user_cmd_table.add_row("followers", "Return a target's followers")
-    user_cmd_table.add_row("following", "Return a list of users the target is following")
-    user_cmd_table.add_row("subscriptions", "Return a target's subscriptions")
-
-    syntax = f"{green}user:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'user investigation(s)')}")
-    xprint(user_cmd_table)
-
-
-def org_command():
-    org_cmd_table = Table(show_header=True, header_style=header_title)
-    org_cmd_table.add_column("Command", style="dim")
-    org_cmd_table.add_column("Description")
-    org_cmd_table.add_row("profile", "Get a target organisation' profile info")
-    org_cmd_table.add_row("repos", "Return a target organisation' repositories")
-    org_cmd_table.add_row("events", "Return a target organisation' events")
-    org_cmd_table.add_row("member", "Check if a specified user is a public member of the target organisation")
-
-    syntax = f"{green}org:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'organisation investigation(s)')}")
-    xprint(org_cmd_table)
-
-
-def repo_command():
-    repo_cmd_table = Table(show_header=True, header_style=header_title)
-    repo_cmd_table.add_column("Command", style="dim")
-    repo_cmd_table.add_column("Description")
-    repo_cmd_table.add_row("profile", "Get a repository's info")
-    repo_cmd_table.add_row("issues", "Return a repository's issues")
-    repo_cmd_table.add_row("forks", "Return a repository's forks")
-    repo_cmd_table.add_row("releases", "Return a repository's releases")
-    repo_cmd_table.add_row("stargazers", "Return a repository's stargazers")
-    repo_cmd_table.add_row("contributors", "Return a repository's contributors")
-    repo_cmd_table.add_row("path_contents", "List contents in a path of a repository")
-
-    syntax = f"{green}repo:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'repository investigation(s)')}")
-    xprint(repo_cmd_table)
-
-
-def logs_command():
-    logs_cmd_table = Table(show_header=True, header_style=header_title)
-    logs_cmd_table.add_column("Command", style="dim")
-    logs_cmd_table.add_column("Description")
-    logs_cmd_table.add_row("view", "View logs")
-    logs_cmd_table.add_row("read", "Read log")
-    logs_cmd_table.add_row("delete", "Delete log")
-    logs_cmd_table.add_row("clear", "clear logs")
-
-    syntax = f"{green}logs:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'log(s) management')}")
-    xprint(logs_cmd_table)
-
-
-def csv_command():
-    csv_cmd_table = Table(show_header=True, header_style=header_title)
-    csv_cmd_table.add_column("Command", style="dim")
-    csv_cmd_table.add_column("Description")
-    csv_cmd_table.add_row("view", "View csv files")
-    csv_cmd_table.add_row("read", "Read csv")
-    csv_cmd_table.add_row("delete", "Delete csv")
-    csv_cmd_table.add_row("clear", "clear csv files")
-
-    syntax = f"{green}csv:<command>{reset}"
-    xprint(f"{usage_text.format(syntax, 'csv management')}")
-    xprint(csv_cmd_table)
-
-
-def help_command():
-    core_cmd_table = Table(show_header=True, header_style=header_title)
-    core_cmd_table.add_column("Command", style="dim", width=12)
-    core_cmd_table.add_column("Description")
-    core_cmd_table.add_row("ls", "List contents of the specified directory")
-    core_cmd_table.add_row("cd", "Move to specified directory")
-    core_cmd_table.add_row("help", "Help menu")
-    core_cmd_table.add_row("exit", "Close session")
-    core_cmd_table.add_row("clear", "Clear screen")
-    core_cmd_table.add_row("about", "Program's info")
-    core_cmd_table.add_row("author", "Developer's info")
-
-    help_sub_cmd_table = Table(show_header=True, header_style=header_title)
-    help_sub_cmd_table.add_column("Command", style="dim", width=12)
-    help_sub_cmd_table.add_column("Description")
-    help_sub_cmd_table.add_row("csv", "List all csv management commands")
-    help_sub_cmd_table.add_row("logs", "List all logs management commands")
-    help_sub_cmd_table.add_row("org", "List all organisation investigation commands")
-    help_sub_cmd_table.add_row("user", "List all users investigation commands")
-    help_sub_cmd_table.add_row("repo", "List all repository investigation commands")
-    help_sub_cmd_table.add_row("search", "List all target discovery commands")
-    help_sub_cmd_table.add_row("source", "List all source code download commands (for developers)")
-
-    syntax = f"{green}help:<command>{reset}"
-    xprint(core_cmd_table)
-    xprint(f"\n\n{usage_text.format(syntax, 'octosuite')}")
-    xprint(help_sub_cmd_table)
+    :return: None
+    """
+    basic_commands_table = create_table(table_title=":information:Basic Commands",
+                                        column_headers=["Command", "Description"],
+                                        table_data=[("about", "About Octosuite"),
+                                                    ("author", "Show developer's information"),
+                                                    ("cd", "Move to the specified directory"),
+                                                    ("clear", "Clear screen"),
+                                                    ("exit", "Exit/Close session"),
+                                                    ("help", "Show this help menu"),
+                                                    ("ls", "List contents of the specified directory "
+                                                           "(shows contents of the current directory "
+                                                           "if directory name is  not specified)")])
+    help_sub_commands = create_table(table_title=":white_question_mark:Investigation & Management Commands\n"
+                                                 "command syntax: help:<subcommand>",
+                                     column_headers=["Command", "Description"],
+                                     table_data=[("csv", "List all csv management commands"),
+                                                 ("logs", "List all logs management commands"),
+                                                 ("org", "List all organisation investigation commands"),
+                                                 ("repo", "List all repository investigation commands"),
+                                                 ("search", "List all target discovery commands"),
+                                                 ("user", "List all user investigation commands")])
+    xprint(basic_commands_table)
+    xprint(help_sub_commands)
