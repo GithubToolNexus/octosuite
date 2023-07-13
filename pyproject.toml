@@ -1,19 +1,22 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.setuptools]
-packages = ["octosuite"]
+[tool.poetry]
+include = [
+    {path = "octosuite/data/settings.json"}
+]
 
-[project]
 name = "octosuite"
-version = "3.1.1"
-description = "Advanced GitHub OSINT Framework"
+version = "3.2.0"
+description = "An all-in-one GitHub open-source intelligence framework."
+authors = ["Richard Mwewa <rly0nheart@duck.com>"]
 readme = "README.md"
-requires-python = ">=3.8"
-license = {file = "LICENSE"}
+license = "GNU General Public License v3 (GPLv3)"
+homepage = "https://www.bellingcat.com"
+repository = "https://github.com/bellingcat/octosuite"
+documentation = "https://github.com/bellingcat/octosuite/wiki"
 keywords = ["github", "python", "github-api", "framework", "osint", "osint-framework", "osint-python", "osint-tool"]
-authors = [{name = "Richard Mwewa", email = "rly0nheart@duck.com"}]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python :: 3",
@@ -23,17 +26,13 @@ classifiers = [
   "Natural Language :: English"
 ]
 
-dependencies = [
-    "rich",
-    "psutil",
-    "requests",
-    "pyreadline3",
-]
+[tool.poetry.dependencies]
+python = "^3.9"
+rich = "*"
+psutil = "*"
+requests = "*"
+pyreadline3 = "*"
 
-[project.urls]
-homepage = "https://github.com/bellingcat/octosuite"
-documentation = "https://github.com/bellingcat/octosuite/wiki"
-repository = "https://github.com/bellingcat/octosuite.git"
-
-[project.scripts]
-octosuite = "octosuite.main:octosuite"
+[tool.poetry.scripts]
+octosuite = "octosuite.main:run_octosuite_no_cli"
+octosuite-cli = "octosuite.main:run_octosuite_cli"
