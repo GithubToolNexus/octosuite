@@ -1,70 +1,73 @@
-from octosuite.octosuite import *
+import platform
+from octosuite.octosuite import xprint
+from octosuite.commands import Command
+from octosuite.messages import Message
 from octosuite.miscellaneous import path_finder, check_updates
-from octosuite.config import setup_cli_completion, configure_logging, create_parser
-
-setup_cli_completion()
-
-parser = create_parser()
-args = parser.parse_args()
+from octosuite.config import setup_cli_completion, setup_activity_logging, create_parser, \
+    LOGS_DIRECTORY, OUTPUT_DIRECTORY, CURRENT_USERNAME
 
 
-def run() -> None:
+class Run:
+    def __init__(self, cli_mode: bool):
+        """
+        Constructor for the Run class. Initializes parser, command, sets up directories and checks for updates.
+
+        :param cli_mode: Boolean flag to indicate whether the program is running in CLI mode.
+        """
+        self.cli_mode = cli_mode
+        self.parser = create_parser()
+        args = self.parser.parse_args()
+        self.command = Command(args=args)
+
+        # Set up the logs and output directories.
+        path_finder(directories=[LOGS_DIRECTORY, OUTPUT_DIRECTORY])
+
+        # Check for latest program updates.
+        # check_updates()
+
+    def __call__(self):
+        """
+        Makes the Run instance callable. Sets up command completion and handles
+        session logging and command execution based on the mode.
+        """
+        # Initialise the Message instance
+        message = Message()
+
+        # Set-up command completion
+        setup_cli_completion()
+
+        log = setup_activity_logging()
+        # Log the start of a new session.
+        log.info(message.session_opened(platform.node(), CURRENT_USERNAME))
+        try:
+            if self.cli_mode:
+                # If in CLI mode, execute command line args
+                self.command.execute_command_line_args()
+            else:
+                # If not in CLI mode, execute commands
+                self.command.execute_commands()
+
+        except KeyboardInterrupt:
+            # Log warning if program is interrupted
+            log.warning(message.ctrl_c())
+            xprint(message.ctrl_c())
+        except Exception as e:
+            # Log any other exceptions that occur
+            log.error(message.error_occurred(exception=str(e)))
+            xprint(message.error_occurred(exception=str(e)))
+
+
+def run_octosuite_cli():
     """
-    Run the Octosuite application.
-
-    This function initializes the Octosuite instance, sets up necessary paths, configures logging,
-    checks for updates, and handles command line arguments and user input.
-
-    :return: None
+    Function for running the program in CLI mode. Creates an instance of Run
+    in CLI mode and runs it.
     """
-    try:
-        octosuite = Octosuite()
-        path_finder([".logs", "output", "downloads"])
-        configure_logging()
-        check_updates()
-        if args.method:
-            """
-            Iterate over the argument_map and check if the passed command line argument matches any argument in it
-            [argument_map].
-            If there's a match, execute its associated method.
-            If no match is found, do nothing (which will return the usage).
-            """
-            for argument, method in octosuite.argument_map:
-                if args.method == argument:
-                    method(args)
-                    print("\n")
-                else:
-                    pass
-        else:
-            """
-            Main loop to keep Octosuite running. The loop will break if Octosuite detects a KeyboardInterrupt (Ctrl+C)
-            or if the 'exit' command is entered.
-            """
-            while True:
-                command_input = Prompt.ask(f"{getpass.getuser()}@:octopus: [blue]{os.getcwd()}[/]")
-                """
-                Iterate over the command_map and check if the user input matches any command in it [command_map].
-                If there's a match, execute its associated method. If no match is found, ignore it.
-                """
-                if command_input[:2] == 'cd':
-                    os.chdir(command_input[3:])
-                elif command_input[:2] == 'ls':
-                    list_files_and_directories(command_input[3:])
-                else:
-                    """
-                    Execute the specified method based on the user input.
-                    If no match is found, ignore it.
-                    """
-                    for command, method in octosuite.command_map:
-                        if command_input == command:
-                            method(args)
-                        else:
-                            pass
+    Run(cli_mode=True)()
 
-    except KeyboardInterrupt:
-        logging.warning(message.ctrl_c())
-        xprint(message.ctrl_c())
 
-    except Exception as e:
-        logging.error(message.error(e))
-        xprint(message.error(e))
+def run_octosuite_no_cli():
+    """
+    Function for running the program in non-CLI mode. Creates an instance of Run
+    in non-CLI mode and runs it.
+    """
+    Run(cli_mode=False)()
