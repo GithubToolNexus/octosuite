@@ -1,11 +1,6 @@
 class Attributes:
     @staticmethod
     def path_attributes() -> tuple:
-        """
-        Creates path attributes.
-
-        :return: Tuple containing path attributes (list and dictionary)
-        """
         attributes_list = ['size', 'type', 'path', 'sha', 'html_url']
         attributes_dictionary = {
             'size': 'Size (bytes)',
@@ -19,19 +14,14 @@ class Attributes:
 
     @staticmethod
     def organisation_profile_attributes() -> tuple:
-        """
-        Creates organisation profile information attributes.
-
-        :return: Tuple containing organisation attributes (list and dictionary)
-        """
         attributes_list = ['avatar_url',
                            'login',
                            'id',
                            'node_id',
                            'email',
                            'description',
-                           'blog',
                            'location',
+                           'blog',
                            'followers',
                            'following',
                            'twitter_username',
@@ -71,11 +61,6 @@ class Attributes:
 
     @staticmethod
     def repository_profile_attributes() -> tuple:
-        """
-        Creates repository profile information attributes.
-
-        :return: A tuple containing repository information attributes list and dictionary
-        """
         attributes_list = ['id', 'description', 'forks', 'stargazers_count', 'watchers', 'license', 'default_branch',
                            'visibility',
                            'language', 'open_issues', 'topics', 'homepage', 'clone_url', 'ssh_url', 'fork',
@@ -119,14 +104,16 @@ class Attributes:
 
     @staticmethod
     def repo_releases_attributes() -> tuple:
-        """
-        Creates repository releases attributes.
-
-        :return: A tuple containing repository releases attributes list and dictionary
-        """
-        attribute_list = ['id', 'node_id', 'tag_name', 'target_commitish', 'assets', 'draft', 'prerelease',
-                          'created_at', 'published_at'
-                          ]
+        attribute_list = [
+            'id',
+            'node_id',
+            'tag_name',
+            'target_commitish',
+            'assets',
+            'draft',
+            'prerelease',
+            'created_at',
+            'published_at']
 
         attribute_dictionary = {
             'id': 'ID',
@@ -143,12 +130,34 @@ class Attributes:
         return attribute_list, attribute_dictionary
 
     @staticmethod
-    def user_profile_attributes() -> tuple:
-        """
-        Creates user's profile information attributes.
+    def repository_issues_attributes() -> tuple:
+        attributes_list = ['id', 'node_id', 'state', 'reactions', 'number', 'comments', 'milestone', 'assignee',
+                           'active_lock_reason', 'author_association', 'assignees', 'labels', 'locked',
+                           'closed_at',
+                           'created_at', 'updated_at']
+        attributes_dictionary = {
+            'id': 'ID',
+            'node_id': 'Node ID',
+            'number': 'Number',
+            'state': 'State',
+            'reactions': 'Reactions',
+            'comments': 'Comments',
+            'milestone': 'Milestone',
+            'assignee': 'Assignee',
+            'assignees': 'Assignees',
+            'author_association': 'Author association',
+            'labels': 'Labels',
+            'locked': 'Is locked?',
+            'active_lock_reason': 'Lock reason',
+            'closed_at': 'Closed at',
+            'created_at': 'Created at',
+            'updated_at': 'Updated at'
+        }
 
-        :return: A tuple containing user profile information attributes
-        """
+        return attributes_list, attributes_dictionary
+
+    @staticmethod
+    def user_profile_attributes() -> tuple:
         attributes_list = ['avatar_url',
                            'login',
                            'id',
@@ -191,14 +200,7 @@ class Attributes:
         return attributes_list, attributes_dictionary
 
     @staticmethod
-    def user_information_attributes() -> tuple:
-        """
-        Creates user's information attributes.
-
-        This is completely different from user_profile_attributes().
-
-        :return: A tuple containing user information attributes (list and dictionary)
-        """
+    def user_summary_attributes() -> tuple:
         attributes_list = ['avatar_url', 'id', 'node_id', 'gravatar_id', 'site_admin', 'type', 'html_url']
 
         attributes_dictionary = {
@@ -215,11 +217,6 @@ class Attributes:
 
     @staticmethod
     def topic_information_attributes() -> tuple:
-        """
-        Creates a topic's information attributes.
-
-        :return: A tuple containing topic information attributes (list and dictionary)
-        """
         attributes_list = ['score', 'curated', 'featured', 'display_name', 'created_by', 'created_at', 'updated_at']
 
         attribute_dictionary = {
@@ -236,11 +233,6 @@ class Attributes:
 
     @staticmethod
     def gist_information_attributes() -> tuple:
-        """
-        Creates a gist's information attributes.
-        
-        :return: A tuple containing topic information attributes (list and dictionary)
-        """
         attributes_list = ['node_id', 'description', 'comments', 'files', 'git_push_url', 'public', 'truncated',
                            'updated_at'
                            ]
@@ -260,11 +252,6 @@ class Attributes:
 
     @staticmethod
     def issue_information_attributes() -> tuple:
-        """
-        Creates an issue's information attributes.
-        
-        :return: A tuple containing an issue's information attributes (list and dictionary)
-        """
         attributes_list = ['id',
                            'node_id',
                            'score',
@@ -301,24 +288,19 @@ class Attributes:
 
     @staticmethod
     def repo_issues_attributes() -> tuple:
-        """
-        Creates a repository's issues information attributes.
-        
-        :return: A tuple containing a repository's issues information attributes (list and dictionary)
-        """
         attributes_list = ['id',
                            'node_id',
+                           'number',
                            'state',
                            'reactions',
-                           'number',
                            'comments',
                            'milestone',
                            'assignee',
-                           'active_lock_reason',
-                           'author_association',
                            'assignees',
+                           'author_association',
                            'labels',
                            'locked',
+                           'active_lock_reason',
                            'closed_at',
                            'created_at',
                            'updated_at'
@@ -347,12 +329,8 @@ class Attributes:
 
     @staticmethod
     def user_orgs_information_attributes() -> tuple:
-        """
-        Creates a user's organisation information attributes.
-        
-        :return: A tuple containing a user's organisation information attributes (list and dictionary)
-        """
         attributes_list = ['avatar_url', 'id', 'node_id', 'url', 'description']
+
         attribute_dictionary = {
             'avatar_url': 'Profile Photo',
             'id': 'ID',
@@ -362,3 +340,21 @@ class Attributes:
         }
 
         return attributes_list, attribute_dictionary
+
+    @staticmethod
+    def gist_attributes() -> tuple:
+        attributes_list = ['node_id', 'description', 'comments', 'files', 'git_push_url', 'public', 'truncated',
+                           'updated_at']
+
+        attributes_dictionary = {
+            'node_id': 'Node ID',
+            'description': 'About',
+            'comments': 'Comments',
+            'files': 'Files',
+            'git_push_url': 'Git Push URL',
+            'public': 'Is public?',
+            'truncated': 'Is truncated?',
+            'updated_at': 'Updated at'
+        }
+
+        return attributes_list, attributes_dictionary
