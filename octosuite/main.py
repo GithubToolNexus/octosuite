@@ -10,21 +10,21 @@ from octosuite.config import setup_cli_completion, setup_activity_logging, creat
 class Run:
     def __init__(self, cli_mode: bool):
         """
-        Constructor for the Run class. Initializes parser, command, sets up directories and checks for updates.
-
+        Run class constructor. Initializes parser, command, sets up directories and checks for updates.
+        
         :param cli_mode: Boolean flag to indicate whether the program is running in CLI mode.
         """
         self.cli_mode = cli_mode
         self.parser = create_parser()
         args = self.parser.parse_args()
         self.command = Command(args=args)
-
+        
         # Set up the logs and output directories.
         path_finder(directories=[LOGS_DIRECTORY, OUTPUT_DIRECTORY])
-
+        
         # Check for latest program updates.
-        # check_updates()
-
+        check_updates()
+        
     def __call__(self):
         """
         Makes the Run instance callable. Sets up command completion and handles
