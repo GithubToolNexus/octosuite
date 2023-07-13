@@ -199,7 +199,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_organisation_profile(self, args):
-        organisation = args.organisation or Prompt.ask(":office_building: (organisation)")
+        organisation = args.organisation or Prompt.ask(f"{self.__emoji.OFFICE_BUILDING} (organisation)")
         response = send_request(f"{self.__endpoint}/orgs/{organisation}")
 
         if response[0] == 404:
@@ -217,7 +217,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_organisation_repositories(self, args):
-        organisation = args.organisation or Prompt.ask(":office_building: (organisation)")
+        organisation = args.organisation or Prompt.ask(f"{self.__emoji.OFFICE_BUILDING} (organisation)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("Organisation Repositories"))
 
         response = send_request(f"{self.__endpoint}/orgs/{organisation}/repos?per_page={limit}")
@@ -237,7 +237,7 @@ class Octosuite:
 
     # organisation events
     def get_organisation_events(self, args):
-        organisation = args.organisation or Prompt.ask(":office_building: (organisation)")
+        organisation = args.organisation or Prompt.ask(f"{self.__emoji.OFFICE_BUILDING} (organisation)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("Organisation Events"))
 
         response = send_request(f"{self.__endpoint}/orgs/{organisation}/events?per_page={limit}")
@@ -257,7 +257,7 @@ class Octosuite:
     # organisation member
     def is_organisation_member(self, args):
         username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
-        organisation = args.organisation or Prompt.ask(":office_building: (organisation)")
+        organisation = args.organisation or Prompt.ask(f"{self.__emoji.OFFICE_BUILDING} (organisation)")
 
         response = send_request(f"{self.__endpoint}/orgs/{organisation}/public_members/{username}")
         if response[0] == 204:
@@ -545,7 +545,7 @@ class Octosuite:
         unforked_repositories = [repo['name'] for repo in response if not repo['fork']]
         return unforked_repositories
 
-    def get_user_email(self):
+    def get_user_email(self, args):
         """
         Prompt the user for a GitHub username and retrieve the email address for the user's latest commit.
 
@@ -553,7 +553,7 @@ class Octosuite:
 
         https://github.com/s0md3v/Zen/blob/master/zen.py#L107-L113
         """
-        username = Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
         repos = self.__get_unforked_repositories(username)
         for repo in repos:
             email = self.__get_email_from_contributor(username, repo, username)
