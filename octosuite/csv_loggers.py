@@ -1,442 +1,587 @@
 import os
 import csv
-import logging
 from rich import print as xprint
-from octosuite.log_roller import prompt_log_csv, logged_to_csv
-from octosuite.message_prefixes import PROMPT, WARNING, POSITIVE, NEGATIVE, INFO
+from octosuite.messages import Message
+from octosuite.attributes import Attributes
 
 
-# csv_loggers.py
-# This file holds the functions for creating .csv files of each functionality in main
-def log_org_profile(response):
-    org_profile_fields = ['Profile photo', 'Name', 'Username', 'ID', 'Node ID', 'Email', 'About', 'Location', 'Blog',
-                          'Followers', 'Following', 'Twitter handle', 'Gists', 'Repositories', 'Account type',
-                          'Is verified?', 'Has organisation projects?', 'Has repository projects?', 'Created at',
-                          'Updated at']
-    org_profile_row = [response.json()['avatar_url'], response.json()['name'], response.json()['login'],
-                       response.json()['id'], response.json()['node_id'], response.json()['email'],
-                       response.json()['description'], response.json()['location'], response.json()['blog'],
-                       response.json()['followers'], response.json()['following'], response.json()['twitter_username'],
-                       response.json()['public_gists'], response.json()['public_repos'], response.json()['type'],
-                       response.json()['is_verified'], response.json()['has_organisation_projects'],
-                       response.json()['has_repository_projects'], response.json()['created_at'],
-                       response.json()['updated_at']]
-    
-    with open(os.path.join("output", f"{response.json()['name']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(org_profile_fields)
-        write_csv.writerow(org_profile_row)
+class CsvLoggers:
+    def __init__(self):
+        self.__attribute = Attributes()
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    @staticmethod
+    def __write_to_csv_file(fields: list, row: list, filename: str):
+        """
+        Write data to a CSV file.
 
-    
-# Creating a .csv file of a user' profile
-def log_user_profile(response):
-    user_profile_fields = ['Profile photo', 'Name', 'Username', 'ID', 'Node ID', 'Bio', 'Blog', 'Location', 'Followers',
-                           'Following', 'Twitter handle', 'Gists', 'Repositories', 'organisation', 'Is hireable?',
-                           'Is site admin?', 'Joined at', 'Updated at']
-    user_profile_row = [response.json()['avatar_url'], response.json()['name'], response.json()['login'],
-                        response.json()['id'], response.json()['node_id'], response.json()['bio'],
-                        response.json()['blog'], response.json()['location'], response.json()['followers'],
-                        response.json()['following'], response.json()['twitter_username'],
-                        response.json()['public_gists'], response.json()['public_repos'], response.json()['company'],
-                        response.json()['hireable'], response.json()['site_admin'], response.json()['created_at'],
-                        response.json()['updated_at']]
-    
-    with open(os.path.join("output", f"{response.json()['login']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_profile_fields)
-        write_csv.writerow(user_profile_row)
+        :param fields: List of field names for the CSV header.
+        :param row: List of values for a single row in the CSV.
+        :param filename: Name of the CSV file.
+        :returns: None
+        """
+        from octosuite.config import OUTPUT_DIRECTORY
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        file_path = os.path.join(OUTPUT_DIRECTORY, f"{filename}.csv")
+        message = Message()
 
+        with open(file_path, 'w') as file:
+            # Create a CSV writer object
+            write_csv = csv.writer(file)
 
-# create .csv for repository profile
-def log_repo_profile(response):
-    repo_profile_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                           'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                           'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?', 'Has pages?',
-                           'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at', 'Created at', 'Updated at']
-    repo_profile_row = [response.json()['name'], response.json()['id'], response.json()['description'],
-                        response.json()['forks'], response.json()['stargazers_count'], response.json()['watchers'],
-                        response.json()['license'], response.json()['default_branch'], response.json()['visibility'],
-                        response.json()['language'], response.json()['open_issues'], response.json()['topics'],
-                        response.json()['homepage'], response.json()['clone_url'], response.json()['ssh_url'],
-                        response.json()['fork'], response.json()['allow_forking'], response.json()['private'],
-                        response.json()['archived'], response.json()['is_template'], response.json()['has_wiki'],
-                        response.json()['has_pages'], response.json()['has_projects'], response.json()['has_issues'],
-                        response.json()['has_downloads'], response.json()['pushed_at'], response.json()['created_at'],
-                        response.json()['updated_at']]
-    
-    with open(os.path.join("output", f"{response.json()['name']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_profile_fields)
-        write_csv.writerow(repo_profile_row)
-            
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
-    
+            # Write the header row to the CSV file
+            write_csv.writerow(fields)
 
-# create .csv for repository path contents
-def log_repo_path_contents(content, repo_name):
-    path_content_fields = ['Filename', 'Size (bytes)', 'Type', 'Path', 'SHA', 'URL']
-    path_content_row = [content['name'], content['size'], content['type'], content['path'], content['sha'],
-                        content['html_url']]
-    
-    with open(os.path.join("output", f"{content['name']}_content_from_{repo_name}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(path_content_fields)
-        write_csv.writerow(path_content_row)
+            # Write the data row to the CSV file
+            write_csv.writerow(row)
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+            # Print a confirmation message
+            xprint(f"{message.logged_to_csv(file.name)}")
 
-    
-# create .csv for repository stargazer
-def log_repo_stargazers(stargazer, repo_name):
-    user_follower_fields = ['Profile photo', 'Username', 'ID', 'Node ID', 'Gravatar ID', 'Account type',
-                            'Is site admin?', 'URL']
-    user_follower_row = [stargazer['avatar_url'], stargazer['login'], stargazer['id'], stargazer['node_id'],
-                         stargazer['gravatar_id'], stargazer['type'], stargazer['site_admin'], stargazer['html_url']]
-    
-    with open(os.path.join("output", f"{stargazer['login']}_stargazer_of_{repo_name}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_follower_fields)
-        write_csv.writerow(user_follower_row)
+    def log_organisation_profile(self, response: dict):
+        fields = self.__attribute.organisation_profile_attributes()[0]
+        fields.insert(1, "Organisation")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            response['avatar_url'],
+            response['name'],
+            response['login'],
+            response['id'],
+            response['node_id'],
+            response['email'],
+            response['description'],
+            response['location'],
+            response['blog'],
+            response['followers'],
+            response['following'],
+            response['twitter_username'],
+            response['public_gists'],
+            response['public_repos'],
+            response['type'],
+            response['is_verified'],
+            response['has_organisation_projects'],
+            response['has_repository_projects'],
+            response['created_at'],
+            response['updated_at']
+        ]
 
- # create .csv for repository forks
-def log_repo_forks(fork, count):
-    repo_fork_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                        'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                        'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?', 'Has pages?',
-                        'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at', 'Created at', 'Updated at']
-    repo_fork_row = [fork['full_name'], fork['id'], fork['description'], fork['forks'], fork['stargazers_count'],
-                     fork['watchers'], fork['license'], fork['default_branch'], fork['visibility'], fork['language'],
-                     fork['open_issues'], fork['topics'], fork['homepage'], fork['clone_url'], fork['ssh_url'],
-                     fork['fork'], fork['allow_forking'], fork['private'], fork['archived'], fork['is_template'],
-                     fork['has_wiki'], fork['has_pages'], fork['has_projects'], fork['has_issues'],
-                     fork['has_downloads'], fork['pushed_at'], fork['created_at'], fork['updated_at']]
-    
-    with open(os.path.join("output", f"{fork['name']}_fork_{count}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_fork_fields)
-        write_csv.writerow(repo_fork_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=response['name'])
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_user_profile(self, response: dict):
+        fields = self.__attribute.user_profile_attributes()[0]
+        fields.insert(1, "name")
 
-    
-# create .csv for repository issues
-def log_repo_issues(issue, repo_name):
-    repo_issue_fields = ['Title', 'ID', 'Node ID', 'Number', 'State', 'Reactions', 'Comments', 'Milestone', 'Assignee',
-                         'Assignees', 'Author association', 'Labels', 'Is locked?', 'Lock reason', 'Closed at',
-                         'Created at', 'Updated at']
-    repo_issue_row = [issue['title'], issue['id'], issue['node_id'], issue['number'], issue['state'],
-                      issue['reactions'], issue['comments'], issue['milestone'], issue['assignee'], issue['assignees'],
-                      issue['author_association'], issue['labels'], issue['locked'], issue['active_lock_reason'],
-                      issue['closed_at'], issue['created_at'], issue['updated_at']]
-    
-    with open(os.path.join("output", f"{repo_name}_issue_{issue['id']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_issue_fields)
-        write_csv.writerow(repo_issue_row)
+        row = [
+            response['avatar_url'],
+            response['name'],
+            response['login'],
+            response['id'],
+            response['node_id'],
+            response['bio'],
+            response['blog'],
+            response['location'],
+            response['followers'],
+            response['following'],
+            response['twitter_username'],
+            response['public_gists'],
+            response['public_repos'],
+            response['company'],
+            response['hireable'],
+            response['site_admin'],
+            response['created_at'],
+            response['updated_at']
+        ]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=response['login'])
 
-    
-# create .csv for repository releases
-def log_repo_releases(release, repo_name):
-    repo_release_fields = ['Name', 'ID', 'Node ID', 'Tag', 'Branch', 'Assets', 'Is draft?', 'Is prerelease?',
-                           'Created at', 'Published at']
-    repo_release_row = [release['name'], release['id'], release['node_id'], release['tag_name'],
-                        release['target_commitish'], release['assets'], release['draft'], release['prerelease'],
-                        release['created_at'], release['published_at']]
-    
-    with open(os.path.join("output", f"{repo_name}_release_{release['name']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_release_fields)
-        write_csv.writerow(repo_release_row)
+    def log_repo_profile(self, response: dict):
+        fields = self.__attribute.repository_profile_attributes()[0]
+        fields.insert(0, "Repository")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            response['full_name'],
+            response['name'],
+            response['id'],
+            response['description'],
+            response['forks'],
+            response['stargazers_count'],
+            response['watchers'],
+            response['license'],
+            response['default_branch'],
+            response['visibility'],
+            response['language'],
+            response['open_issues'],
+            response['topics'],
+            response['homepage'],
+            response['clone_url'],
+            response['ssh_url'],
+            response['fork'],
+            response['allow_forking'],
+            response['private'],
+            response['archived'],
+            response['is_template'],
+            response['has_wiki'],
+            response['has_pages'],
+            response['has_projects'],
+            response['has_issues'],
+            response['has_downloads'],
+            response['pushed_at'],
+            response['created_at'],
+            response['updated_at']
+        ]
 
-    
-# Create .csv file for repository contributors
-def log_repo_contributors(contributor, repo_name):
-    repo_contributor_fields = ['Profile photo', 'Username', 'ID', 'Node ID', 'Gravatar ID', 'Account type',
-                               'Is site admin?', 'URL']
-    repo_contributor_row = [contributor['avatar_url'], contributor['login'], contributor['id'], contributor['node_id'],
-                            contributor['gravatar_id'], contributor['type'], contributor['site_admin'],
-                            contributor['html_url']]
-    
-    with open(os.path.join("output", f"{contributor['login']}_contributor_of_{repo_name}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_contributor_fields)
-        write_csv.writerow(repo_contributor_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=response['name'])
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_repo_path_contents(self, content: dict, repo_name: str):
+        fields = self.__attribute.path_attributes()[0]
+        fields.insert(0, "Filename")
 
-   
-# Create .csv for organisation' events
-def log_repo_events(event, organisation):
-    org_event_fields = ['ID', 'Type', 'Created at', 'Payload']
-    org_event_row = [event['id'], event['type'], event['created_at'], event['payload']]
-    
-    with open(os.path.join("output", f"{organisation}_event_{event['id']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(org_event_fields)
-        write_csv.writerow(org_event_row)
+        row = [
+            content['name'],
+            content['size'],
+            content['type'],
+            content['path'],
+            content['sha'],
+            content['html_url']
+        ]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{content['name']}_content_from_{repo_name}")
 
-    
-# Create .csv for organisation' repositories
-def log_org_repos(repository, organisation):
-    org_repo_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                       'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                       'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?', 'Has pages?',
-                       'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at', 'Created at', 'Updated at']
-    org_repo_row = [repository['full_name'], repository['id'], repository['description'], repository['forks'],
-                    repository['stargazers_count'], repository['watchers'], repository['license'],
-                    repository['default_branch'], repository['visibility'], repository['language'],
-                    repository['open_issues'], repository['topics'], repository['homepage'], repository['clone_url'],
-                    repository['ssh_url'], repository['fork'], repository['allow_forking'], repository['private'],
-                    repository['archived'], repository['is_template'], repository['has_wiki'], repository['has_pages'],
-                    repository['has_projects'], repository['has_issues'], repository['has_downloads'],
-                    repository['pushed_at'], repository['created_at'], repository['updated_at']]
-    
-    with open(os.path.join("output", f"{repository['name']}_repository_of_{organisation}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(org_repo_fields)
-        write_csv.writerow(org_repo_row)
+    def log_repo_stargazers(self, stargazer: dict, repo_name: str):
+        fields = self.__attribute.user_summary_attributes()[0]
+        fields.insert(1, "Username")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            stargazer['login'],
+            stargazer['avatar_url'],
+            stargazer['login'],
+            stargazer['id'],
+            stargazer['node_id'],
+            stargazer['gravatar_id'],
+            stargazer['type'],
+            stargazer['site_admin'],
+            stargazer['html_url']
+        ]
 
-    
-# .csv for user' repositories
-def log_user_repos(repository, username):
-    user_repo_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                        'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                        'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?', 'Has pages?',
-                        'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at', 'Created at', 'Updated at']
-    user_repo_row = [repository['full_name'], repository['id'], repository['description'], repository['forks'],
-                     repository['stargazers_count'], repository['watchers'], repository['license'],
-                     repository['default_branch'], repository['visibility'], repository['language'],
-                     repository['open_issues'], repository['topics'], repository['homepage'], repository['clone_url'],
-                     repository['ssh_url'], repository['fork'], repository['allow_forking'], repository['private'],
-                     repository['archived'], repository['is_template'], repository['has_wiki'], repository['has_pages'],
-                     repository['has_projects'], repository['has_issues'], repository['has_downloads'],
-                     repository['pushed_at'], repository['created_at'], repository['updated_at']]
-    
-    with open(os.path.join("output", f"{repository['name']}_{username}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_repo_fields)
-        write_csv.writerow(user_repo_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{stargazer['login']}_stargazer_of_{repo_name}")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_repo_forks(self, fork: dict, count: int):
+        fields = self.__attribute.repository_profile_attributes()[0]
+        fields.insert(0, "Repository")
 
-    
-# .csv for user events        
-def log_user_events(event):
-    user_event_fields = ['Actor', 'Type', 'Repository', 'Created at', 'Payload']
-    user_event_row = [event['actor']['login'], event['type'], event['repo']['name'], event['created_at'],
-                      event['payload']]
-    
-    with open(os.path.join("output", f"{event['actor']['login']}_event_{event['id']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_event_fields)
-        write_csv.writerow(user_event_row)
+        row = [
+            fork['full_name'],
+            fork['name'],
+            fork['id'],
+            fork['description'],
+            fork['forks'],
+            fork['stargazers_count'],
+            fork['watchers'],
+            fork['license'],
+            fork['default_branch'],
+            fork['visibility'],
+            fork['language'],
+            fork['open_issues'],
+            fork['topics'],
+            fork['homepage'],
+            fork['clone_url'],
+            fork['ssh_url'],
+            fork['fork'],
+            fork['allow_forking'],
+            fork['private'],
+            fork['archived'],
+            fork['is_template'],
+            fork['has_wiki'],
+            fork['has_pages'],
+            fork['has_projects'],
+            fork['has_issues'],
+            fork['has_downloads'],
+            fork['pushed_at'],
+            fork['created_at'],
+            fork['updated_at']
+        ]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{fork['name']}_fork_{count}")
 
-    
-# .csv for user gists        
-def log_user_gists(gist):
-    user_gist_fields = ['ID', 'Node ID', 'About', 'Comments', 'Files', 'Git Push URL', 'Is public?', 'Is truncated?',
-                        'Updated at']
-    user_gist_row = [gist['id'], gist['node_id'], gist['description'], gist['comments'], gist['files'],
-                     gist['git_push_url'], gist['public'], gist['truncated'], gist['updated_at']]
-    
-    with open(os.path.join("output", f"{gist['id']}_gists_{gist['owner']['login']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_gist_fields)
-        write_csv.writerow(user_gist_row)
+    def log_repo_issues(self, issue: dict, repo_name: str):
+        fields = self.__attribute.issue_information_attributes()[0]
+        fields.insert(0, "Title")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            issue['title'],
+            issue['id'],
+            issue['node_id'],
+            issue['number'],
+            issue['state'],
+            issue['reactions'],
+            issue['comments'],
+            issue['milestone'],
+            issue['assignee'],
+            issue['assignees'],
+            issue['author_association'],
+            issue['labels'],
+            issue['locked'],
+            issue['active_lock_reason'],
+            issue['closed_at'],
+            issue['created_at'],
+            issue['updated_at']
+        ]
 
-    
-# .csv for user followers
-def log_user_followers(follower, username):
-    user_follower_fields = ['Profile photo', 'Username', 'ID', 'Node ID', 'Gravatar ID', 'Account type',
-                            'Is site admin?', 'URL']
-    user_follower_row = [follower['avatar_url'], follower['login'], follower['id'], follower['node_id'],
-                         follower['gravatar_id'], follower['type'], follower['site_admin'], follower['html_url']]
-    
-    with open(f"output/{follower['login']}_follower_of_{username}.csv", 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_follower_fields)
-        write_csv.writerow(user_follower_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{repo_name}_issue_{issue['id']}")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_repo_releases(self, release: dict, repo_name: str):
+        fields = self.__attribute.repo_releases_attributes()[0]
+        fields.insert(0, "Release")
 
-    
-# .csv for user following
-def log_user_following(user, username):
-    user_following_fields = ['Profile photo', 'Username', 'ID', 'Node ID', 'Gravatar ID', 'Account type',
-                             'Is site admin?', 'URL']
-    user_following_row = [user['avatar_url'], user['login'], user['id'], user['node_id'], user['gravatar_id'],
-                          user['type'], user['site_admin'], user['html_url']]
-    
-    with open(os.path.join("output", f"{user['login']}_followed_by_{username}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_following_fields)
-        write_csv.writerow(user_following_row)
+        row = [
+            release['name'],
+            release['id'],
+            release['node_id'],
+            release['tag_name'],
+            release['target_commitish'],
+            release['assets'],
+            release['draft'],
+            release['prerelease'],
+            release['created_at'],
+            release['published_at']]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{repo_name}_release_{release['name']}")
 
-    
-# .csv for user' subscriptions        
-def log_user_subscriptions(repository, username):
-    user_subscription_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                                'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                                'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?',
-                                'Has pages?', 'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at',
-                                'Created at', 'Updated at']
-    user_subscription_row = [repository['name'], repository['id'], repository['description'], repository['forks'],
-                             repository['stargazers_count'], repository['watchers'], repository['license'],
-                             repository['default_branch'], repository['visibility'], repository['language'],
-                             repository['open_issues'], repository['topics'], repository['homepage'],
-                             repository['clone_url'], repository['ssh_url'], repository['fork'],
-                             repository['allow_forking'], repository['private'], repository['archived'],
-                             repository['is_template'], repository['has_wiki'], repository['has_pages'],
-                             repository['has_projects'], repository['has_issues'], repository['has_downloads'],
-                             repository['pushed_at'], repository['created_at'], repository['updated_at']]
-    
-    with open(os.path.join("output", f"{username}_subscriptions_{repository['name']}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_subscription_fields)
-        write_csv.writerow(user_subscription_row)
+    def log_repo_contributors(self, contributor: dict, repo_name: str):
+        fields = self.__attribute.user_summary_attributes()[0]
+        fields.insert(1, "Username")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            contributor['login'],
+            contributor['avatar_url'],
+            contributor['login'],
+            contributor['id'],
+            contributor['node_id'],
+            contributor['gravatar_id'],
+            contributor['type'],
+            contributor['site_admin'],
+            contributor['html_url']
+        ]
 
-    
-# .csv for user organisations
-def log_user_orgs(organisation, username):
-    user_org_fields = ['Profile photo', 'Name', 'ID', 'Node ID', 'URL', 'About']
-    user_org_row = [organisation['avatar_url'], organisation['login'], organisation['id'], organisation['node_id'],
-                    organisation['url'], organisation['description']]
-    
-    with open(os.path.join("output", f"{organisation['login']}_{username}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_org_fields)
-        write_csv.writerow(user_org_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{contributor['login']}_contributor_of_{repo_name}")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_repo_events(self, event: dict, organisation: str):
+        fields = ['ID', 'Type', 'Created at', 'Payload']
+        row = [event['id'], event['type'], event['created_at'], event['payload']]
 
-    
-# Create .csv for user search
-def log_users_search(user, query):
-    user_search_fields = ['Profile photo', 'Username', 'ID', 'Node ID', 'Gravatar ID', 'Account type', 'Is site admin?',
-                          'URL']
-    user_search_row = [user['avatar_url'], user['login'], user['id'], user['node_id'], user['gravatar_id'],
-                       user['type'], user['site_admin'], user['html_url']]
-    
-    with open(os.path.join("output", f"{user['login']}_user_search_result_for_{query}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(user_search_fields)
-        write_csv.writerow(user_search_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{organisation}_event_{event['id']}")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_organisation_repos(self, repository: dict, organisation: str):
+        fields = self.__attribute.repository_profile_attributes()[0].insert(0, "Repository")
 
-    
-# Create .csv for repository search
-def log_repos_search(repository, query):
-    repo_search_fields = ['Name', 'ID', 'About', 'Forks', 'Stars', 'Watchers', 'License', 'Branch', 'Visibility',
-                          'Language(s)', 'Open issues', 'Topics', 'Homepage', 'Clone URL', 'SSH URL', 'Is fork?',
-                          'Is forkable?', 'Is private?', 'Is archived?', 'Is template?', 'Has wiki?', 'Has pages?',
-                          'Has projects?', 'Has issues?', 'Has downloads?', 'Pushed at', 'Created at', 'Updated at']
-    repo_search_row = [repository['full_name'], repository['id'], repository['description'], repository['forks'],
-                       repository['stargazers_count'], repository['watchers'], repository['license'],
-                       repository['default_branch'], repository['visibility'], repository['language'],
-                       repository['open_issues'], repository['topics'], repository['homepage'], repository['clone_url'],
-                       repository['ssh_url'], repository['fork'], repository['allow_forking'], repository['private'],
-                       repository['archived'], repository['is_template'], repository['has_wiki'],
-                       repository['has_pages'], repository['has_projects'], repository['has_issues'],
-                       repository['has_downloads'], repository['pushed_at'], repository['created_at'],
-                       repository['updated_at']]
-    
-    with open(os.path.join("output", f"{repository['name']}_repository_search_result_for_{query}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(repo_search_fields)
-        write_csv.writerow(repo_search_row)
+        row = [
+            repository['full_name'],
+            repository['name'],
+            repository['id'],
+            repository['description'],
+            repository['forks'],
+            repository['stargazers_count'],
+            repository['watchers'],
+            repository['license'],
+            repository['default_branch'],
+            repository['visibility'],
+            repository['language'],
+            repository['open_issues'],
+            repository['topics'],
+            repository['homepage'],
+            repository['clone_url'],
+            repository['ssh_url'],
+            repository['fork'],
+            repository['allow_forking'],
+            repository['private'],
+            repository['archived'],
+            repository['is_template'],
+            repository['has_wiki'],
+            repository['has_pages'],
+            repository['has_projects'],
+            repository['has_issues'],
+            repository['has_downloads'],
+            repository['pushed_at'],
+            repository['created_at'],
+            repository['updated_at']
+        ]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{repository['name']}_repository_of_{organisation}")
 
-    
-# Create .csv for topic search
-def log_topics_search(topic, query):
-    topic_search_fields = ['Name', 'Score', 'Curated', 'Featured', 'Display name', 'Created by', 'Created at',
-                           'Updated at']
-    topic_search_row = [topic['name'], topic['score'], topic['curated'], topic['featured'], topic['display_name'],
-                        topic['created_by'], topic['created_at'], topic['updated_at']]
-    
-    with open(os.path.join("output", f"{topic['name']}_topic_search_result_for_{query}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(topic_search_fields)
-        write_csv.writerow(topic_search_row)
+    def log_organisation_events(self, event: dict, organisation: str):
+        fields = ['ID', 'Type', 'Created at', 'Data']
+        row = [event['id'], event['type'], event['created_at'], event['payload']]
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{event['id']}_{organisation}")
 
-    
-# Create .csv for issues search
-def log_issues_search(issue, query):
-    issue_search_fields = ['Title', 'ID', 'Node ID', 'Number', 'State', 'Reactions', 'Comments', 'Milestone',
-                           'Assignee', 'Assignees', 'Author association', 'Labels', 'Is locked?', 'Lock reason',
-                           'Closed at', 'Created at', 'Updated at']
-    issue_search_row = [issue['title'], issue['id'], issue['node_id'], issue['number'], issue['state'],
-                        issue['reactions'], issue['comments'], issue['milestone'], issue['assignee'],
-                        issue['assignees'], issue['author_association'], issue['labels'], issue['locked'],
-                        issue['active_lock_reason'], issue['closed_at'], issue['created_at'], issue['updated_at']]
-    
-    with open(os.path.join("output", f"{issue['id']}_issue_search_result_for_{query}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(issue_search_fields)
-        write_csv.writerow(issue_search_row)
+    def log_user_repositories(self, repository: dict, username: str):
+        fields = self.__attribute.repository_profile_attributes()[0]
+        fields.insert(0, "Repository")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+        row = [
+            repository['full_name'],
+            repository['name'],
+            repository['id'],
+            repository['description'],
+            repository['forks'],
+            repository['stargazers_count'],
+            repository['watchers'],
+            repository['license'],
+            repository['default_branch'],
+            repository['visibility'],
+            repository['language'],
+            repository['open_issues'],
+            repository['topics'],
+            repository['homepage'],
+            repository['clone_url'],
+            repository['ssh_url'],
+            repository['fork'],
+            repository['allow_forking'],
+            repository['private'],
+            repository['archived'],
+            repository['is_template'],
+            repository['has_wiki'],
+            repository['has_pages'],
+            repository['has_projects'],
+            repository['has_issues'],
+            repository['has_downloads'],
+            repository['pushed_at'],
+            repository['created_at'],
+            repository['updated_at']
+        ]
 
-    
-# Create .csv for commits search
-def log_commits_search(commit, query):
-    commit_search_fields = ['SHA', 'Author', 'Username', 'Email', 'Committer', 'Repository', 'URL', 'Description']
-    commit_search_row = [commit['commit']['tree']['sha'], commit['commit']['author']['name'], commit['author']['login'],
-                         commit['commit']['author']['email'], commit['commit']['committer']['name'],
-                         commit['repository']['full_name'], commit['html_url'], commit['commit']['message']]
-    
-    with open(os.path.join("output", f"{commit['commit']['tree']['sha']}_commit_search_result_for_{query}.csv"), 'w') as file:
-        write_csv = csv.writer(file)
-        write_csv.writerow(commit_search_fields)
-        write_csv.writerow(commit_search_row)
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{repository['name']}_{username}")
 
-        logging.info(logged_to_csv.format(file.name))
-        xprint(f"{POSITIVE} {logged_to_csv.format(file.name)}")
+    def log_user_events(self, event: dict):
+        fields = ['Actor', 'Type', 'Repository', 'Created at', 'Payload']
+        row = [event['actor']['login'], event['type'], event['repo']['name'], event['created_at'],
+               event['payload']]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{event['actor']['login']}_event_{event['id']}")
+
+    def log_user_gists(self, gist: dict):
+        fields = [
+            'ID',
+            'Node ID',
+            'About',
+            'Comments',
+            'Files',
+            'Git Push URL',
+            'Is public?',
+            'Is truncated?',
+            'Updated at'
+        ]
+        row = [
+            gist['id'],
+            gist['node_id'],
+            gist['description'],
+            gist['comments'],
+            gist['files'],
+            gist['git_push_url'],
+            gist['public'],
+            gist['truncated'],
+            gist['updated_at']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{gist['id']}_gists_{gist['owner']['login']}")
+
+    def log_user_followers(self, follower: dict, username: str):
+        fields = self.__attribute.user_summary_attributes()[0]
+        fields.insert(1, "Username")
+
+        row = [
+            follower['login'],
+            follower['avatar_url'],
+            follower['login'],
+            follower['id'],
+            follower['node_id'],
+            follower['gravatar_id'],
+            follower['type'],
+            follower['site_admin'],
+            follower['html_url']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{follower['login']}_follower_of_{username}")
+
+    def log_user_following(self, user: dict, username: str):
+        fields = self.__attribute.user_summary_attributes()[0]
+        fields.insert(1, "Username")
+
+        row = [
+            user['login'],
+            user['avatar_url'],
+            user['login'],
+            user['id'],
+            user['node_id'],
+            user['gravatar_id'],
+            user['type'],
+            user['site_admin'],
+            user['html_url']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{user['login']}_followed_by_{username}")
+
+    def log_user_subscriptions(self, repository: dict, username: str):
+        fields = self.__attribute.repository_profile_attributes()[0]
+        fields.insert(0, "Repository")
+
+        row = [
+            repository['full_name'],
+            repository['name'],
+            repository['id'],
+            repository['description'],
+            repository['forks'],
+            repository['stargazers_count'],
+            repository['watchers'],
+            repository['license'],
+            repository['default_branch'],
+            repository['visibility'],
+            repository['language'],
+            repository['open_issues'],
+            repository['topics'],
+            repository['homepage'],
+            repository['clone_url'],
+            repository['ssh_url'],
+            repository['fork'],
+            repository['allow_forking'],
+            repository['private'],
+            repository['archived'],
+            repository['is_template'],
+            repository['has_wiki'],
+            repository['has_pages'],
+            repository['has_projects'],
+            repository['has_issues'],
+            repository['has_downloads'],
+            repository['pushed_at'],
+            repository['created_at'],
+            repository['updated_at']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{username}_subscriptions_{repository['name']}")
+
+    def log_user_organisations(self, organisation: dict, username: str):
+        fields = ['Profile photo', 'Name', 'ID', 'Node ID', 'URL', 'About']
+        row = [organisation['avatar_url'], organisation['login'], organisation['id'], organisation['node_id'],
+               organisation['url'], organisation['description']]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{organisation['login']}_{username}")
+
+    def log_users_search(self, user: dict, query: str):
+        fields = self.__attribute.user_summary_attributes()[0].insert(1, "Username")
+
+        row = [
+            user['login'],
+            user['avatar_url'],
+            user['login'],
+            user['id'],
+            user['node_id'],
+            user['gravatar_id'],
+            user['type'],
+            user['site_admin'],
+            user['html_url']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{user['login']}_user_search_result_for_{query}")
+
+    def log_repos_search(self, repository: dict, query: str):
+        fields = self.__attribute.repository_profile_attributes()[0]
+        fields.insert(0, "Repository")
+
+        row = [
+            repository['full_name'],
+            repository['name'],
+            repository['id'],
+            repository['description'],
+            repository['forks'],
+            repository['stargazers_count'],
+            repository['watchers'],
+            repository['license'],
+            repository['default_branch'],
+            repository['visibility'],
+            repository['language'],
+            repository['open_issues'],
+            repository['topics'],
+            repository['homepage'],
+            repository['clone_url'],
+            repository['ssh_url'],
+            repository['fork'],
+            repository['allow_forking'],
+            repository['private'],
+            repository['archived'],
+            repository['is_template'],
+            repository['has_wiki'],
+            repository['has_pages'],
+            repository['has_projects'],
+            repository['has_issues'],
+            repository['has_downloads'],
+            repository['pushed_at'],
+            repository['created_at'],
+            repository['updated_at']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{repository['name']}_repository_"
+                                                                  f"search_result_for_{query}")
+
+    def log_topics_search(self, topic: dict, query: str):
+        fields = [
+            'Name',
+            'Score',
+            'Curated',
+            'Featured',
+            'Display name',
+            'Created by',
+            'Created at',
+            'Updated at'
+        ]
+
+        row = [
+            topic['name'],
+            topic['score'],
+            topic['curated'],
+            topic['featured'],
+            topic['display_name'],
+            topic['created_by'],
+            topic['created_at'],
+            topic['updated_at']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{topic['name']}_topic_search_result_for_{query}")
+
+    def log_issues_search(self, issue: dict, query: str):
+        fields = self.__attribute.issue_information_attributes()[0].insert(0, "Title")
+        row = [
+            issue['title'],
+            issue['id'],
+            issue['node_id'],
+            issue['number'],
+            issue['state'],
+            issue['reactions'],
+            issue['comments'],
+            issue['milestone'],
+            issue['assignee'],
+            issue['assignees'],
+            issue['author_association'],
+            issue['labels'],
+            issue['locked'],
+            issue['active_lock_reason'],
+            issue['closed_at'],
+            issue['created_at'],
+            issue['updated_at']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{issue['id']}_issue_search_result_for_{query}")
+
+    def log_commits_search(self, commit, query):
+        fields = ['SHA', 'Author', 'Username', 'Email', 'Committer', 'Repository', 'URL', 'Description']
+        row = [
+            commit['commit']['tree']['sha'],
+            commit['commit']['author']['name'],
+            commit['author']['login'],
+            commit['commit']['author']['email'],
+            commit['commit']['committer']['name'],
+            commit['repository']['full_name'],
+            commit['html_url'],
+            commit['commit']['message']
+        ]
+
+        self.__write_to_csv_file(fields=fields, row=row, filename=f"{commit['commit']['tree']['sha']}"
+                                                                  f"_commit_search_result_for_{query}")
