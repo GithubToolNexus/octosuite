@@ -8,15 +8,26 @@ class Message:
     colour = Colours(enable_colours=create_parser().parse_args().colours)
 
     def __init__(self):
+        """
+        Message class constructor. Initialises emojis.
+        """
         self.__emoji = Message.Emojis()
 
     def ctrl_c(self) -> str:
         return f"{self.__emoji.STOP_SIGN} {Message.colour.YELLOW}Session terminated with Ctrl+C.{Message.colour.RESET}"
 
+    def checking_updates(self) -> str:
+        return f"{self.__emoji.INFORMATION} {self.colour.WHITE}Checking for " \
+               f"latest releases/updates{self.colour.RESET} ..."
+
     def update_found(self, version_tag: str) -> str:
-        return f"{self.__emoji.EXCLAMATION_MARK} {Message.colour.WHITE}Octosuite " \
+        return f"{self.__emoji.INFORMATION} {Message.colour.WHITE}Octosuite " \
                f"{Message.colour.GREEN}v{version_tag}{Message.colour.WHITE}" \
                f" is available.{Message.colour.RESET}"
+
+    def update_not_found(self, version_tag: str) -> str:
+        return f"{self.__emoji.GREEN_CHECK_MARK} {self.colour.WHITE}You're running the " \
+               f"latest release of Octosuite{self.colour.RESET} ({version_tag})."
 
     def error_occurred(self, exception: str) -> str:
         return f"{self.__emoji.NO_ENTRY} {Message.colour.WHITE}An error occurred:{Message.colour.RESET} " \
@@ -42,9 +53,9 @@ class Message:
                f" Enter {Message.colour.GREEN}help{Message.colour.WHITE} " \
                f"for a list of available commands.{Message.colour.RESET}"
 
-    def session_opened(self, host: str, username: str) -> str:
+    def session_opened(self, host: str, username: str, timestamp: str) -> str:
         return f"{self.__emoji.GREEN_CHECK_MARK} " \
-               f"{Message.colour.WHITE}Opened new session on {Message.colour.RESET}{host}:{username}"
+               f"{Message.colour.WHITE}Opened new session on {username}@{host} at {Message.colour.RESET}{timestamp}"
 
     def session_closed(self, timestamp: str) -> str:
         return f"{self.__emoji.GREEN_CHECK_MARK} " \
@@ -102,3 +113,21 @@ class Message:
     def limit_output(self, title: str) -> str:
         return f"{self.__emoji.WHITE_QUESTION_MARK} {Message.colour.WHITE}Limit{Message.colour.RESET} '{title}' " \
                f"{Message.colour.WHITE}output to how many?{Message.colour.RESET} (1-100)"
+
+    def system_os(self, os: str) -> str:
+        return f"{self.__emoji.COMPUTER_DISK} OS: {os}"
+
+    def system_ram(self, ram: str) -> str:
+        return f"{self.__emoji.COMPUTER} RAM: {ram}"
+
+    def system_node(self, node: str) -> str:
+        return f"{self.__emoji.COMPUTER} Node: {node}"
+
+    def system_release(self, release: str) -> str:
+        return f"{self.__emoji.COMPUTER_DISK} Release: {release}"
+
+    def system_processor(self, processor: str) -> str:
+        return f"{self.__emoji.COMPUTER} Processor: {processor}"
+
+    def system_architecture(self, architecture: str) -> str:
+        return f"{self.__emoji.COMPUTER} Architecture: {architecture}"
