@@ -35,13 +35,18 @@
     "STOP_SIGN": ":stop_sign:",
     "NOTEBOOK": ":notebook:",
     "EYES": ":eyes:",
-    "RIGHT_ARROW": ":right_arrow",
     "PAGE_FACING_UP": ":page_facing_up:",
     "FORK_AND_KNIFE": ":fork_and_knife:",
     "PACKAGE": ":package:",
     "GLOWING_STAR": ":glowing_star:",
     "CHART_INCREASING": ":chart_increasing:",
-    "EMAIL": ":email:"
+    "EMAIL": ":email:",
+    "NAME_BADGE": ":name_badge:",
+    "RIGHT_ARROW": ":right_arrow",
+    "RIGHT_ARROW_CURVING_LEFT": ":right_arrow_curving_left:",
+    "COMPUTER": ":computer:",
+    "COMPUTER_DISK": ":computer_disk:",
+    "UP_BUTTON": ":up!_button:"
   },
   "program": {
     "name": "octosuite/octosuite-cli",
