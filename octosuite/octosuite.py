@@ -1,7 +1,7 @@
 import re
+import time
 import logging
 from rich.tree import Tree
-from datetime import datetime
 from rich import print as xprint
 from octosuite.config import Emojis
 from octosuite.messages import Message
@@ -30,7 +30,7 @@ class Octosuite:
         self.__attribute = Attributes()
 
     def get_user_profile(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         response = send_request(f"{self.__endpoint}/users/{username}")
 
         if response[0] == 404:
@@ -47,7 +47,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_repository_profile(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         repository = args.repository or Prompt.ask(f"{self.__emoji.FILE_CABINET} (repository)")
 
         response = send_request(f"{self.__endpoint}/repos/{username}/{repository}")
@@ -67,7 +67,7 @@ class Octosuite:
 
     def get_repository_path_contents(self, args):
         repository = args.repository or Prompt.ask(f"{self.__emoji.FILE_CABINET} (repository)")
-        repository_owner = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (owner)")
+        repository_owner = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (owner)")
         path_name = args.path_name or Prompt.ask(f"{self.__emoji.FILE_FOLDER} ~/path/name")
 
         response = send_request(f"{self.__endpoint}/repos/{repository_owner}/{repository}/contents/{path_name}")
@@ -256,7 +256,7 @@ class Octosuite:
 
     # organisation member
     def is_organisation_member(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         organisation = args.organisation or Prompt.ask(f"{self.__emoji.OFFICE_BUILDING} (organisation)")
 
         response = send_request(f"{self.__endpoint}/orgs/{organisation}/public_members/{username}")
@@ -267,7 +267,7 @@ class Octosuite:
 
     # Fetching user repositories
     def get_user_repositories(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Repositories"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/repos?per_page={limit}")
@@ -286,7 +286,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_user_gists(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Gists"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/gists?per_page={limit}")
@@ -308,7 +308,7 @@ class Octosuite:
 
     # Fetching a list of organisations that a user owns or belongs to
     def get_user_organisations(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Organisations"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/orgs?per_page={limit}")
@@ -330,7 +330,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_user_events(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Events"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/events/public?per_page={limit}")
@@ -350,7 +350,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_user_subscriptions(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Subscriptions"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/subscriptions?per_page={limit}")
@@ -373,7 +373,7 @@ class Octosuite:
 
     # Fetching a list of users the target follows        
     def get_user_following(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Following"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/following?per_page={limit}")
@@ -394,7 +394,7 @@ class Octosuite:
             xprint(response[1])
 
     def get_user_followers(self, args):
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         limit = args.limit or Prompt.ask(self.__message.limit_output("User Followers"))
 
         response = send_request(f"{self.__endpoint}/users/{username}/followers?per_page={limit}")
@@ -415,8 +415,8 @@ class Octosuite:
             xprint(response[1])
 
     def check_if_user_follows(self, args):
-        user_a = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE}{self.__emoji.LETTER_A} (username)")
-        user_b = args.username_b or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE}{self.__emoji.LETTER_B} (username)")
+        user_a = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE}{self.__emoji.LETTER_A} (username)")
+        user_b = args.username_b or Prompt.ask(f"{self.__emoji.NAME_BADGE}{self.__emoji.LETTER_B} (username)")
 
         response = send_request(f"{self.__endpoint}/users/{user_a}/following/{user_b}")
         if response[0] == 204:
@@ -507,8 +507,8 @@ class Octosuite:
     def exit_session(self):
         exit_prompt = Confirm.ask(self.__message.prompt_close_session())
         if exit_prompt:
-            logging.info(self.__message.session_closed(str(datetime.now())))
-            xprint(self.__message.session_closed(str(datetime.now())))
+            logging.info(self.__message.session_closed(str(time.asctime())))
+            xprint(self.__message.session_closed(str(time.asctime())))
             exit()
 
     @staticmethod
@@ -553,7 +553,7 @@ class Octosuite:
 
         https://github.com/s0md3v/Zen/blob/master/zen.py#L107-L113
         """
-        username = args.username or Prompt.ask(f"{self.__emoji.BUST_IN_SILHOUETTE} (username)")
+        username = args.username or Prompt.ask(f"{self.__emoji.NAME_BADGE} (username)")
         repos = self.__get_unforked_repositories(username)
         for repo in repos:
             email = self.__get_email_from_contributor(username, repo, username)
