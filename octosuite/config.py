@@ -103,8 +103,8 @@ class Colours:
         """
         Retrieves the value of the specified colour from the settings.
 
-        :param: colour_name (str): The name of the colour to retrieve.
-        :return: The value of the specified colour.
+        :param: colour_name (str): Name of the colour to retrieve.
+        :return: Value of the specified colour.
         """
         return settings()["colours"][colour_name]
 
