@@ -10,8 +10,8 @@ from octosuite.miscellaneous import about, check_updates, clear_screen, list_fil
 class Command:
     def __init__(self, args):
         """
-        Command class constructor. Initialises command-line arguments, Helper class, Octosuite class,
-        FileManager class, command_map and argument_map.
+        Command class constructor. Initialises command-line arguments, command_map, argument_map,
+        and Helper, Octosuite and FileManager classes.
         """
         self.__args = args
 
