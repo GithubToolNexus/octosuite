@@ -4,11 +4,15 @@ from octosuite.helpers import Helper
 from octosuite.messages import Message
 from octosuite.managers import FileManager
 from octosuite.octosuite import Octosuite, Prompt, xprint
-from octosuite.miscellaneous import about, clear_screen, list_files_and_directories
+from octosuite.miscellaneous import about, check_updates, clear_screen, list_files_and_directories
 
 
 class Command:
     def __init__(self, args):
+        """
+        Command class constructor. Initialises command-line arguments, Helper class, Octosuite class,
+        FileManager class, command_map and argument_map.
+        """
         self.__args = args
 
         # Initialise the Helper instance.
@@ -27,6 +31,7 @@ class Command:
             "clear": clear_screen,
             "about": about,
             "help": __helper.help_command,
+            "update": check_updates,
             "help:search": __helper.search_help_command_table,
             "help:user": __helper.user_help_command_table,
             "help:repo": __helper.repo_help_command_table,
@@ -131,6 +136,7 @@ class Command:
             elif command in self.command_map:
                 self.command_map.get(command)()
             else:
+                # Print an `Unknown command` message if an invalid command is entered.
                 xprint(message.unknown_command(command=command))
 
     def execute_command_line_args(self):
@@ -144,4 +150,5 @@ class Command:
             # Call the corresponding method for the given command-line argument.
             self.argument_map.get(self.__args.method)()
         else:
+            # Print the usage if an invalid command-line argument/option is passed.
             xprint(usage())
