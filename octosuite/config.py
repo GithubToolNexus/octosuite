@@ -12,8 +12,6 @@ class Emojis:
     def __init__(self):
         """
         Emoji class constructor. Initialises emoji code names
-
-        :return: None
         """
         self.BUST_IN_SILHOUETTE = self.__get_emoji("BUST_IN_SILHOUETTE")
         self.BUSTS_IN_SILHOUETTE = self.__get_emoji("BUSTS_IN_SILHOUETTE")
@@ -47,6 +45,11 @@ class Emojis:
         self.GLOWING_STAR = self.__get_emoji("GLOWING_STAR")
         self.CHART_INCREASING = self.__get_emoji("CHART_INCREASING")
         self.EMAIL = self.__get_emoji("EMAIL")
+        self.NAME_BADGE = self.__get_emoji("NAME_BADGE")
+        self.RIGHT_ARROW_CURVING_LEFT = self.__get_emoji("RIGHT_ARROW_CURVING_LEFT")
+        self.COMPUTER = self.__get_emoji("COMPUTER")
+        self.COMPUTER_DISK = self.__get_emoji("COMPUTER_DISK")
+        self.UP_BUTTON = self.__get_emoji("UP_BUTTON")
 
     @staticmethod
     def __get_emoji(emoji_name: str) -> str:
@@ -54,7 +57,7 @@ class Emojis:
         Retrieves the value of the specified emoji from the settings.
 
         :param: emoji_name (str): The name of the emoji to retrieve.
-        :return: The value of the specified emoji.
+        :return: Value of the specified emoji.
         """
         return settings()["emojis"][emoji_name]
 
@@ -62,9 +65,7 @@ class Emojis:
 class Version:
     def __init__(self):
         """
-        Version class constructor. Initialises the major, minor, patch and suffix parts of the program's version tag
-
-        :return: None
+        Version class constructor. Initialises the major, minor, patch and suffix parts of the version tag
         """
         self.major = settings()["program"]["version"]["major"]
         self.minor = settings()["program"]["version"]["minor"]
@@ -85,7 +86,6 @@ class Colours:
         Colours class constructor. Initialises colours if both the enable_colours parameter or input prompt are True.
 
         :param enable_colours: Command-line argument to enable colours in program.
-        :returns: None
         """
         if enable_colours or Confirm.ask(":white_question_mark: Would you like to enable colours for this session?"):
             self.BLUE = self.get_colour("BLUE")
@@ -112,6 +112,7 @@ class Colours:
 def settings() -> dict:
     """
     Loads the program's settings from /data/settings.json
+
     :return: Dictionary (JSON) containing program settings
     """
     # Get the absolute path of the current file
@@ -157,7 +158,7 @@ def create_parser() -> argparse.ArgumentParser:
     """
     Creates a command-line argument parser with the program's positional arguments and options.
     
-    :returns: Object for passing command-line strings into objects.
+    :returns: Object for passing command-line strings.
     """
     parser = argparse.ArgumentParser(
         description=f"{settings()['program']['name']}: {settings()['program']['about']}  — "
@@ -313,8 +314,6 @@ def setup_cli_completion():
     On other platforms, it imports the default `readline` module.
 
     If `readline` is imported successfully, it sets up command line completion using a custom completer function.
-
-    :return: None
     """
     if os.name == "nt":
         try:
@@ -340,7 +339,7 @@ def setup_activity_logging() -> Any:
     """
     Setup logging program activity to a file.
 
-    :returns: None
+    :returns: Any
     """
     import logging
     from datetime import datetime
