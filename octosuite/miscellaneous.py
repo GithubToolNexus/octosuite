@@ -17,8 +17,7 @@ def path_finder(directories: list):
     Checks if the specified directories exist.
     If not, it creates them.
 
-    :param directories: List of directories to check and create
-    :return: None
+    :param directories: List of directories to check and create.
     """
 
     for directory in directories:
@@ -38,7 +37,7 @@ def systeminfo() -> dict:
         - processor: Processor information
         - architecture: System architecture
     """
-    ram_gb = f"{round(psutil.virtual_memory().total / (1024.0 ** 3))}GB"
+    ram = f"{round(psutil.virtual_memory().total / (1024.0 ** 3))}GB"
     node = platform.node()
     system = platform.system()
     release = platform.release()
@@ -49,7 +48,7 @@ def systeminfo() -> dict:
 
     return {
         "os": os_name,
-        "ram": ram_gb,
+        "ram": ram,
         "node": node,
         "release": release,
         "processor": processor,
@@ -104,13 +103,11 @@ def check_updates():
 
     This function queries the GitHub API to check for the latest release of Octosuite.
     If an update is available, it retrieves the release notes and returns them as markdown.
-
-    :return: None
     """
-
+    xprint(__message.checking_updates())
     response = send_request("https://api.github.com/repos/bellingcat/octosuite/releases/latest")
     if response[1]['tag_name'] == __version.full_version():
-        pass
+        xprint(__message.update_not_found(__version.full_version()))
     else:
         raw_release_notes = response[1]['body']
         markdown_release_notes = Markdown(raw_release_notes)
@@ -124,8 +121,6 @@ def clear_screen():
     """
     Clears the screen with `cls` command if system is Windows.
     Otherwise, uses the `clear` command.
-
-    :return: None
     """
     subprocess.call('cmd.exe /c cls' if os.name == "nt" else 'clear')
 
@@ -133,8 +128,6 @@ def clear_screen():
 def about():
     """
     Prints the program's about information.
-
-    :return: None
     """
     about_text = """
     OCTOSUITE/OCTOSUITE-CLI © 2022-2023 Richard Mwewa
