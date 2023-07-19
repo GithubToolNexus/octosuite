@@ -52,14 +52,14 @@ class Emojis:
         self.UP_BUTTON = self.__get_emoji("UP_BUTTON")
 
     @staticmethod
-    def __get_emoji(emoji_name: str) -> str:
+    def __get_emoji(emoji_code: str) -> str:
         """
         Retrieves the value of the specified emoji from the settings.
 
-        :param: emoji_name (str): The name of the emoji to retrieve.
-        :return: Value of the specified emoji.
+        :param: emoji_code (str): Code of the emoji to retrieve.
+        :return: Value of the specified emoji code.
         """
-        return settings()["emojis"][emoji_name]
+        return settings()["emojis"][emoji_code]
 
 
 class Version:
