@@ -50,6 +50,7 @@ class Emojis:
         self.COMPUTER = self.__get_emoji("COMPUTER")
         self.COMPUTER_DISK = self.__get_emoji("COMPUTER_DISK")
         self.UP_BUTTON = self.__get_emoji("UP_BUTTON")
+        self.IDENTIFICATION_CARD = self.__get_emoji("IDENTIFICATION_CARD")
 
     @staticmethod
     def __get_emoji(emoji_code: str) -> str:
@@ -81,30 +82,34 @@ class Version:
 
 
 class Colours:
-    def __init__(self, enable_colours):
+    def __init__(self, enable_colours=None):
         """
         Colours class constructor. Initialises colours if both the enable_colours parameter or input prompt are True.
 
-        :param enable_colours: Command-line argument to enable colours in program.
+        :param enable_colours: Command-line argument to enable colours (Default is None).
         """
-        if enable_colours or Confirm.ask(":white_question_mark: Would you like to enable colours for this session?"):
-            self.BLUE = self.get_colour("BLUE")
-            self.CYAN = self.get_colour("CYAN")
-            self.RED = self.get_colour("RED")
-            self.WHITE = self.get_colour("WHITE")
-            self.GREEN = self.get_colour("GREEN")
-            self.YELLOW = self.get_colour("YELLOW")
-            self.RESET = self.get_colour("RESET")
+        if enable_colours or Confirm.ask(
+            ":white_question_mark: Would you like to enable colours for this session?"
+        ):
+            self.BLUE = self.__get_colour("BLUE")
+            self.CYAN = self.__get_colour("CYAN")
+            self.RED = self.__get_colour("RED")
+            self.WHITE = self.__get_colour("WHITE")
+            self.GREEN = self.__get_colour("GREEN")
+            self.YELLOW = self.__get_colour("YELLOW")
+            self.RESET = self.__get_colour("RESET")
         else:
-            self.BLUE = self.CYAN = self.RED = self.WHITE = self.GREEN = self.YELLOW = self.RESET = ""
+            self.BLUE = (
+                self.CYAN
+            ) = self.RED = self.WHITE = self.GREEN = self.YELLOW = self.RESET = ""
 
     @staticmethod
-    def get_colour(colour_name: str) -> str:
+    def __get_colour(colour_name: str) -> str:
         """
         Retrieves the value of the specified colour from the settings.
 
         :param: colour_name (str): Name of the colour to retrieve.
-        :return: Value of the specified colour.
+        :return: The value of the specified colour.
         """
         return settings()["colours"][colour_name]
 
@@ -157,37 +162,104 @@ def create_table(table_title: str, table_data: list, column_headers: list) -> Ta
 def create_parser() -> argparse.ArgumentParser:
     """
     Creates a command-line argument parser with the program's positional arguments and options.
-    
+
     :returns: Object for passing command-line strings.
     """
     parser = argparse.ArgumentParser(
         description=f"{settings()['program']['name']}: {settings()['program']['about']}  — "
-                    f"by {settings()['program']['developer']['name']} ({settings()['program']['developer']['about']})",
-        usage=usage())
-    parser.add_argument("-m", "--method", help="method",
-                        choices=["user_email", "user_profile", "user_repos", "user_gists", "user_orgs", "user_events",
-                                 "user_subscriptions", "user_following", "user_followers", "user_follows",
-                                 "org_profile", "org_repos", "org_events", "is_org_member",
-                                 "repo_profile", "repo_contributors", "repo_stargazers", "repo_forks",
-                                 "repo_issues", "repo_releases", "repo_path_contents", "users_search", "issues_search",
-                                 "commits_search", "topics_search", "repos_search", "view_logs", "read_log",
-                                 "delete_log",
-                                 "clear_logs", "view_csv", "read_csv", "delete_csv", "clear_csv", "about"])
-    parser.add_argument("-a", "--about", help="show program's about information", action="store_true")
-    parser.add_argument("-c", "--colours", "--colors", help="pass to run octosuite-cli with colours enabled",
-                        action="store_true")
-    parser.add_argument("-csv", "--log-to-csv", help="log output to a csv file", action="store_true", dest="log_to_csv")
-    parser.add_argument("-f", "--file", help="filename (used with logs/csv management arguments)", dest="csv_file")
-    parser.add_argument("-l", "--limit",
-                        help="output limit (used with methods that return results in bulk) (default: %(default)s)",
-                        default=10)
-    parser.add_argument("-o", "--organisation", "--organization", help="organisation name")
-    parser.add_argument("-pn", "--path-name", help="path name (used with repo_path_contents)", dest="path_name")
+        f"by {settings()['program']['developer']['name']} ({settings()['program']['developer']['about']})",
+        usage=usage(),
+    )
+    parser.add_argument(
+        "-i",
+        "--initialise",
+        "--initialize",
+        help="init method",
+        choices=[
+            "user-email",
+            "user-profile",
+            "user-repos",
+            "user-gists",
+            "user-orgs",
+            "user-events",
+            "user-subscriptions",
+            "user-following",
+            "user-followers",
+            "user-follows",
+            "org-profile",
+            "org-repos",
+            "org-events",
+            "is-org-member",
+            "repo-profile",
+            "repo-contributors",
+            "repo-stargazers",
+            "repo-forks",
+            "repo-issues",
+            "repo-releases",
+            "repo-path-contents",
+            "users-search",
+            "issues-search",
+            "commits-search",
+            "topics-search",
+            "repos-search",
+            "view-logs",
+            "read-log",
+            "delete-log",
+            "clear-logs",
+            "view-csv",
+            "read-csv",
+            "delete-csv",
+            "clear-csv",
+            "about",
+        ],
+    )
+    parser.add_argument(
+        "-a", "--about", help="show program's about information", action="store_true"
+    )
+    parser.add_argument(
+        "-c",
+        "--colours",
+        "--colors",
+        help="pass to run octosuite-cli with colours enabled",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-csv",
+        "--log-to-csv",
+        help="log output to a csv file",
+        action="store_true",
+        dest="log_to_csv",
+    )
+    parser.add_argument(
+        "-f", "--file", help="filename (used with logs/csv management arguments)"
+    )
+    parser.add_argument(
+        "-l",
+        "--limit",
+        help="output limit (used with methods that return results in bulk) (default: %(default)s)",
+        default=10,
+    )
+    parser.add_argument(
+        "-o", "--organisation", "--organization", help="organisation name"
+    )
+    parser.add_argument(
+        "-pn",
+        "--path-name",
+        help="path name (used with repo-path-contents)",
+        dest="path_name",
+    )
     parser.add_argument("-q", "--query", help="query (used with search arguments)")
     parser.add_argument("-r", "--repository", help="repository name")
     parser.add_argument("-u", "--username", help="username")
-    parser.add_argument("-ub", "--username_b", help="username_b (used with user_follows)", dest="username_b")
-    parser.add_argument("-v", "--version", action="version", version=Version().full_version())
+    parser.add_argument(
+        "-ub",
+        "--username-b",
+        help="username-b (used with user-follows)",
+        dest="username_b",
+    )
+    parser.add_argument(
+        "-v", "--version", action="version", version=Version().full_version()
+    )
 
     return parser
 
@@ -199,32 +271,32 @@ def usage():
 
         Get User Profile Info
         ---------------------
-        octosuite-cli --method user_profile --username <username>
+        octosuite-cli --initialise user-profile --username <username>
 
 
         Get User Repos
         --------------
-        octosuite-cli --method user_repos --username <username>
+        octosuite-cli --initialise user-repos --username <username>
 
 
         Get Organisation Profile Info
         -----------------------------
-        octosuite-cli --method org_profile --organisation <organisation_name>
+        octosuite-cli --initialise org-profile --organisation <organisation name>
 
 
         Get Organisation Repos
         -----------------------------
-        octosuite-cli --method org_repos --organisation <organisation_name>
+        octosuite-cli --initialise org-repos --organisation <organisation name>
 
         
         Get Repository Profile Info
         ---------------------------
-        octosuite-cli --method repo_profile --username <username> --repository <repo_name>
+        octosuite-cli --initialise repo-profile --username <username> --repository <repository name>
 
 
         Get Repository Forks
         --------------------
-        octosuite-cli --method repo_forks --username <username> --repository <repo_name>
+        octosuite-cli --initialise repo-forks --username <username> --repository <repository name>
         
     
     
@@ -233,27 +305,27 @@ def usage():
 
         Search Users
         ------------
-        octosuite-cli --method users_search --query <query>
+        octosuite-cli --initialise users-search --query <query>
 
         
         Search Issues
         -------------
-        octosuite-cli --method issues_search --query <query>
+        octosuite-cli --initialise issues-search --query <query>
 
         
         Search Commits
         --------------
-        octosuite-cli --method commits_search --query <query>
+        octosuite-cli --initialise commits-search --query <query>
         
 
         Search Topics
         -------------
-        octosuite-cli --method topics_search --query <query>
+        octosuite-cli --initialise topics-search --query <query>
         
 
         Search Repositories
         -------------------
-        octosuite-cli --method repos_search --query <query>
+        octosuite-cli --initialise repos-search --query <query>
 
 
 
@@ -262,22 +334,22 @@ def usage():
 
         View logs
         ---------
-        octosuite-cli --method view_logs
+        octosuite-cli --initialise view-logs
 
 
         Read log
         --------
-        octosuite-cli --method read_log --log-file <log_file>
+        octosuite-cli --initialise read-log --file <log filename>
 
 
         Delete log
         ----------
-        octosuite-cli --method delete_log --log-file <log_file>
+        octosuite-cli --initialise delete-log --file <log filename>
 
 
         Clear logs
         ----------
-        octosuite-cli --method clear_logs
+        octosuite-cli --initialise clear-logs
 
 
 
@@ -286,22 +358,22 @@ def usage():
 
         View CSV
         ---------
-        octosuite-cli --method view_csv
+        octosuite-cli --initialise view-csv
 
 
         Read A Specified CSV File
         -------------------------
-        octosuite-cli --method read_csv --file <csv_file>
+        octosuite-cli --initialise read-csv --file <csv filename>
 
 
         Delete CSV
         ----------
-        octosuite-cli --method delete_csv --file <csv_file>
+        octosuite-cli --initialise delete-csv --file <csv filename>
 
 
         Clear All CSV Files
         -------------------
-        octosuite-cli --method clear_csv
+        octosuite-cli --initialise clear-csv
         """
 
 
@@ -344,18 +416,21 @@ def setup_activity_logging() -> Any:
     import logging
     from datetime import datetime
 
-    # Avoid using the  (:) symbol in the log filename if the current system is Windows,
+    # Avoid using the ':' symbol in the log filename if the current system is Windows,
     # as files and directory names cannot be created with a colon.
     if os.name == "nt":
-        now = datetime.now().strftime("%d-%m-%Y_%H-%M-%S%p")
+        now = datetime.now().strftime("octosuite-%d-%m-%Y %H-%M-%S%p")
     else:
-        now = datetime.now().strftime("%d-%m-%Y %H:%M:%S%p")
+        now = datetime.now().strftime("octosuite-%d-%m-%Y %H:%M:%S%p")
 
     # Construct the path to the log file
     log_file_path = os.path.join(LOGS_DIRECTORY, now)
-    logging.basicConfig(filename=f"{log_file_path}.log",
-                        format="[%(asctime)s] [%(levelname)s] %(message)s",
-                        datefmt="%Y-%m-%d %H:%M:%S%p", level=logging.DEBUG)
+    logging.basicConfig(
+        filename=f"{log_file_path}.log",
+        format="[%(asctime)s] [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S%p",
+        level=logging.DEBUG,
+    )
 
     return logging
 
