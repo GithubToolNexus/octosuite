@@ -9,16 +9,24 @@ from octosuite.octosuite import Prompt
 class FileManager:
     def __init__(self):
         from octosuite.messages import Message
-        from octosuite.config import setup_activity_logging, OUTPUT_DIRECTORY, LOGS_DIRECTORY
-        
+        from octosuite.config import (
+            Emojis,
+            setup_activity_logging,
+            OUTPUT_DIRECTORY,
+            LOGS_DIRECTORY,
+        )
+
         self.__message = Message()
         self.__colour = self.__message.colour
         self.__OUTPUT_DIRECTORY = OUTPUT_DIRECTORY
         self.__LOGS_DIRECTORY = LOGS_DIRECTORY
         self.__log = setup_activity_logging()
+        self.__emoji = Emojis()
 
     def delete_csv_file(self, args):
-        csv_file = args.csv_file or Prompt.ask("-> .csv (filename)")
+        csv_file = args.file or Prompt.ask(
+            f"{self.__emoji.SPIRAL_NOTEPAD} .csv (filename)"
+        )
 
         file_path = os.path.join(self.__OUTPUT_DIRECTORY, csv_file)
         try:
@@ -26,23 +34,33 @@ class FileManager:
             self.__log.info(self.__message.file_deleted(filename=file_path))
             xprint(self.__message.file_deleted(filename=file_path))
         except OSError as e:
-            xprint(f"{self.__message.unable_to_delete_file(filename=file_path)} -> "
-                   f"{self.__colour.RED}{e}{self.__colour.RESET}")
+            xprint(
+                f"{self.__message.unable_to_delete_file(filename=file_path)} -> "
+                f"{self.__colour.RED}{e}{self.__colour.RESET}"
+            )
 
     def clear_csv_files(self, args):
         csv_files_directory = self.__OUTPUT_DIRECTORY
         csv_files_count = len(os.listdir(csv_files_directory))
-        clear_csv_prompt = args.clear_csv or Prompt.ask(self.__message.prompt_clear_files(csv_files_count))
+        clear_csv_prompt = args.clear_csv or Prompt.ask(
+            self.__message.prompt_clear_files(csv_files_count)
+        )
 
         if clear_csv_prompt:
             try:
                 shutil.rmtree(csv_files_directory)  # ignore_errors=True)
                 self.__log.info(self.__message.files_cleared(csv_files_directory))
-                xprint(self.__message.files_cleared(files_directory=csv_files_directory))
+                xprint(
+                    self.__message.files_cleared(files_directory=csv_files_directory)
+                )
             except OSError as e:
-                self.__log.error(f"{self.__message.unable_to_clear_files(files_directory=csv_files_directory)} -> {e}")
-                xprint(f"{self.__message.unable_to_clear_files(files_directory=csv_files_directory)} -> "
-                       f"{self.__colour.RED}{e}{self.__colour.RESET}")
+                self.__log.error(
+                    f"{self.__message.unable_to_clear_files(files_directory=csv_files_directory)} -> {e}"
+                )
+                xprint(
+                    f"{self.__message.unable_to_clear_files(files_directory=csv_files_directory)} -> "
+                    f"{self.__colour.RED}{e}{self.__colour.RESET}"
+                )
 
     def view_csv_files(self):
         csv_files = os.listdir(self.__OUTPUT_DIRECTORY)
@@ -57,7 +75,9 @@ class FileManager:
         xprint(csv_table)
 
     def read_csv_file(self, args):
-        csv_file = args.csv_file or Prompt.ask("-> .csv (filename)")
+        csv_file = args.file or Prompt.ask(
+            f"{self.__emoji.SPIRAL_NOTEPAD} .csv (filename)"
+        )
         file_path = os.path.join(self.__OUTPUT_DIRECTORY, csv_file)
 
         try:
@@ -65,12 +85,18 @@ class FileManager:
                 text = Text(file.read())
                 xprint(text)
         except OSError as e:
-            self.__log.error(f"{self.__message.unable_to_read_file(filename=file_path)} -> {e}")
-            xprint(f"{self.__message.unable_to_read_file(filename=file_path)} -> "
-                   f"{self.__colour.RED}{e}{self.__colour.RESET}")
+            self.__log.error(
+                f"{self.__message.unable_to_read_file(filename=file_path)} -> {e}"
+            )
+            xprint(
+                f"{self.__message.unable_to_read_file(filename=file_path)} -> "
+                f"{self.__colour.RED}{e}{self.__colour.RESET}"
+            )
 
     def read_log_file(self, args):
-        log_file = args.csv_file or Prompt.ask("-> .log (filename)")
+        log_file = args.file or Prompt.ask(
+            f"{self.__emoji.SPIRAL_NOTEPAD} .log (filename)"
+        )
         file_path = os.path.join(self.__OUTPUT_DIRECTORY, log_file)
 
         try:
@@ -78,12 +104,18 @@ class FileManager:
                 text = Text(file.read())
                 xprint(text)
         except OSError as e:
-            self.__log.error(f"{self.__message.unable_to_read_file(filename=file_path)} -> {e}")
-            xprint(f"{self.__message.unable_to_read_file(filename=file_path)} -> "
-                   f"{self.__colour.RED}{e}{self.__colour.RESET}")
+            self.__log.error(
+                f"{self.__message.unable_to_read_file(filename=file_path)} -> {e}"
+            )
+            xprint(
+                f"{self.__message.unable_to_read_file(filename=file_path)} -> "
+                f"{self.__colour.RED}{e}{self.__colour.RESET}"
+            )
 
     def delete_log_file(self, args):
-        log_file = args.log_file or Prompt.ask("-> .log (filename)")
+        log_file = args.file or Prompt.ask(
+            f"{self.__emoji.SPIRAL_NOTEPAD} .log (filename)"
+        )
         file_path = os.path.join(self.__LOGS_DIRECTORY, log_file)
 
         try:
@@ -91,24 +123,36 @@ class FileManager:
             xprint(self.__message.file_deleted(filename=file_path))
             self.__log.info(self.__message.file_deleted(filename=file_path))
         except OSError as e:
-            self.__log.error(f"{self.__message.unable_to_delete_file(filename=file_path)} -> {e}")
-            xprint(f"{self.__message.unable_to_delete_file(filename=file_path)} -> "
-                   f"{self.__colour.RED}{e}{self.__colour.RESET}")
+            self.__log.error(
+                f"{self.__message.unable_to_delete_file(filename=file_path)} -> {e}"
+            )
+            xprint(
+                f"{self.__message.unable_to_delete_file(filename=file_path)} -> "
+                f"{self.__colour.RED}{e}{self.__colour.RESET}"
+            )
 
     def clear_log_files(self, args):
         log_files_count = len(os.listdir(self.__LOGS_DIRECTORY))
-        clear_logs_prompt = args.clear_log or Prompt.ask(self.__message.prompt_clear_files(files_count=log_files_count))
+        clear_logs_prompt = args.clear_log or Prompt.ask(
+            self.__message.prompt_clear_files(files_count=log_files_count)
+        )
 
         if clear_logs_prompt:
             try:
                 shutil.rmtree(self.__LOGS_DIRECTORY)  # ignore_errors=True)
                 self.__log.info(self.__message.files_cleared(self.__LOGS_DIRECTORY))
-                xprint(self.__message.files_cleared(files_directory=self.__LOGS_DIRECTORY))
+                xprint(
+                    self.__message.files_cleared(files_directory=self.__LOGS_DIRECTORY)
+                )
             except OSError as e:
-                self.__log.error(f"{self.__message.unable_to_clear_files(files_directory=self.__LOGS_DIRECTORY)} "
-                                 f"-> {e}")
-                xprint(f"{self.__message.unable_to_clear_files(files_directory=self.__LOGS_DIRECTORY)} -> "
-                       f"{self.__colour.RED}{e}{self.__colour.RESET}")
+                self.__log.error(
+                    f"{self.__message.unable_to_clear_files(files_directory=self.__LOGS_DIRECTORY)} "
+                    f"-> {e}"
+                )
+                xprint(
+                    f"{self.__message.unable_to_clear_files(files_directory=self.__LOGS_DIRECTORY)} -> "
+                    f"{self.__colour.RED}{e}{self.__colour.RESET}"
+                )
 
     def view_log_files(self):
         log_files = os.listdir(self.__LOGS_DIRECTORY)
