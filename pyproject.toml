@@ -28,11 +28,11 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-rich = "*"
+rich = { git = "https://github.com/rly0nheart/rich.git" }
 psutil = "*"
 requests = "*"
 pyreadline3 = "*"
 
 [tool.poetry.scripts]
-octosuite = "octosuite.main:run_octosuite_no_cli"
-octosuite-cli = "octosuite.main:run_octosuite_cli"
+octosuite = "octosuite.main:octosuite_non_cli"
+octosuite-cli = "octosuite.main:octosuite_cli"
