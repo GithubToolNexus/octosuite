@@ -5,9 +5,10 @@ import requests
 import subprocess
 from rich import print as xprint
 from rich.markdown import Markdown
-from octosuite.config import Version
+from octosuite.config import Emojis, Version
 from octosuite.messages import Message
 
+__emoji = Emojis()
 __message = Message()
 __version = Version()
 
@@ -52,7 +53,7 @@ def systeminfo() -> dict:
         "node": node,
         "release": release,
         "processor": processor,
-        "architecture": architecture
+        "architecture": architecture,
     }
 
 
@@ -68,8 +69,11 @@ def send_request(endpoint: str, authentication=None) -> tuple:
 
     log = setup_activity_logging()
     try:
-        with requests.get(endpoint, auth=authentication,
-                          headers={"Accept": "application/vnd.github.v3+json"}) as response:
+        with requests.get(
+            endpoint,
+            auth=authentication,
+            headers={"Accept": "application/vnd.github.v3+json"},
+        ) as response:
             if authentication:
                 response_data = response.text
             else:
@@ -90,9 +94,13 @@ def list_files_and_directories(directory: str = None):
     :return: None
     """
     if directory:
-        command = ['cmd.exe', '/c', 'dir', directory] if os.name == "nt" else ['ls', directory]
+        command = (
+            ["cmd.exe", "/c", "dir", directory]
+            if os.name == "nt"
+            else ["ls", directory]
+        )
     else:
-        command = ['cmd.exe', '/c', 'dir'] if os.name == "nt" else ['ls']
+        command = ["cmd.exe", "/c", "dir"] if os.name == "nt" else ["ls"]
 
     subprocess.run(command)
 
@@ -105,16 +113,20 @@ def check_updates():
     If an update is available, it retrieves the release notes and returns them as markdown.
     """
     xprint(__message.checking_updates())
-    response = send_request("https://api.github.com/repos/bellingcat/octosuite/releases/latest")
-    if response[1]['tag_name'] == __version.full_version():
+    response = send_request(
+        "https://api.github.com/repos/bellingcat/octosuite/releases/latest"
+    )
+    if response[1]["tag_name"] == __version.full_version():
         xprint(__message.update_not_found(__version.full_version()))
     else:
-        raw_release_notes = response[1]['body']
+        raw_release_notes = response[1]["body"]
         markdown_release_notes = Markdown(raw_release_notes)
-        xprint(__message.update_found(version_tag=response[1]['tag_name']))
+        xprint(__message.update_found(version_tag=response[1]["tag_name"]))
         xprint(markdown_release_notes)
-        xprint(f"\nRun `{__message.colour.GREEN}pip install --upgrade "
-               f"octosuite{__message.colour.RESET}` to install the updates.")
+        xprint(
+            f"\nRun `{__message.colour.GREEN}pip install --upgrade "
+            f"octosuite{__message.colour.RESET}` to install the updates."
+        )
 
 
 def clear_screen():
@@ -122,20 +134,19 @@ def clear_screen():
     Clears the screen with `cls` command if system is Windows.
     Otherwise, uses the `clear` command.
     """
-    subprocess.call('cmd.exe /c cls' if os.name == "nt" else 'clear')
+    subprocess.call("cmd.exe /c cls" if os.name == "nt" else "clear")
 
 
 def about():
     """
     Prints the program's about information.
     """
-    about_text = """
-    OCTOSUITE/OCTOSUITE-CLI © 2022-2023 Richard Mwewa
+    about_text = f"""
+    {__emoji.PACKAGE} [bold]OCTOSUITE/OCTOSUITE-CLI[/] © 2022-2023 {__emoji.BUST_IN_SILHOUETTE} [bold]Richard Mwewa[/]
     
-    An all-in-one framework for gathering open-source intelligence on GitHub users and organisations.
+    [bold]An all-in-one framework for gathering open-source intelligence on GitHub users and organisations.[/]
     
-    GNU General Public License v3 (GPLv3)
-    Read the wiki: https://github.com/bellingcat/octosuite/wiki
-    GitHub REST API documentation: https://docs.github.com/rest
+    {__emoji.OPEN_BOOK} [bold]Read the wiki:[/] https://github.com/bellingcat/octosuite/wiki
+    {__emoji.OPEN_BOOK} [bold]GitHub REST API documentation:[/] https://docs.github.com/rest
     """
     xprint(about_text)
