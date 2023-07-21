@@ -427,7 +427,7 @@ def setup_activity_logging() -> Any:
     log_file_path = os.path.join(LOGS_DIRECTORY, now)
     logging.basicConfig(
         filename=f"{log_file_path}.log",
-        format="[%(asctime)s] [%(levelname)s] %(message)s",
+        format="%(asctime)s %(levelname)s %(name)s %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S%p",
         level=logging.DEBUG,
     )
