@@ -5,9 +5,14 @@
 
 version: 2
 updates:
-  # Enable version updates for pip
-  - package-ecosystem: "pip"
-    directory: "/" # Location of package manifests
-    # Check the tqdm registry for updates every day (weekdays)
+  - package-ecosystem: "nuget"
     schedule:
       interval: "daily"
+    directory: "Octosuite GUI"
+    ignore:
+      - dependency-name: "Newtonsoft.Json"
+  - package-ecosystem: "pip"
+    schedule:
+      interval: "daily"
+    directory: "/"
+
