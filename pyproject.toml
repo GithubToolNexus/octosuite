@@ -13,7 +13,7 @@ description = "An all-in-one GitHub open-source intelligence framework."
 authors = ["Richard Mwewa <rly0nheart@duck.com>"]
 readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
-homepage = "https://www.bellingcat.com"
+homepage = "https://pypi.org/project/octosuite"
 repository = "https://github.com/bellingcat/octosuite"
 documentation = "https://github.com/bellingcat/octosuite/wiki"
 keywords = ["github", "python", "github-api", "framework", "osint", "osint-framework", "osint-python", "osint-tool"]
@@ -28,9 +28,10 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-rich = { git = "https://github.com/rly0nheart/rich.git" }
+rich = "*"
 psutil = "*"
 requests = "*"
+glyphoji= "*"
 pyreadline3 = "*"
 
 [tool.poetry.scripts]
