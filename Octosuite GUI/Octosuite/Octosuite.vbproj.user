@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="AboutBox.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="DeveloperForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrgProfileForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="StartForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="OrgReposForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserEventsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserFollowersForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserFollowingForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserGistsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserOrgsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserProfileForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserReposForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserSubscriptionsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>
