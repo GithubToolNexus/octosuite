@@ -22,47 +22,48 @@ Partial Class UserProfileForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UserProfileForm))
-        Me.DataGridUserProfile = New System.Windows.Forms.DataGridView()
-        CType(Me.DataGridUserProfile, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
-        '
-        'DataGridUserProfile
-        '
-        Me.DataGridUserProfile.AllowUserToAddRows = False
-        Me.DataGridUserProfile.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.White
-        Me.DataGridUserProfile.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
-        Me.DataGridUserProfile.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill
-        Me.DataGridUserProfile.BackgroundColor = System.Drawing.Color.White
-        Me.DataGridUserProfile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridUserProfile.ColumnHeadersVisible = False
-        Me.DataGridUserProfile.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DataGridUserProfile.EnableHeadersVisualStyles = False
-        Me.DataGridUserProfile.Location = New System.Drawing.Point(0, 0)
-        Me.DataGridUserProfile.Name = "DataGridUserProfile"
-        Me.DataGridUserProfile.ReadOnly = True
-        Me.DataGridUserProfile.RowHeadersVisible = False
-        Me.DataGridUserProfile.RowTemplate.Height = 25
-        Me.DataGridUserProfile.Size = New System.Drawing.Size(800, 428)
-        Me.DataGridUserProfile.TabIndex = 1
-        '
-        'UserProfileForm
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 428)
-        Me.Controls.Add(Me.DataGridUserProfile)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MaximizeBox = False
-        Me.Name = "UserProfileForm"
-        Me.Text = "Octosuite - User:Profile"
-        CType(Me.DataGridUserProfile, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-
+        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(UserProfileForm))
+        DataGridViewUserProfile = New DataGridView()
+        CType(DataGridViewUserProfile, ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' DataGridViewUserProfile
+        ' 
+        DataGridViewUserProfile.AllowUserToAddRows = False
+        DataGridViewUserProfile.AllowUserToDeleteRows = False
+        DataGridViewCellStyle2.BackColor = Color.White
+        DataGridViewUserProfile.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewUserProfile.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+        DataGridViewUserProfile.BackgroundColor = Color.White
+        DataGridViewUserProfile.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewUserProfile.ColumnHeadersVisible = False
+        DataGridViewUserProfile.Dock = DockStyle.Fill
+        DataGridViewUserProfile.EnableHeadersVisualStyles = False
+        DataGridViewUserProfile.Location = New Point(0, 0)
+        DataGridViewUserProfile.Name = "DataGridViewUserProfile"
+        DataGridViewUserProfile.ReadOnly = True
+        DataGridViewUserProfile.RowHeadersVisible = False
+        DataGridViewUserProfile.RowTemplate.Height = 25
+        DataGridViewUserProfile.Size = New Size(800, 428)
+        DataGridViewUserProfile.TabIndex = 1
+        ' 
+        ' UserProfileForm
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(800, 428)
+        Controls.Add(DataGridViewUserProfile)
+        FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        MaximizeBox = False
+        Name = "UserProfileForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "UserProfileForm"
+        CType(DataGridViewUserProfile, ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
-    Friend WithEvents DataGridUserProfile As DataGridView
+    Friend WithEvents DataGridViewUserProfile As DataGridView
 End Class

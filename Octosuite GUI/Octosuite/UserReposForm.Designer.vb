@@ -22,27 +22,36 @@ Partial Class UserReposForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UserReposForm))
-        Me.DataGridViewUserRepos = New System.Windows.Forms.DataGridView()
-
-        Me.DataGridViewUserRepos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridViewUserRepos.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DataGridViewUserRepos.Location = New System.Drawing.Point(0, 0)
-        Me.DataGridViewUserRepos.Name = "DataGridViewUserRepos"
-        Me.DataGridViewUserRepos.ReadOnly = True
-        Me.DataGridViewUserRepos.RowTemplate.Height = 25
-        Me.DataGridViewUserRepos.Size = New System.Drawing.Size(1221, 580)
-        Me.DataGridViewUserRepos.TabIndex = 0
-
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1221, 580)
-        Me.Controls.Add(Me.DataGridViewUserRepos)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Text = "Octosuite - User:Repos"
-        CType(Me.DataGridViewUserRepos, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-
+        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(UserReposForm))
+        DataGridViewUserRepos = New DataGridView()
+        CType(DataGridViewUserRepos, ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' DataGridViewUserRepos
+        ' 
+        DataGridViewUserRepos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewUserRepos.Dock = DockStyle.Fill
+        DataGridViewUserRepos.Location = New Point(0, 0)
+        DataGridViewUserRepos.Name = "DataGridViewUserRepos"
+        DataGridViewUserRepos.ReadOnly = True
+        DataGridViewUserRepos.RowHeadersVisible = False
+        DataGridViewUserRepos.RowTemplate.Height = 25
+        DataGridViewUserRepos.Size = New Size(755, 450)
+        DataGridViewUserRepos.TabIndex = 0
+        ' 
+        ' UserReposForm
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(755, 450)
+        Controls.Add(DataGridViewUserRepos)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Name = "UserReposForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "UserReposForm"
+        CType(DataGridViewUserRepos, ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
     Friend WithEvents DataGridViewUserRepos As DataGridView

@@ -10,6 +10,9 @@
     <Compile Update="OrgProfileForm.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="RepoSearchResultsForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="StartForm.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -35,6 +38,9 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="UserReposForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserSearchResultsForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="UserSubscriptionsForm.vb">

@@ -22,34 +22,36 @@ Partial Class UserSubscriptionsForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UserSubscriptionsForm))
-        Me.DataGridViewUserSubscriptions = New System.Windows.Forms.DataGridView()
-        CType(Me.DataGridViewUserSubscriptions, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
-        '
-        'DataGridViewUserSubscriptions
-        '
-        Me.DataGridViewUserSubscriptions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridViewUserSubscriptions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DataGridViewUserSubscriptions.Location = New System.Drawing.Point(0, 0)
-        Me.DataGridViewUserSubscriptions.Name = "DataGridViewUserSubscriptions"
-        Me.DataGridViewUserSubscriptions.ReadOnly = True
-        Me.DataGridViewUserSubscriptions.RowTemplate.Height = 25
-        Me.DataGridViewUserSubscriptions.Size = New System.Drawing.Size(1072, 490)
-        Me.DataGridViewUserSubscriptions.TabIndex = 1
-        '
-        'UserSubscriptionsForm
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1072, 490)
-        Me.Controls.Add(Me.DataGridViewUserSubscriptions)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Name = "UserSubscriptionsForm"
-        Me.Text = "Octosuite - User:Subscriptions"
-        CType(Me.DataGridViewUserSubscriptions, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-
+        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(UserSubscriptionsForm))
+        DataGridViewUserSubscriptions = New DataGridView()
+        CType(DataGridViewUserSubscriptions, ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' DataGridViewUserSubscriptions
+        ' 
+        DataGridViewUserSubscriptions.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewUserSubscriptions.Dock = DockStyle.Fill
+        DataGridViewUserSubscriptions.Location = New Point(0, 0)
+        DataGridViewUserSubscriptions.Name = "DataGridViewUserSubscriptions"
+        DataGridViewUserSubscriptions.ReadOnly = True
+        DataGridViewUserSubscriptions.RowHeadersVisible = False
+        DataGridViewUserSubscriptions.RowTemplate.Height = 25
+        DataGridViewUserSubscriptions.Size = New Size(755, 450)
+        DataGridViewUserSubscriptions.TabIndex = 1
+        ' 
+        ' UserSubscriptionsForm
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(755, 450)
+        Controls.Add(DataGridViewUserSubscriptions)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Name = "UserSubscriptionsForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "UserSubsriptionsForm"
+        CType(DataGridViewUserSubscriptions, ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
     Friend WithEvents DataGridViewUserSubscriptions As DataGridView

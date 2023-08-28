@@ -22,34 +22,37 @@ Partial Class UserFollowingForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UserFollowingForm))
-        Me.DataGridViewUserFollowing = New System.Windows.Forms.DataGridView()
-        CType(Me.DataGridViewUserFollowing, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
-        '
-        'DataGridViewUserFollowing
-        '
-        Me.DataGridViewUserFollowing.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridViewUserFollowing.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DataGridViewUserFollowing.Location = New System.Drawing.Point(0, 0)
-        Me.DataGridViewUserFollowing.Name = "DataGridViewUserFollowing"
-        Me.DataGridViewUserFollowing.ReadOnly = True
-        Me.DataGridViewUserFollowing.RowTemplate.Height = 25
-        Me.DataGridViewUserFollowing.Size = New System.Drawing.Size(800, 450)
-        Me.DataGridViewUserFollowing.TabIndex = 3
-        '
-        'UserFollowingForm
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
-        Me.Controls.Add(Me.DataGridViewUserFollowing)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Name = "UserFollowingForm"
-        Me.Text = "Octosuite - User:Following"
-        CType(Me.DataGridViewUserFollowing, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-
+        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(UserFollowingForm))
+        DataGridViewUserFollowing = New DataGridView()
+        CType(DataGridViewUserFollowing, ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' DataGridViewUserFollowing
+        ' 
+        DataGridViewUserFollowing.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewUserFollowing.Dock = DockStyle.Fill
+        DataGridViewUserFollowing.Location = New Point(0, 0)
+        DataGridViewUserFollowing.Name = "DataGridViewUserFollowing"
+        DataGridViewUserFollowing.ReadOnly = True
+        DataGridViewUserFollowing.RowHeadersVisible = False
+        DataGridViewUserFollowing.RowTemplate.Height = 25
+        DataGridViewUserFollowing.Size = New Size(696, 450)
+        DataGridViewUserFollowing.TabIndex = 3
+        ' 
+        ' UserFollowingForm
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(696, 450)
+        Controls.Add(DataGridViewUserFollowing)
+        FormBorderStyle = FormBorderStyle.FixedSingle
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Name = "UserFollowingForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "UserFollowingForm"
+        CType(DataGridViewUserFollowing, ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
     Friend WithEvents DataGridViewUserFollowing As DataGridView

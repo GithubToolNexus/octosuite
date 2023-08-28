@@ -44,19 +44,21 @@ Partial Class OrgProfileForm
         DataGridOrgProfile.ReadOnly = True
         DataGridOrgProfile.RowHeadersVisible = False
         DataGridOrgProfile.RowTemplate.Height = 25
-        DataGridOrgProfile.Size = New Size(800, 450)
+        DataGridOrgProfile.Size = New Size(715, 450)
         DataGridOrgProfile.TabIndex = 2
         ' 
         ' OrgProfileForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 450)
+        ClientSize = New Size(715, 450)
         Controls.Add(DataGridOrgProfile)
+        FormBorderStyle = FormBorderStyle.FixedSingle
         MaximizeBox = False
         Name = "OrgProfileForm"
+        ShowIcon = False
         StartPosition = FormStartPosition.CenterScreen
-        Text = "Octosuite - Org:Profile"
+        Text = "OrgProfileForm"
         CType(DataGridOrgProfile, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub

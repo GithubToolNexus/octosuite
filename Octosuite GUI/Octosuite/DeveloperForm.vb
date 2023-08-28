@@ -10,6 +10,6 @@
     End Sub
 
     Private Sub BuyMeACoffeeLinkLabel_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles BuyMeACoffeeLinkLabel.LinkClicked
-        Shell("cmd /c start https://buymeacoffee.com/189381184")
+        Shell("cmd /c start https://buymeacoffee.com/_rly0nheart")
     End Sub
 End Class

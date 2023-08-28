@@ -38,16 +38,18 @@ Partial Class OrgReposForm
         DataGridViewOrgRepos.ReadOnly = True
         DataGridViewOrgRepos.RowHeadersVisible = False
         DataGridViewOrgRepos.RowTemplate.Height = 25
-        DataGridViewOrgRepos.Size = New Size(800, 450)
+        DataGridViewOrgRepos.Size = New Size(755, 450)
         DataGridViewOrgRepos.TabIndex = 5
         ' 
         ' OrgReposForm
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 450)
+        ClientSize = New Size(755, 450)
         Controls.Add(DataGridViewOrgRepos)
         Name = "OrgReposForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
         Text = "OrgReposForm"
         CType(DataGridViewOrgRepos, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)

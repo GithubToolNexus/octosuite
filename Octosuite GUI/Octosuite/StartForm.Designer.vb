@@ -59,16 +59,15 @@ Partial Class StartForm
         MenuStrip1.Items.AddRange(New ToolStripItem() {ToolsToolStripMenuItem, DiscoveryToolStripMenuItem, InvestigationToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
-        MenuStrip1.Size = New Size(301, 24)
+        MenuStrip1.Size = New Size(277, 24)
         MenuStrip1.TabIndex = 0
         MenuStrip1.Text = "MenuStrip1"
         ' 
         ' ToolsToolStripMenuItem
         ' 
         ToolsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {LogsToolStripMenuItem, AboutToolStripMenuItem, DeveloperToolStripMenuItem, CheckUpdatesToolStripMenuItem, ToolStripSeparator1, ExitToolStripMenuItem})
-        ToolsToolStripMenuItem.Image = CType(resources.GetObject("ToolsToolStripMenuItem.Image"), Image)
         ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        ToolsToolStripMenuItem.Size = New Size(98, 20)
+        ToolsToolStripMenuItem.Size = New Size(82, 20)
         ToolsToolStripMenuItem.Text = "CurrentUser"
         ToolsToolStripMenuItem.ToolTipText = "Logs management"
         ' 
@@ -122,19 +121,21 @@ Partial Class StartForm
         ' DiscoveryToolStripMenuItem
         ' 
         DiscoveryToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {SearchUsersToolStripMenuItem, SearchRepositoriesToolStripMenuItem1, SearchTopicsToolStripMenuItem, SearchIssuesToolStripMenuItem})
-        DiscoveryToolStripMenuItem.Image = CType(resources.GetObject("DiscoveryToolStripMenuItem.Image"), Image)
         DiscoveryToolStripMenuItem.Name = "DiscoveryToolStripMenuItem"
-        DiscoveryToolStripMenuItem.Size = New Size(86, 20)
-        DiscoveryToolStripMenuItem.Text = "Discovery"
+        DiscoveryToolStripMenuItem.Size = New Size(82, 20)
+        DiscoveryToolStripMenuItem.Text = "🔍Discovery"
         ' 
         ' SearchUsersToolStripMenuItem
         ' 
+        SearchUsersToolStripMenuItem.Image = CType(resources.GetObject("SearchUsersToolStripMenuItem.Image"), Image)
         SearchUsersToolStripMenuItem.Name = "SearchUsersToolStripMenuItem"
         SearchUsersToolStripMenuItem.Size = New Size(138, 22)
         SearchUsersToolStripMenuItem.Text = "Users"
+        SearchUsersToolStripMenuItem.ToolTipText = "Search users."
         ' 
         ' SearchRepositoriesToolStripMenuItem1
         ' 
+        SearchRepositoriesToolStripMenuItem1.Image = CType(resources.GetObject("SearchRepositoriesToolStripMenuItem1.Image"), Image)
         SearchRepositoriesToolStripMenuItem1.Name = "SearchRepositoriesToolStripMenuItem1"
         SearchRepositoriesToolStripMenuItem1.Size = New Size(138, 22)
         SearchRepositoriesToolStripMenuItem1.Text = "Repositories"
@@ -154,19 +155,18 @@ Partial Class StartForm
         ' InvestigationToolStripMenuItem
         ' 
         InvestigationToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {UserToolStripMenuItem, RepositoriesToolStripMenuItem, OrganisationToolStripMenuItem})
-        InvestigationToolStripMenuItem.Image = CType(resources.GetObject("InvestigationToolStripMenuItem.Image"), Image)
         InvestigationToolStripMenuItem.Name = "InvestigationToolStripMenuItem"
-        InvestigationToolStripMenuItem.Size = New Size(103, 20)
-        InvestigationToolStripMenuItem.Text = "Investigation"
+        InvestigationToolStripMenuItem.Size = New Size(99, 20)
+        InvestigationToolStripMenuItem.Text = "🕵️Investigation"
         ' 
         ' UserToolStripMenuItem
         ' 
+        UserToolStripMenuItem.AutoToolTip = True
         UserToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {UserProfileToolStripMenuItem, UserFollowsToolStripMenuItem, UserFollowingToolStripMenuItem, UserFollowersToolStripMenuItem, GistsToolStripMenuItem, UserEventsToolStripMenuItem, UserRepositoriesToolStripMenuItem, UserSubscriptionsToolStripMenuItem, UserOrganisationsToolStripMenuItem})
         UserToolStripMenuItem.Image = CType(resources.GetObject("UserToolStripMenuItem.Image"), Image)
         UserToolStripMenuItem.Name = "UserToolStripMenuItem"
         UserToolStripMenuItem.Size = New Size(147, 22)
         UserToolStripMenuItem.Text = "Users"
-        UserToolStripMenuItem.ToolTipText = "Investigate a user"
         ' 
         ' UserProfileToolStripMenuItem
         ' 
@@ -243,6 +243,7 @@ Partial Class StartForm
         ' 
         ' RepositoriesToolStripMenuItem
         ' 
+        RepositoriesToolStripMenuItem.Image = CType(resources.GetObject("RepositoriesToolStripMenuItem.Image"), Image)
         RepositoriesToolStripMenuItem.Name = "RepositoriesToolStripMenuItem"
         RepositoriesToolStripMenuItem.Size = New Size(147, 22)
         RepositoriesToolStripMenuItem.Text = "Repositories"
@@ -276,7 +277,7 @@ Partial Class StartForm
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.ButtonFace
-        ClientSize = New Size(301, 27)
+        ClientSize = New Size(277, 27)
         Controls.Add(MenuStrip1)
         FormBorderStyle = FormBorderStyle.FixedSingle
         Icon = CType(resources.GetObject("$this.Icon"), Icon)

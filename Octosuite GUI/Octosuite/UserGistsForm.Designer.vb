@@ -22,34 +22,36 @@ Partial Class UserGistsForm
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(UserGistsForm))
-        Me.DataGridViewUserGists = New System.Windows.Forms.DataGridView()
-        CType(Me.DataGridViewUserGists, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.SuspendLayout()
-        '
-        'DataGridViewUserGists
-        '
-        Me.DataGridViewUserGists.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridViewUserGists.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.DataGridViewUserGists.Location = New System.Drawing.Point(0, 0)
-        Me.DataGridViewUserGists.Name = "DataGridViewUserGists"
-        Me.DataGridViewUserGists.ReadOnly = True
-        Me.DataGridViewUserGists.RowTemplate.Height = 25
-        Me.DataGridViewUserGists.Size = New System.Drawing.Size(1042, 309)
-        Me.DataGridViewUserGists.TabIndex = 1
-        '
-        'UserGistsForm
-        '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
-        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1042, 309)
-        Me.Controls.Add(Me.DataGridViewUserGists)
-        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Name = "UserGistsForm"
-        Me.Text = "Octosuite - User:Gists"
-        CType(Me.DataGridViewUserGists, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.ResumeLayout(False)
-
+        Dim resources As ComponentModel.ComponentResourceManager = New ComponentModel.ComponentResourceManager(GetType(UserGistsForm))
+        DataGridViewUserGists = New DataGridView()
+        CType(DataGridViewUserGists, ComponentModel.ISupportInitialize).BeginInit()
+        SuspendLayout()
+        ' 
+        ' DataGridViewUserGists
+        ' 
+        DataGridViewUserGists.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewUserGists.Dock = DockStyle.Fill
+        DataGridViewUserGists.Location = New Point(0, 0)
+        DataGridViewUserGists.Name = "DataGridViewUserGists"
+        DataGridViewUserGists.ReadOnly = True
+        DataGridViewUserGists.RowHeadersVisible = False
+        DataGridViewUserGists.RowTemplate.Height = 25
+        DataGridViewUserGists.Size = New Size(759, 309)
+        DataGridViewUserGists.TabIndex = 1
+        ' 
+        ' UserGistsForm
+        ' 
+        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleMode = AutoScaleMode.Font
+        ClientSize = New Size(759, 309)
+        Controls.Add(DataGridViewUserGists)
+        Icon = CType(resources.GetObject("$this.Icon"), Icon)
+        Name = "UserGistsForm"
+        ShowIcon = False
+        StartPosition = FormStartPosition.CenterScreen
+        Text = "UserGistsForm"
+        CType(DataGridViewUserGists, ComponentModel.ISupportInitialize).EndInit()
+        ResumeLayout(False)
     End Sub
 
     Friend WithEvents DataGridViewUserGists As DataGridView
