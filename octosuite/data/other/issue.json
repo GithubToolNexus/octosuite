@@ -1,0 +1,16 @@
+{
+  "id": "ID",
+  "node_id": "Node ID",
+  "score": "Score",
+  "state": "State",
+  "closed_at": "Closed at",
+  "number": "Number",
+  "comments": "Comments",
+  "milestone": "Milestone",
+  "assignee": "Assignee",
+  "assignees": "Assignees",
+  "labels": "Labels",
+  "draft": "Is draft?",
+  "locked": "Is locked?",
+  "created_at": "Created at"
+}

@@ -1,0 +1,10 @@
+{
+  "node_id": "Node ID",
+  "description": "About",
+  "comments": "Comments",
+  "files": "Files",
+  "git_push_url": "Git Push URL",
+  "public": "Is public?",
+  "truncated": "Is truncated?",
+  "updated_at": "Updated at"
+}

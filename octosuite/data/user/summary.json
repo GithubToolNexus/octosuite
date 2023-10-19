@@ -1,0 +1,9 @@
+{
+  "avatar_url": "Profile Photo",
+  "id": "ID",
+  "node_id": "Node ID",
+  "gravatar_id": "Gravatar ID",
+  "site_admin": "Is site admin?",
+  "type": "Account type",
+  "html_url": "URL"
+}
