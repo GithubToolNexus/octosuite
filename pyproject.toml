@@ -3,37 +3,31 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-include = [
-    {path = "octosuite/data/settings.json"}
-]
-
 name = "octosuite"
-version = "3.2.0"
-description = "An all-in-one GitHub open-source intelligence framework."
-authors = ["Richard Mwewa <rly0nheart@duck.com>"]
+version = "4.0.0.0"
+description = "An All-In-One framework for gathering Open-Source Intelligence on GitHub entities."
 readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
-homepage = "https://pypi.org/project/octosuite"
-repository = "https://github.com/bellingcat/octosuite"
-documentation = "https://github.com/bellingcat/octosuite/wiki"
 keywords = ["github", "python", "github-api", "framework", "osint", "osint-framework", "osint-python", "osint-tool"]
+authors = ["Richard Mwewa <rly0nheart@duck.com>"]
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Programming Language :: Python :: 3",
-  "Intended Audience :: Information Technology",
-  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-  "Operating System :: OS Independent",
-  "Natural Language :: English"
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Visual Basic",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Natural Language :: English"
 ]
+homepage = "https://pypi.org/project/octosuite"
+documentation = "https://github.com/bellingcat/octosuite/wiki"
+repository = "https://github.com/bellingcat/octosuite.git"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+aiohttp = "*"
+python = "^3.11"
 rich = "*"
-psutil = "*"
-requests = "*"
-glyphoji= "*"
-pyreadline3 = "*"
 
 [tool.poetry.scripts]
-octosuite = "octosuite.main:octosuite_non_cli"
+# octosuite = "octosuite.main:octosuite"
 octosuite-cli = "octosuite.main:octosuite_cli"
