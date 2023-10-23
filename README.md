@@ -1,6 +1,7 @@
-![logo](https://user-images.githubusercontent.com/74001397/175805580-fffc96d4-e0ef-48bb-a55c-80b2da3e714d.png)
+![carbon(3)](https://github.com/bellingcat/octosuite/assets/74001397/a9df5b5e-00d1-4d4d-9d32-b1a54a613965)
 
-A framework for gathering open-source intelligence on GitHub users, repositories and organisations
+
+An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitHub** entities.
 
 [![Upload Python Package](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml)
 [![CodeQL](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml)
@@ -9,15 +10,6 @@ A framework for gathering open-source intelligence on GitHub users, repositories
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/octosuite?style=flat&logo=pypi)
 ![PyPI - Status](https://img.shields.io/pypi/status/octosuite?style=flat&logo=pypi)
 ![GitHub repo size](https://img.shields.io/github/repo-size/bellingcat/octosuite?style=flat&logo=github)
-
-
-![2023-01-23_01-01](https://user-images.githubusercontent.com/74001397/213950701-44b3f98b-89e1-443a-abb5-1be8969b611f.png "Octosuite about")
-
-
-![Screen Shot 2023-01-26 at 9 27 22 PM](https://user-images.githubusercontent.com/74001397/214932206-40ec42ba-4fe8-4115-b2dd-52c4d7be9b5c.png)
-
-# Wiki
-[Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation instructions, in addition to all other documentation.
 
 # Features
 - [x] Fetches an organisation's profile information
@@ -52,19 +44,12 @@ A framework for gathering open-source intelligence on GitHub users, repositories
 - [x] All the above can be used with command-line arguments (PyPI Package only)
 - [x] And more...
 
+# Documentation
+[Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation instructions, in addition to all other documentation.
+
+
 # TODO
 - [ ] Rewrite the GUI in Visual Basic .NET (in progress)
-
-
-## Note
-> Octosuite automatically logs network and user activity of each session, the logs are saved by date and time in the .logs folder
-
-
-# License
-![license](https://user-images.githubusercontent.com/74001397/137917929-2f2cdb0c-4d1d-4e4b-9f0d-e01589e027b5.png)
-
-# Credits
-* The code used for finding emails from usernames is taken from [Somdev Sangwan](https://github.com/s0md3v)'s [Zen](https://github.com/s0md3v/zen)
 
 
 # Donations
