@@ -1,0 +1,18 @@
+{
+  "avatar_url": "Profile Photo",
+  "login": "Username",
+  "id": "ID",
+  "node_id": "Node ID",
+  "blog": "Blog",
+  "location": "Location",
+  "followers": "Followers",
+  "following": "Following",
+  "twitter_username": "\uD835\uDD4F (Twitter) handle",
+  "public_gists": "Gists (public)",
+  "public_repos": "Repositories (public)",
+  "company": "organisation",
+  "hireable": "Is hireable?",
+  "site_admin": "Is site admin?",
+  "created_at": "Joined at",
+  "updated_at": "Updated at"
+}

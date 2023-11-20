@@ -1,0 +1,10 @@
+{
+  "actor": {
+    "login": "Actor"
+  },
+  "type": "Type",
+  "repo": {
+    "name": "Repository"
+  },
+  "created_at": "Created at"
+}
