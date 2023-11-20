@@ -3,8 +3,7 @@ __about__ = "https://about.me/rly0nheart"
 __version__ = "4.0.0.0"
 __description__ = """
 # OctoSuite
-> A framework for gathering intelligence on GitHub entities.
-"""
+> An **All-In-One** framework for gathering **Open-Source Intelligence** on GitHub entities."""
 __epilog__ = f"""
 # by [{__author__}]({__about__})
 ```
