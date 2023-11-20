@@ -1,15 +1,10 @@
 import json
 import logging
 import os
-from typing import Union
 
 from rich.logging import RichHandler
 
 from .parser import create_parser
-
-
-def is_valid_data(data: Union[dict, list, set]) -> bool:
-    return bool(data)
 
 
 def setup_logging(enable_debug: bool) -> logging.getLogger:

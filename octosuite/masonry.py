@@ -4,7 +4,7 @@ from rich import print
 from rich.tree import Tree
 
 from .api import Api
-from .coreutils import is_valid_data, data_broker, log
+from .coreutils import data_broker, log
 
 ITALIC = "[italic]"
 BOLD_BRIGHT_BLUE = "bold bright_blue"
@@ -92,7 +92,7 @@ class Masonry:
 
         if additional_data:
             for title, data in additional_data:
-                if is_valid_data(data=data):
+                if data:
                     self.add_branch(
                         target_tree=tree,
                         branch_title=title,
@@ -253,7 +253,7 @@ class Masonry:
         :param limit: The maximum number of gists to display.
         """
         raw_gists = self.api.get_user_gists(username=username, limit=limit)
-        if is_valid_data(data=raw_gists):
+        if raw_gists:
             gists_tree = self.create_tree(
                 tree_title=f"Showing {limit} "
                 f"{'Gist' if len(raw_gists) < 2 else 'Gists'} from user (@{username})",
@@ -278,7 +278,7 @@ class Masonry:
         :param limit: The maximum number of organisations to display.
         """
         raw_organisations = self.api.get_user_orgs(username=username, limit=limit)
-        if is_valid_data(data=raw_organisations):
+        if raw_organisations:
             organisations_tree = self.create_tree(
                 tree_title=f"Showing {limit} {'Organisation' if len(raw_organisations) < 2 else 'Organisations'} "
                 f"from user (@{username})",
