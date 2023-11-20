@@ -1,9 +1,0 @@
-{
-  "node_id": "Node ID",
-  "comments": "Comments",
-  "git_push_url": "Git Push URL",
-  "public": "Is public?",
-  "truncated": "Is truncated?",
-  "files": "Files",
-  "updated_at": "Updated at"
-}
