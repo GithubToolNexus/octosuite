@@ -1,4 +1,4 @@
-![carbon(3)](https://github.com/bellingcat/octosuite/assets/74001397/a9df5b5e-00d1-4d4d-9d32-b1a54a613965)
+![octosuite](https://github.com/bellingcat/octosuite/assets/74001397/5786409b-5d1f-4a94-9b1f-d216507f4909)
 
 
 An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitHub** entities.
@@ -12,49 +12,42 @@ An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitH
 ![GitHub repo size](https://img.shields.io/github/repo-size/bellingcat/octosuite?style=flat&logo=github)
 
 # Features
-- [x] Fetches an organisation's profile information
-- [x] Fetches an oganization's events
-- [x] Returns an organisation's repositories
-- [x] Returns an organisation's public members
-- [x] Fetches a repository's information
-- [x] Returns a repository's contributors
-- [x] Returns a repository's languages
-- [x] Fetches a repository's stargazers
-- [x] Fetches a repository's forks
-- [x] Fetches a repository's releases
-- [x] Returns a list of files in a specified path of a repository
-- [x] Fetches a user's profile information
-- [x] Returns a user's gists
-- [x] Returns organisations that a user owns/belongs to
-- [x] Fetches a user's events
-- [x] Fetches a list of users followed by the target
-- [x] Fetches a user's followers
-- [x] Checks if user A follows user B
-- [x] Checks if  user is a public member of an organisations
-- [x] Gets a user's subscriptions
-- [x] Searches users
-- [x] Searches repositories
-- [x] Searches topics
-- [x] Searches issues
-- [x] Searches commits
-- [x] Automatically logs network/user activity (.logs folder)
-- [x] User can manage logs (view, read, delete)
-- [x] Results can be saved to a .csv file (varies)
-- [x] User can manage csv files (view, read, delete)
-- [x] All the above can be used with command-line arguments (PyPI Package only)
-- [x] And more...
+* **OctoSuite** can get the following data from **GitHub** entities:
+    * **<ins>Users</ins>**:
+        * *Profile*
+        * *Repositories* (public)
+        * *Organisations* (owned/belonging to)
+        * *Events* (public)
+        * *Followers*
+        * *Followed
+          accounts*
+        * *Relationship
+          with other users*
+        * *Emails from PushEvents* (public)
+    * **<ins>Organisations</ins>**:
+        * *Profile*
+        * *Repositories* (public)
+        * *Events* (public)
+        * *Check if a user is a public member of the Organisation*
+    * **<ins>Repositories</ins>**:
+        * *Data* (equivalent to profile data)
+        * *Forks* (public)
+        * *Stargazers*
+        * *Contributors*
+        * *Open issues*
+        * *Releases*
+        * *Contents of a specified path*
+* Target Discovery:
+    * **<ins>Search Users</ins>**
+    * **<ins>Search Issues</ins>**
+    * **<ins>Search Topics</ins>**
+    * **<ins>Search Commits</ins>**
 
 # Documentation
-[Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation instructions, in addition to all other documentation.
 
+[Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation, usage and uninstallation
+instructions.
 
 # TODO
 - [ ] Rewrite the GUI in Visual Basic .NET (in progress)
 
-
-# Donations
-If you like OctoSuite and would like to show support, you can Buy A Coffee for the developer using the button below
-
-<a href="https://www.buymeacoffee.com/_rly0nheart" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-
-Your support will be much appreciated😊
