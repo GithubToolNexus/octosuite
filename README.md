@@ -5,11 +5,9 @@ An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitH
 
 [![Upload Python Package](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml)
 [![CodeQL](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml)
-![GitHub](https://img.shields.io/github/license/bellingcat/octosuite?style=flat)
-![PyPI](https://img.shields.io/pypi/v/octosuite?style=flat&logo=pypi)
-![PyPI - Downloads](https://img.shields.io/pypi/dw/octosuite?style=flat&logo=pypi)
 ![PyPI - Status](https://img.shields.io/pypi/status/octosuite?style=flat&logo=pypi)
-![GitHub repo size](https://img.shields.io/github/repo-size/bellingcat/octosuite?style=flat&logo=github)
+![PyPI](https://img.shields.io/pypi/v/octosuite?style=flat&logo=pypi)
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/_rly0nheart)
 
 # Features
 * **OctoSuite** can get the following data from **GitHub** entities:
@@ -50,4 +48,5 @@ instructions.
 
 # TODO
 - [ ] Rewrite the GUI in Visual Basic .NET (in progress)
+
 
