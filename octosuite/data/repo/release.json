@@ -1,0 +1,10 @@
+{
+  "id": "ID",
+  "node_id": "Node ID",
+  "tag_name": "Tag",
+  "target_commitish": "Branch",
+  "draft": "Is draft?",
+  "prerelease": "Is prerelease?",
+  "created_at": "Created at",
+  "published_at": "Published at"
+}
