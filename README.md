@@ -1,4 +1,4 @@
-![octosuite](https://github.com/bellingcat/octosuite/assets/74001397/5786409b-5d1f-4a94-9b1f-d216507f4909)
+![octosuite](https://github.com/bellingcat/octosuite/assets/74001397/fe28e7ec-2e59-4f5c-ad94-7e159bc9978a)
 
 
 An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitHub** entities.
