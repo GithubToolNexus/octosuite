@@ -10,6 +10,7 @@ readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
 keywords = ["github", "python", "github-api", "framework", "osint", "osint-framework", "osint-python", "osint-tool"]
 authors = ["Richard Mwewa <rly0nheart@duck.com>"]
+maintainers = ["Bellingcat <bellingcat.com>"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Visual Basic",
@@ -24,10 +25,10 @@ documentation = "https://github.com/bellingcat/octosuite/wiki"
 repository = "https://github.com/bellingcat/octosuite.git"
 
 [tool.poetry.dependencies]
-aiohttp = "*"
-python = "^3.11"
+python = "^3.10"
+requests = "*"
 rich = "*"
+rich-argparse = "*"
 
 [tool.poetry.scripts]
-# octosuite = "octosuite.main:octosuite"
-octosuite-cli = "octosuite.main:octosuite_cli"
+octosuite = "octosuite.octosuite:on_call"
