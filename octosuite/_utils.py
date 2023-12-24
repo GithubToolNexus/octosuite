@@ -26,6 +26,7 @@ def create_parser() -> argparse.ArgumentParser:
     Creates and configures an argument parser for the command line arguments.
 
     :return: A configured argparse.ArgumentParser object ready to parse the command line arguments.
+    :rtype: argparse.ArgumentParser
     """
     # --------------------------------------------------------------- #
 
