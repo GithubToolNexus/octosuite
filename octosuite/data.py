@@ -111,38 +111,40 @@ class Repository:
     updated_at: str
 
 
-def process_repositories(raw_repositories: list[dict]) -> list[Repository]:
+def process_repositories(repositories: list[dict]) -> list[Repository]:
     repositories_list: list = []
-    for raw_repository in raw_repositories:
-        repository = Repository(
-            name=raw_repository.get("full_name"),
-            id=raw_repository.get("id"),
-            description=raw_repository.get("description"),
-            stars=raw_repository.get("stargazers_count"),
-            forks=raw_repository.get("forks"),
-            watchers=raw_repository.get("watchers"),
-            default_branch=raw_repository.get("default_branch"),
-            language=raw_repository.get("language"),
-            open_issues=raw_repository.get("open_issues"),
-            homepage=raw_repository.get("homepage"),
-            license=raw_repository.get("license"),
-            topics=raw_repository.get("topics"),
-            is_fork=raw_repository.get("fork"),
-            allow_forking=raw_repository.get("allow_forking"),
-            is_archived=raw_repository.get("archived"),
-            is_template=raw_repository.get("is_template"),
-            has_wiki=raw_repository.get("has_wiki"),
-            has_pages=raw_repository.get("has_pages"),
-            has_projects=raw_repository.get("has_projects"),
-            has_issues=raw_repository.get("has_issues"),
-            has_downloads=raw_repository.get("has_downloads"),
-            clone_url=raw_repository.get("clone_url"),
-            ssh_url=raw_repository.get("ssh_url"),
-            pushed_at=raw_repository.get("pushed_at"),
-            created_at=raw_repository.get("created_at"),
-            updated_at=raw_repository.get("updated_at"),
+    for repository in repositories:
+        repositories_list.append(
+            Repository(
+                name=repository.get("full_name"),
+                id=repository.get("id"),
+                node_id=repository.get("node_id"),
+                description=repository.get("description"),
+                stars=repository.get("stargazers_count"),
+                forks=repository.get("forks"),
+                watchers=repository.get("watchers"),
+                default_branch=repository.get("default_branch"),
+                language=repository.get("language"),
+                open_issues=repository.get("open_issues"),
+                homepage=repository.get("homepage"),
+                license=repository.get("license"),
+                topics=repository.get("topics"),
+                is_fork=repository.get("fork"),
+                allow_forking=repository.get("allow_forking"),
+                is_archived=repository.get("archived"),
+                is_template=repository.get("is_template"),
+                has_wiki=repository.get("has_wiki"),
+                has_pages=repository.get("has_pages"),
+                has_projects=repository.get("has_projects"),
+                has_issues=repository.get("has_issues"),
+                has_downloads=repository.get("has_downloads"),
+                clone_url=repository.get("clone_url"),
+                ssh_url=repository.get("ssh_url"),
+                pushed_at=repository.get("pushed_at"),
+                created_at=repository.get("created_at"),
+                updated_at=repository.get("updated_at"),
+            )
         )
-        repositories_list.append(repository)
     return repositories_list
 
 

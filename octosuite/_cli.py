@@ -1,3 +1,5 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
 import argparse
 import asyncio
 from datetime import datetime
@@ -8,8 +10,15 @@ from rich.pretty import pprint
 from ._utils import create_parser, log, version
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
 async def stage(args: argparse.Namespace):
+    # ---------------------------------------------------------------------------------- #
+
     from .base import OctoUser, OctoOrg, OctoRepo
+
+    # ---------------------------------------------------------------------------------- #
 
     limit: int = args.limit
 
@@ -22,6 +31,8 @@ async def stage(args: argparse.Namespace):
         repo_name=args.repo_name if hasattr(args, "repo_name") else None,
         repo_owner=args.repo_owner if hasattr(args, "repo_owner") else None,
     )
+
+    # ---------------------------------------------------------------------------------- #
 
     func_mapping: dict = {
         "user": [
@@ -73,6 +84,8 @@ async def stage(args: argparse.Namespace):
         ],
     }
 
+    # ---------------------------------------------------------------------------------- #
+
     if args.entity in func_mapping:
         async with aiohttp.ClientSession() as request_session:
             mode_action = func_mapping.get(args.entity)
@@ -90,6 +103,9 @@ async def stage(args: argparse.Namespace):
                 log.warning(
                     f"octosuite {args.entity}: missing one or more expected argument(s)."
                 )
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def run():
@@ -115,3 +131,6 @@ def run():
             log.info(f"Stopped in {datetime.now() - start_time} seconds.")
     else:
         parser.print_usage()
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

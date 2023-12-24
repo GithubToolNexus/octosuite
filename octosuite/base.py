@@ -1,4 +1,4 @@
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 import aiohttp
 
@@ -23,16 +23,16 @@ from .data import (
 )
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 class OctoUser:
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     def __init__(self, username: str):
         self.username = username
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def profile(self, session: aiohttp.ClientSession) -> User:
         user: dict = await get_profile(
@@ -62,7 +62,7 @@ class OctoUser:
                 update_at=user.get("updated_at"),
             )
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def emails(self, session: aiohttp.ClientSession) -> set[str]:
         from .api import get_data, USER_DATA_ENDPOINT
@@ -84,7 +84,7 @@ class OctoUser:
 
         return emails
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def followers(
         self, limit: int, session: aiohttp.ClientSession
@@ -98,7 +98,7 @@ class OctoUser:
 
         return process_accounts(accounts=raw_followers)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def following(
         self, limit: int, session: aiohttp.ClientSession
@@ -112,7 +112,7 @@ class OctoUser:
 
         return process_accounts(accounts=raw_followings)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def follows(self, user: str, session: aiohttp.ClientSession) -> str:
         async with session.get(
@@ -126,7 +126,7 @@ class OctoUser:
             )
             return status
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def starred(
         self, limit: int, session: aiohttp.ClientSession
@@ -137,9 +137,9 @@ class OctoUser:
             limit=limit,
             session=session,
         )
-        return process_repositories(raw_repositories=repositories)
+        return process_repositories(repositories=repositories)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def repos(
         self, limit: int, session: aiohttp.ClientSession
@@ -150,9 +150,9 @@ class OctoUser:
             limit=limit,
             session=session,
         )
-        return process_repositories(raw_repositories=repositories)
+        return process_repositories(repositories=repositories)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def orgs(
         self, limit: int, session: aiohttp.ClientSession
@@ -175,17 +175,17 @@ class OctoUser:
         return orgs_list
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 class OctoRepo:
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     def __init__(self, repo_name: str, repo_owner: str):
         self.repo_name = repo_name
         self.repo_owner = repo_owner
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def profile(self, session: aiohttp.ClientSession) -> Repository:
         repo: dict = await get_profile(
@@ -225,7 +225,7 @@ class OctoRepo:
                 updated_at=repo.get("updated_at"),
             )
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def forks(
         self, limit: int, session: aiohttp.ClientSession
@@ -237,9 +237,9 @@ class OctoRepo:
             limit=limit,
             session=session,
         )
-        return process_repositories(raw_repositories=repositories)
+        return process_repositories(repositories=repositories)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def stargazers(
         self, limit: int, session: aiohttp.ClientSession
@@ -254,7 +254,7 @@ class OctoRepo:
 
         return process_accounts(accounts=raw_stargazers)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def contributors(
         self, limit: int, session: aiohttp.ClientSession
@@ -295,14 +295,14 @@ class OctoRepo:
         return contents_lists
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 class OctoOrg:
     def __init__(self, organisation: str):
         self._organisation = organisation
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def profile(self, session: aiohttp.ClientSession) -> Organisation:
         org: dict = await get_profile(
@@ -335,7 +335,7 @@ class OctoOrg:
                 updated_at=org.get("updated_at"),
             )
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def repos(
         self, limit: int, session: aiohttp.ClientSession
@@ -346,9 +346,9 @@ class OctoOrg:
             limit=limit,
             session=session,
         )
-        return process_repositories(raw_repositories=repositories)
+        return process_repositories(repositories=repositories)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def is_member(self, user: str, session: aiohttp.ClientSession) -> str:
         async with session.get(
@@ -363,7 +363,7 @@ class OctoOrg:
 
             return status
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
 
     async def members(
         self, limit: int, session: aiohttp.ClientSession
@@ -377,4 +377,7 @@ class OctoOrg:
         if raw_members:
             return process_accounts(accounts=raw_members)
 
-    # ----------------------------------------------------------------- #
+    # ---------------------------------------------------------------------------------- #
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
