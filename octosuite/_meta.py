@@ -14,10 +14,10 @@ description = """
 # ------------------------------------------------------------------ #
 
 epilog = f"""
-# [Bellingcat](https://www.bellingcat.com)
-
-[Copyright © 2022-2024 {author}]({about_author})
+# by [{author}]({about_author})
 ```
+Copyright © 2022-2024 {author}
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -143,4 +143,28 @@ octosuite repo linux torvalds --contents kernel
 ```
 """
 
+# ------------------------------------------------------------------ #
+
+search_examples: str = """
+# Examples
+## Search Users
+```
+octosuite search QUERY --users
+```
+
+## Search Issues
+```
+octosuite search QUERY --issues
+```
+
+## Search Topics
+```
+octosuite search QUERY --topics
+```
+
+## Search Commits
+```
+octosuite search QUERY --commits
+```
+"""
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

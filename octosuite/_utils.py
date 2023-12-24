@@ -14,6 +14,7 @@ from ._meta import (
     organisation_examples,
     repository_examples,
     version,
+    search_examples,
 )
 
 
@@ -37,7 +38,12 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-l", "--limit", help="output data limit", default=100, type=int
     )
-    parser.add_argument("-v", "--version", action="version", version=version)
+    parser.add_argument(
+        "-v",
+        "--version",
+        version=f"OctoSuite CLI/Library {version}",
+        action="version",
+    )
     subparsers = parser.add_subparsers(dest="entity", help="target entity")
 
     # --------------------------------------------------------------- #
@@ -57,56 +63,56 @@ def create_parser() -> argparse.ArgumentParser:
     user_parser.add_argument(
         "-r",
         "--repos",
-        action="store_true",
         help="get user's public repositories",
+        action="store_true",
     )
     user_parser.add_argument(
         "-e",
         "--emails",
-        action="store_true",
         help="get emails from user's public PushEvents",
+        action="store_true",
     )
     user_parser.add_argument(
         "-o",
         "--orgs",
-        action="store_true",
         help="get user's public organisations (owned/belonging to)",
+        action="store_true",
     )
     user_parser.add_argument(
         "-ee",
         "--events",
-        action="store_true",
         help="get user's public events",
+        action="store_true",
     )
     user_parser.add_argument(
         "-g",
         "--gists",
-        action="store_true",
         help="get user's public gists",
+        action="store_true",
     )
     user_parser.add_argument(
         "-s",
         "--starred",
-        action="store_true",
         help="get user's starred repositories",
+        action="store_true",
     )
     user_parser.add_argument(
         "-f",
         "--followers",
-        action="store_true",
         help="get user's followers",
+        action="store_true",
     )
     user_parser.add_argument(
         "-ff",
         "--following",
-        action="store_true",
         help="get accounts followed by user",
+        action="store_true",
     )
     user_parser.add_argument(
         "-fff",
         "--follows",
-        action="store_true",
         help="check if user follows a second specified user",
+        action="store_true",
     )
     user_parser.add_argument(
         "-su",
@@ -130,26 +136,26 @@ def create_parser() -> argparse.ArgumentParser:
     org_parser.add_argument(
         "-p",
         "--profile",
-        action="store_true",
         help="get an organisation's profile",
+        action="store_true",
     )
     org_parser.add_argument(
         "-r",
         "--repos",
-        action="store_true",
         help="get an organisation's public repositories",
+        action="store_true",
     )
     org_parser.add_argument(
         "-e",
         "--events",
-        action="store_true",
         help="get an organisation's events",
+        action="store_true",
     )
     org_parser.add_argument(
         "-m",
         "--members",
-        action="store_true",
         help="get an organisation's public members",
+        action="store_true",
     )
 
     # --------------------------------------------------------------- #
@@ -167,14 +173,14 @@ def create_parser() -> argparse.ArgumentParser:
     repo_parser.add_argument(
         "-p",
         "--profile",
-        action="store_true",
         help="get a repository's data (similar to profile data)",
+        action="store_true",
     )
     repo_parser.add_argument(
         "-c",
         "--contributors",
-        action="store_true",
         help="get a repository's contributors",
+        action="store_true",
     )
     repo_parser.add_argument(
         "-cc",
@@ -184,16 +190,41 @@ def create_parser() -> argparse.ArgumentParser:
         help="get a repository's files from a specified path (const: %(const)s)",
     )
     repo_parser.add_argument(
-        "-s", "--stargazers", action="store_true", help="get a repository's stargazers"
+        "-s", "--stargazers", help="get a repository's stargazers", action="store_true"
     )
     repo_parser.add_argument(
-        "-f", "--forks", action="store_true", help="get a repository's forks"
+        "-f", "--forks", help="get a repository's forks", action="store_true"
     )
     repo_parser.add_argument(
-        "-i", "--issues", action="store_true", help="get a repository's open issues"
+        "-i", "--issues", help="get a repository's open issues", action="store_true"
     )
     repo_parser.add_argument(
-        "-r", "--releases", action="store_true", help="get a repository's releases"
+        "-r", "--releases", help="get a repository's releases", action="store_true"
+    )
+
+    # --------------------------------------------------------------- #
+
+    # Search mode
+    search_parser = subparsers.add_parser(
+        "search",
+        help="search operations",
+        description=Markdown("# Entity/Target Discovery"),
+        epilog=Markdown(search_examples),
+        formatter_class=RichHelpFormatter,
+    )
+
+    search_parser.add_argument("query", help="search query")
+    search_parser.add_argument(
+        "-u", "--users", help="search users", action="store_true"
+    )
+    search_parser.add_argument(
+        "-i", "--issues", help="search issues", action="store_true"
+    )
+    search_parser.add_argument(
+        "-t", "--topics", help="search topics", action="store_true"
+    )
+    search_parser.add_argument(
+        "-c", "--commits", help="search commits", action="store_true"
     )
     return parser
 
