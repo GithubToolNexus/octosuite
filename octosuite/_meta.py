@@ -81,6 +81,11 @@ octosuite user torvalds --followers
 ```
 octosuite user torvalds --following
 ```
+
+## Check If Target Follows The Specified User
+```
+octosuite user wang920509 --follows torvalds
+```
 """
 
 # ------------------------------------------------------------------ #
@@ -105,6 +110,11 @@ octosuite org github --events
 ## Get an Organisation's Public Members
 ```
 octosuite org github --members
+```
+
+## CHeck If User Is a Public Member of the Target Organisation
+```
+octosuite org DROPCitizenShip --is-member torvalds
 ```
 """
 

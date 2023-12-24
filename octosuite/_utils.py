@@ -111,14 +111,8 @@ def create_parser() -> argparse.ArgumentParser:
     user_parser.add_argument(
         "-fff",
         "--follows",
-        help="check if user follows a second specified user",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-su",
-        "--secondary-username",
-        dest="secondary_username",
-        help="secondary user (used with the -fff/--follows flag)",
+        help="check if target follows the second specified user",
+        type=str,
     )
 
     # --------------------------------------------------------------- #
@@ -153,6 +147,13 @@ def create_parser() -> argparse.ArgumentParser:
     )
     org_parser.add_argument(
         "-m",
+        "--is-member",
+        dest="is_member",
+        help="check if the specified user is a public member of the target organisation",
+        type=str,
+    )
+    org_parser.add_argument(
+        "-mm",
         "--members",
         help="get an organisation's public members",
         action="store_true",

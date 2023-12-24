@@ -9,6 +9,7 @@ from .api import (
     get_repositories,
     USER_DATA_ENDPOINT,
     REPOS_DATA_ENDPOINT,
+    ORGS_DATA_ENDPOINT,
 )
 from .data import (
     Account,
@@ -110,6 +111,20 @@ class OctoUser:
         )
 
         return process_accounts(accounts=raw_followings)
+
+    # ----------------------------------------------------------------- #
+
+    async def follows(self, user: str, session: aiohttp.ClientSession) -> str:
+        async with session.get(
+            f"{USER_DATA_ENDPOINT}/{self.username}/following/{user}"
+        ) as response:
+            status: str = (
+                f"Target (@{self.username}) FOLLOWS user (@{user})."
+                if response.status == 204
+                else f"Target (@{self.username}) DOES NOT follow user (@{user}). "
+                f"Also, check if one of or both provided usernames are valid."
+            )
+            return status
 
     # ----------------------------------------------------------------- #
 
@@ -335,6 +350,21 @@ class OctoOrg:
 
     # ----------------------------------------------------------------- #
 
+    async def is_member(self, user: str, session: aiohttp.ClientSession) -> str:
+        async with session.get(
+            f"{ORGS_DATA_ENDPOINT}/{self._organisation}/members/{user}"
+        ) as response:
+            status: str = (
+                f"User (@{user}) IS a public member of the organisation (@{self._organisation})."
+                if response.status == 204
+                else f"User (@{user}) IS NOT a public member of the organisation (@{self._organisation}). "
+                f"Also, check if the provided user and organisation names are valid."
+            )
+
+            return status
+
+    # ----------------------------------------------------------------- #
+
     async def members(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
@@ -346,3 +376,5 @@ class OctoOrg:
         )
         if raw_members:
             return process_accounts(accounts=raw_members)
+
+    # ----------------------------------------------------------------- #

@@ -30,6 +30,13 @@ async def stage(args: argparse.Namespace):
             ("profile", lambda session: user.profile(session=session)),
             ("repos", lambda session: user.repos(limit=limit, session=session)),
             ("starred", lambda session: user.starred(limit=limit, session=session)),
+            (
+                "follows",
+                lambda session: user.follows(
+                    user=args.follows if hasattr(args, "follows") else None,
+                    session=session,
+                ),
+            ),
             ("followers", lambda session: user.followers(limit=limit, session=session)),
             ("following", lambda session: user.following(limit=limit, session=session)),
         ],
@@ -55,6 +62,13 @@ async def stage(args: argparse.Namespace):
         "org": [
             ("profile", lambda session: org.profile(session=session)),
             ("repos", lambda session: org.repos(limit=limit, session=session)),
+            (
+                "is_member",
+                lambda session: org.is_member(
+                    user=args.is_member if hasattr(args, "is_member") else None,
+                    session=session,
+                ),
+            ),
             ("members", lambda session: org.members(limit=limit, session=session)),
         ],
     }
