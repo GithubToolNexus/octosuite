@@ -2,9 +2,9 @@
 
 import aiohttp
 
-from ._api import (
+from .api import (
     get_data,
-    get_users,
+    get_accounts,
     get_profile,
     get_repositories,
     USER_DATA_ENDPOINT,
@@ -35,7 +35,7 @@ class OctoUser:
 
     async def profile(self, session: aiohttp.ClientSession) -> User:
         user: dict = await get_profile(
-            source=self.username, source_type="user", session=session
+            profile_source=self.username, profile_type="user", session=session
         )
         if "node_id" in user:
             return User(
@@ -64,7 +64,7 @@ class OctoUser:
     # ----------------------------------------------------------------- #
 
     async def emails(self, session: aiohttp.ClientSession) -> set[str]:
-        from ._api import get_data, USER_DATA_ENDPOINT
+        from .api import get_data, USER_DATA_ENDPOINT
 
         events = await get_data(
             endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/events", session=session
@@ -88,9 +88,9 @@ class OctoUser:
     async def followers(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
-        raw_followers: list = await get_users(
-            source_type="user_followers",
-            users_source=self.username,
+        raw_followers: list = await get_accounts(
+            accounts_type="user_followers",
+            accounts_source=self.username,
             limit=limit,
             session=session,
         )
@@ -102,9 +102,9 @@ class OctoUser:
     async def following(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
-        raw_followings: list = await get_users(
-            source_type="user_followings",
-            users_source=self.username,
+        raw_followings: list = await get_accounts(
+            accounts_type="user_followings",
+            accounts_source=self.username,
             limit=limit,
             session=session,
         )
@@ -117,7 +117,7 @@ class OctoUser:
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
         repositories: list = await get_repositories(
-            source=self.username,
+            repos_source=self.username,
             repos_type="user_starred",
             limit=limit,
             session=session,
@@ -130,7 +130,7 @@ class OctoUser:
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
         repositories: list = await get_repositories(
-            source=self.username,
+            repos_source=self.username,
             repos_type="user_repos",
             limit=limit,
             session=session,
@@ -174,15 +174,16 @@ class OctoRepo:
 
     async def profile(self, session: aiohttp.ClientSession) -> Repository:
         repo: dict = await get_profile(
-            source=self.repo_owner,
+            profile_source=self.repo_owner,
             additional_source=self.repo_name,
-            source_type="repo",
+            profile_type="repository",
             session=session,
         )
         if "node_id" in repo:
             return Repository(
                 name=repo.get("full_name"),
                 id=repo.get("id"),
+                node_id=repo.get("node_id"),
                 description=repo.get("description"),
                 stars=repo.get("stargazers_count"),
                 forks=repo.get("forks"),
@@ -215,7 +216,7 @@ class OctoRepo:
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
         repositories: list = await get_repositories(
-            source=self.repo_owner,
+            repos_source=self.repo_owner,
             additional_source=self.repo_name,
             repos_type="repo_forks",
             limit=limit,
@@ -228,10 +229,10 @@ class OctoRepo:
     async def stargazers(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
-        raw_stargazers: list = await get_users(
-            users_source=self.repo_owner,
+        raw_stargazers: list = await get_accounts(
+            accounts_source=self.repo_owner,
             additional_source=self.repo_name,
-            source_type="repo_stargazers",
+            accounts_type="repo_stargazers",
             limit=limit,
             session=session,
         )
@@ -243,10 +244,10 @@ class OctoRepo:
     async def contributors(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
-        raw_contributors: list = await get_users(
-            users_source=self.repo_owner,
+        raw_contributors: list = await get_accounts(
+            accounts_source=self.repo_owner,
             additional_source=self.repo_name,
-            source_type="repo_contributors",
+            accounts_type="repo_contributors",
             limit=limit,
             session=session,
         )
@@ -290,7 +291,9 @@ class OctoOrg:
 
     async def profile(self, session: aiohttp.ClientSession) -> Organisation:
         org: dict = await get_profile(
-            source_type="org", source=self._organisation, session=session
+            profile_type="organisation",
+            profile_source=self._organisation,
+            session=session,
         )
         if "node_id" in org:
             return Organisation(
@@ -323,7 +326,7 @@ class OctoOrg:
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
         repositories: list = await get_repositories(
-            source=self._organisation,
+            repos_source=self._organisation,
             repos_type="org_repos",
             limit=limit,
             session=session,
@@ -335,9 +338,9 @@ class OctoOrg:
     async def members(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
-        raw_members: list = await get_users(
-            users_source=self._organisation,
-            source_type="org_members",
+        raw_members: list = await get_accounts(
+            accounts_source=self._organisation,
+            accounts_type="org_members",
             limit=limit,
             session=session,
         )

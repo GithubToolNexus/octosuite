@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class Account:
     username: str
-    id: str
+    id: int
     node_id: str
     gravatar_id: str
     avatar_url: str
@@ -19,7 +19,7 @@ class User:
     username: str
     twitter_x_username: str
     avatar_url: str
-    id: str
+    id: int
     node_id: str
     email: str
     bio: str
@@ -40,7 +40,7 @@ class User:
 @dataclass
 class UserOrg:
     login: str
-    id: str
+    id: int
     node_id: str
     about: str
 
@@ -49,7 +49,7 @@ class UserOrg:
 class Organisation:
     name: str
     login: str
-    id: str
+    id: int
     node_id: str
     avatar_url: str
     email: str
@@ -83,8 +83,9 @@ class Content:
 @dataclass
 class Repository:
     name: str
-    id: str
     description: str
+    id: int
+    node_id: str
     stars: int
     forks: int
     watchers: int
