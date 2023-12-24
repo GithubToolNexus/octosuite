@@ -31,4 +31,4 @@ rich = "*"
 rich-argparse = "*"
 
 [tool.poetry.scripts]
-octosuite = "octosuite.octosuite:on_call"
+octosuite = "octosuite._cli:run"
