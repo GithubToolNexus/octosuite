@@ -4,7 +4,7 @@ from typing import Union, Literal
 
 import aiohttp
 
-from ._utils import log
+from ._coreutils import log
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
@@ -12,6 +12,9 @@ GITHUB_API_ENDPOINT: str = "https://api.github.com"
 ORGS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/orgs"
 REPOS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/repos"
 USER_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/users"
+
+# pypi_project_endpoint: str = "https://pypi.org/project/octosuite"
+
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
@@ -124,7 +127,7 @@ async def get_profile(
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-async def get_repositories(
+async def get_repos(
     limit: int,
     repos_source: str,
     session: aiohttp.ClientSession,

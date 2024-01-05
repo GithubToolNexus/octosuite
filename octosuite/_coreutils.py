@@ -7,14 +7,14 @@ from rich.logging import RichHandler
 from rich.markdown import Markdown
 from rich_argparse import RichHelpFormatter
 
-from ._meta import (
-    description,
-    epilog,
-    user_examples,
-    organisation_examples,
-    repository_examples,
-    version,
-    search_examples,
+from .docs import (
+    DESCRIPTION,
+    EPILOG,
+    USER_EXAMPLES,
+    ORG_EXAMPLES,
+    REPO_EXAMPLES,
+    SEARCH_EXAMPLES,
+    VERSION,
 )
 
 
@@ -31,8 +31,8 @@ def create_parser() -> argparse.ArgumentParser:
     # --------------------------------------------------------------- #
 
     parser = argparse.ArgumentParser(
-        description=Markdown(description, style="argparse.text"),
-        epilog=Markdown(epilog, style="argparse.text"),
+        description=Markdown(DESCRIPTION, style="argparse.text"),
+        epilog=Markdown(EPILOG, style="argparse.text"),
         formatter_class=RichHelpFormatter,
     )
     parser.add_argument("-d", "--debug", help="enable debug mode", action="store_true")
@@ -41,8 +41,8 @@ def create_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "-v",
-        "--version",
-        version=f"OctoSuite CLI/Library {version}",
+        "--VERSION",
+        version=f"OctoSuite CLI/Library {VERSION}",
         action="version",
     )
     subparsers = parser.add_subparsers(dest="entity", help="target entity")
@@ -54,7 +54,7 @@ def create_parser() -> argparse.ArgumentParser:
         "user",
         help="user operations",
         description=Markdown("# User Investigation"),
-        epilog=Markdown(user_examples),
+        epilog=Markdown(USER_EXAMPLES),
         formatter_class=RichHelpFormatter,
     )
     user_parser.add_argument("username", help="username to query")
@@ -123,7 +123,7 @@ def create_parser() -> argparse.ArgumentParser:
         "org",
         help="organisation operations",
         description=Markdown("# Organisation Investigation"),
-        epilog=Markdown(organisation_examples),
+        epilog=Markdown(ORG_EXAMPLES),
         formatter_class=RichHelpFormatter,
     )
     org_parser.add_argument("organisation", help="organisation to query")
@@ -167,7 +167,7 @@ def create_parser() -> argparse.ArgumentParser:
         "repo",
         help="repository operations",
         description=Markdown("# Repository Investigation"),
-        epilog=Markdown(repository_examples),
+        epilog=Markdown(REPO_EXAMPLES),
         formatter_class=RichHelpFormatter,
     )
     repo_parser.add_argument("repo_name", help="repository name to query")
@@ -211,7 +211,7 @@ def create_parser() -> argparse.ArgumentParser:
         "search",
         help="search operations",
         description=Markdown("# Entity/Target Discovery"),
-        epilog=Markdown(search_examples),
+        epilog=Markdown(SEARCH_EXAMPLES),
         formatter_class=RichHelpFormatter,
     )
 
@@ -249,11 +249,12 @@ def setup_logging(enable_debug: bool) -> logging.getLogger:
                 markup=True,
                 log_time_format="%I:%M:%S%p",
                 show_level=enable_debug,
+                show_time=enable_debug,
                 rich_tracebacks=True,
             )
         ],
     )
-    return logging.getLogger(f"OctoSuite")
+    return logging.getLogger(f"OctoSuite CLI")
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

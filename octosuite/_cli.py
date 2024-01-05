@@ -7,7 +7,7 @@ from datetime import datetime
 import aiohttp
 from rich.pretty import pprint
 
-from ._utils import create_parser, log, version
+from ._coreutils import create_parser, log, VERSION
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -121,7 +121,7 @@ def run():
     )
     if args.entity:
         log.info(
-            f"OctoSuite {version} started at {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}..."
+            f"[bold]OctoSuite[/] {VERSION} started at {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}..."
         )
         try:
             asyncio.run(stage(args=args))

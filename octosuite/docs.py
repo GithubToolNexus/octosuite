@@ -1,20 +1,29 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
-author = "Richard Mwewa"
-about_author = "https://rly0nheart.github.io"
-version = "4.0.0.0"
-pypi_project_endpoint: str = "https://pypi.org/project/octosuite"
+from datetime import date
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
-description = f"""
-# OctoSuite CLI {version}
+AUTHOR: str = "Richard Mwewa"
+ABOUT_AUTHOR: str = "https://rly0nheart.github.io"
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+_MAJOR: str = "4"
+_MINOR: str = "0"
+_PATCH: str = "0"
+VERSION: str = f"{_MAJOR}.{_MINOR}"
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+DESCRIPTION: str = f"""
+# OctoSuite CLI {VERSION}
 > An **All-In-One** framework for gathering **OSINT** on GitHub entities."""
 
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------- #
 
-epilog = f"""
-# Copyright © 2022-2024 [{author}]({about_author})
+EPILOG: str = f"""
+# Copyright © {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR})
 
 ```
 GNU General Public License v3 (GPLv3)
@@ -28,9 +37,9 @@ You should have received a copy of the GNU General Public License along with Oct
 ```
 """
 
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------- #
 
-user_examples = """
+USER_EXAMPLES: str = """
 # Examples
 ## Get a User's Profile
 ```
@@ -88,9 +97,9 @@ octosuite user wang920509 --follows torvalds
 ```
 """
 
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------- #
 
-organisation_examples = """
+ORG_EXAMPLES: str = """
 # Examples
 ## Get an Organisation's Profile
 ```
@@ -118,9 +127,9 @@ octosuite org DROPCitizenShip --is-member torvalds
 ```
 """
 
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------- #
 
-repository_examples = """
+REPO_EXAMPLES: str = """
 # Examples
 ## Get a Repository's profile
 ```
@@ -148,9 +157,9 @@ octosuite repo linux torvalds --contents kernel
 ```
 """
 
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------- #
 
-search_examples: str = """
+SEARCH_EXAMPLES: str = """
 # Examples
 ## Search Users
 ```
@@ -172,4 +181,5 @@ octosuite search QUERY --topics
 octosuite search QUERY --commits
 ```
 """
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

@@ -2,14 +2,14 @@
 
 import aiohttp
 
-from .api import (
+from ._api import (
     get_data,
     get_accounts,
     get_profile,
-    get_repositories,
-    USER_DATA_ENDPOINT,
+    get_repos,
     REPOS_DATA_ENDPOINT,
     ORGS_DATA_ENDPOINT,
+    USER_DATA_ENDPOINT,
 )
 from .data import (
     Account,
@@ -65,8 +65,6 @@ class OctoUser:
     # ---------------------------------------------------------------------------------- #
 
     async def emails(self, session: aiohttp.ClientSession) -> set[str]:
-        from .api import get_data, USER_DATA_ENDPOINT
-
         events = await get_data(
             endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/events", session=session
         )
@@ -131,7 +129,7 @@ class OctoUser:
     async def starred(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
-        repositories: list = await get_repositories(
+        repositories: list = await get_repos(
             repos_source=self.username,
             repos_type="user_starred",
             limit=limit,
@@ -144,7 +142,7 @@ class OctoUser:
     async def repos(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
-        repositories: list = await get_repositories(
+        repositories: list = await get_repos(
             repos_source=self.username,
             repos_type="user_repos",
             limit=limit,
@@ -230,7 +228,7 @@ class OctoRepo:
     async def forks(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
-        repositories: list = await get_repositories(
+        repositories: list = await get_repos(
             repos_source=self.repo_owner,
             additional_source=self.repo_name,
             repos_type="repo_forks",
@@ -340,7 +338,7 @@ class OctoOrg:
     async def repos(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
-        repositories: list = await get_repositories(
+        repositories: list = await get_repos(
             repos_source=self._organisation,
             repos_type="org_repos",
             limit=limit,

@@ -19,7 +19,7 @@ from conftest import (
     TEST_REPOSITORY_CREATION_DATE,
     TEST_ORGANISATION_TYPE,
 )
-from octosuite.api import get_profile, get_accounts
+from octosuite._api import get_profile, get_accounts
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
