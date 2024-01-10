@@ -1,264 +1,130 @@
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
-import argparse
-import logging
+import os
+from typing import Union
 
-from rich.logging import RichHandler
-from rich.markdown import Markdown
-from rich_argparse import RichHelpFormatter
+import pandas as pd
+from rich.console import Console
 
-from .docs import (
-    DESCRIPTION,
-    EPILOG,
-    USER_EXAMPLES,
-    ORG_EXAMPLES,
-    REPO_EXAMPLES,
-    SEARCH_EXAMPLES,
-    VERSION,
-)
+from .data import Account, User, Organisation, Repository, Event, UserOrg
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def create_parser() -> argparse.ArgumentParser:
+def dataframe(
+    data: Union[
+        str,
+        dict,
+        list,
+        list[Union[Account, UserOrg, Repository, Event]],
+        User,
+        Repository,
+        Organisation,
+    ],
+    save_csv: str = None,
+    save_json: str = None,
+    to_dir: str = None,
+):
     """
-    Creates and configures an argument parser for the command line arguments.
+    Converts and prints provided data into a pandas DataFrame and optionally saves it as JSON or CSV file.
 
-    :return: A configured argparse.ArgumentParser object ready to parse the command line arguments.
-    :rtype: argparse.ArgumentParser
+    :param data: Data to be converted. Can be a single object (Community, User, WikiPage),
+                 a dictionary, or a list of objects (Comment, Community, Post, PreviewCommunity, User).
+    :type data: Union[Community, Dict, User, WikiPage, List[Union[Comment, Community, Post, PreviewCommunity, User]]]
+    :param save_csv: Optional. If provided, saves the DataFrame as a CSV file. Can be a boolean
+                     (True for default naming) or a string (specific file name).
+    :type save_csv: str
+    :param save_json: Optional. If provided, saves the DataFrame as a JSON file. Can be a boolean
+                      (True for default naming) or a string (specific file name).
+    :type save_json: str
+    :param to_dir: Directory path where the JSON/CSV file, will be stored (if saved).
+    :type to_dir: str
+    :return: A pandas DataFrame constructed from the provided data. Excludes any 'raw_data'
+             column from the dataframe.
+    :rtype: pd.DataFrame
+
+    Note
+    ----
+        This function internally converts User, Community, and WikiPage objects into a
+        list of dictionaries before DataFrame creation.
+        For lists containing Comment, Community, Post, PreviewCommunity and User objects,
+        each object is converted to its dictionary representation.
     """
-    # --------------------------------------------------------------- #
+    from rich import print
 
-    parser = argparse.ArgumentParser(
-        description=Markdown(DESCRIPTION, style="argparse.text"),
-        epilog=Markdown(EPILOG, style="argparse.text"),
-        formatter_class=RichHelpFormatter,
-    )
-    parser.add_argument("-d", "--debug", help="enable debug mode", action="store_true")
-    parser.add_argument(
-        "-l", "--limit", help="output data limit", default=100, type=int
-    )
-    parser.add_argument(
-        "-v",
-        "--VERSION",
-        version=f"OctoSuite CLI/Library {VERSION}",
-        action="version",
-    )
-    subparsers = parser.add_subparsers(dest="entity", help="target entity")
+    # ---------------------------------------------------------------------------------- #
 
-    # --------------------------------------------------------------- #
-
-    # User mode
-    user_parser = subparsers.add_parser(
-        "user",
-        help="user operations",
-        description=Markdown("# User Investigation"),
-        epilog=Markdown(USER_EXAMPLES),
-        formatter_class=RichHelpFormatter,
-    )
-    user_parser.add_argument("username", help="username to query")
-    user_parser.add_argument(
-        "-p", "--profile", help="get a user's profile.", action="store_true"
-    )
-    user_parser.add_argument(
-        "-r",
-        "--repos",
-        help="get user's public repositories",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-e",
-        "--emails",
-        help="get emails from user's public PushEvents",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-o",
-        "--orgs",
-        help="get user's public organisations (owned/belonging to)",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-ee",
-        "--events",
-        help="get user's public events",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-g",
-        "--gists",
-        help="get user's public gists",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-s",
-        "--starred",
-        help="get user's starred repositories",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-f",
-        "--followers",
-        help="get user's followers",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-ff",
-        "--following",
-        help="get accounts followed by user",
-        action="store_true",
-    )
-    user_parser.add_argument(
-        "-fff",
-        "--follows",
-        help="check if target follows the second specified user",
-        type=str,
-    )
-
-    # --------------------------------------------------------------- #
-
-    # Org mode
-    org_parser = subparsers.add_parser(
-        "org",
-        help="organisation operations",
-        description=Markdown("# Organisation Investigation"),
-        epilog=Markdown(ORG_EXAMPLES),
-        formatter_class=RichHelpFormatter,
-    )
-    org_parser.add_argument("organisation", help="organisation to query")
-
-    org_parser.add_argument(
-        "-p",
-        "--profile",
-        help="get an organisation's profile",
-        action="store_true",
-    )
-    org_parser.add_argument(
-        "-r",
-        "--repos",
-        help="get an organisation's public repositories",
-        action="store_true",
-    )
-    org_parser.add_argument(
-        "-e",
-        "--events",
-        help="get an organisation's events",
-        action="store_true",
-    )
-    org_parser.add_argument(
-        "-m",
-        "--is-member",
-        dest="is_member",
-        help="check if the specified user is a public member of the target organisation",
-        type=str,
-    )
-    org_parser.add_argument(
-        "-mm",
-        "--members",
-        help="get an organisation's public members",
-        action="store_true",
-    )
-
-    # --------------------------------------------------------------- #
-
-    # Repo mode
-    repo_parser = subparsers.add_parser(
-        "repo",
-        help="repository operations",
-        description=Markdown("# Repository Investigation"),
-        epilog=Markdown(REPO_EXAMPLES),
-        formatter_class=RichHelpFormatter,
-    )
-    repo_parser.add_argument("repo_name", help="repository name to query")
-    repo_parser.add_argument("repo_owner", help="repository owner username")
-    repo_parser.add_argument(
-        "-p",
-        "--profile",
-        help="get a repository's data (similar to profile data)",
-        action="store_true",
-    )
-    repo_parser.add_argument(
-        "-c",
-        "--contributors",
-        help="get a repository's contributors",
-        action="store_true",
-    )
-    repo_parser.add_argument(
-        "-cc",
-        "--contents",
-        nargs="?",
-        const="/",
-        help="get a repository's files from a specified path (const: %(const)s)",
-    )
-    repo_parser.add_argument(
-        "-s", "--stargazers", help="get a repository's stargazers", action="store_true"
-    )
-    repo_parser.add_argument(
-        "-f", "--forks", help="get a repository's forks", action="store_true"
-    )
-    repo_parser.add_argument(
-        "-i", "--issues", help="get a repository's open issues", action="store_true"
-    )
-    repo_parser.add_argument(
-        "-r", "--releases", help="get a repository's releases", action="store_true"
-    )
-
-    # --------------------------------------------------------------- #
-
-    # Search mode
-    search_parser = subparsers.add_parser(
-        "search",
-        help="search operations",
-        description=Markdown("# Entity/Target Discovery"),
-        epilog=Markdown(SEARCH_EXAMPLES),
-        formatter_class=RichHelpFormatter,
-    )
-
-    search_parser.add_argument("query", help="search query")
-    search_parser.add_argument(
-        "-u", "--users", help="search users", action="store_true"
-    )
-    search_parser.add_argument(
-        "-i", "--issues", help="search issues", action="store_true"
-    )
-    search_parser.add_argument(
-        "-t", "--topics", help="search topics", action="store_true"
-    )
-    search_parser.add_argument(
-        "-c", "--commits", help="search commits", action="store_true"
-    )
-    return parser
-
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
-def setup_logging(enable_debug: bool) -> logging.getLogger:
-    """
-    Configure and return a logging object with the specified log level.
-
-    :param enable_debug: A boolean value indicating whether debug mode should be enabled or not.
-    :return: A logging object configured with the specified log level.
-    """
-    logging.basicConfig(
-        level="NOTSET" if enable_debug else "INFO",
-        format="%(message)s",
-        handlers=[
-            RichHandler(
-                markup=True,
-                log_time_format="%I:%M:%S%p",
-                show_level=enable_debug,
-                show_time=enable_debug,
-                rich_tracebacks=True,
+    def save_dataframe():
+        """
+        Saves a pandas DataFrame to JSON and/or CSV files.
+        """
+        if save_csv:
+            csv_filename = f"{save_csv.upper()}.csv"
+            csv_filepath = os.path.join(to_dir, "csv", csv_filename)
+            df.to_csv(csv_filepath, index=False)
+            console.log(
+                f"{os.path.getsize(csv_filepath)} bytes written to [link file://{csv_filepath}]{csv_filepath}"
             )
-        ],
-    )
-    return logging.getLogger(f"OctoSuite CLI")
+
+        if save_json:
+            json_filename = f"{save_json.upper()}.json"
+            json_filepath = os.path.join(to_dir, "json", json_filename)
+            df.to_json(json_filepath, orient="records", lines=True, indent=4)
+            console.log(
+                f"{os.path.getsize(json_filepath)} bytes written to [link file://{json_filepath}]{json_filepath}"
+            )
+
+    # ---------------------------------------------------------------------------------- #
+
+    if isinstance(data, (User, Repository, Organisation)):
+        # Transform each attribute of the object into a dictionary entry
+        data = [{"key": key, "value": value} for key, value in data.__dict__.items()]
+
+    elif isinstance(data, list) and all(
+        isinstance(item, (Account, Event, Repository, UserOrg)) for item in data
+    ):
+        # Each object in the list is converted to its dictionary representation
+        data = [item.__dict__ for item in data]
+
+    # If data is already a dictionary or a list, use it directly for DataFrame creation
+    elif isinstance(data, (dict, list)):
+        # No transformation needed; the data is ready for DataFrame creation
+        pass
+
+    elif isinstance(data, str):
+        console.log(data)
+
+    if data is not str:
+        # Set pandas display option to show all rows
+        pd.set_option("display.max_rows", None)
+
+        # Create a DataFrame from the processed data
+        df = pd.DataFrame(data)
+
+        # Save the DataFrame to CSV or JSON if specified
+        save_dataframe()
+
+        # Print the DataFrame, excluding the 'raw_data' column if it exists
+        print(df.loc[:, df.columns != "raw_data"])
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
-log = setup_logging(enable_debug=create_parser().parse_args().debug)
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+def pathfinder(directories: list[str]):
+    """
+    Creates directories in knewkarma-data directory of the user's home folder.
+
+    :param directories: A list of file directories to create.
+    :type directories: list[str]
+    """
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+console = Console(color_system="auto", log_time_format="[%I:%M:%S%p]")
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

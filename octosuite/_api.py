@@ -1,22 +1,24 @@
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 from typing import Union, Literal
 
 import aiohttp
+import rich
+from rich.markdown import Markdown
 
-from ._coreutils import log
+from ._coreutils import console
+from .docs import Version
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 GITHUB_API_ENDPOINT: str = "https://api.github.com"
 ORGS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/orgs"
 REPOS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/repos"
 USER_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/users"
+RELEASE_ENDPOINT: str = f"{REPOS_DATA_ENDPOINT}/bellingcat/octosuite/releases/latest"
 
-# pypi_project_endpoint: str = "https://pypi.org/project/octosuite"
 
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_data(session: aiohttp.ClientSession, endpoint: str) -> Union[dict, list]:
@@ -38,18 +40,18 @@ async def get_data(session: aiohttp.ClientSession, endpoint: str) -> Union[dict,
                 return await response.json()
             else:
                 error_message = await response.json()
-                log.error(f"An API error occurred: {error_message}")
+                console.log(f"An API error occurred: {error_message}")
                 return {}
 
     except aiohttp.ClientConnectionError as error:
-        log.error(f"An HTTP error occurred: [red]{error}[/]")
+        console.log(f"An HTTP error occurred: [red]{error}[/]")
         return {}
     except Exception as error:
-        log.critical(f"An unknown error occurred: [red]{error}[/]")
+        console.log(f"An unknown error occurred: [red]{error}[/]")
         return {}
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def process_response(
@@ -79,12 +81,61 @@ def process_response(
     elif isinstance(response_data, list):
         return response_data if response_data else []
     else:
-        log.critical(
+        console.log(
             f"Unknown data type ({response_data}: {type(response_data)}), expected a list or dict."
         )
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+async def get_updates(session: aiohttp.ClientSession):
+    """
+    Asynchronously gets and compares the current program version with the remote version.
+
+    Assumes version format: major.minor.patch.prefix
+
+    :param session: aiohttp session to use for the request.
+    :type session: aiohttp.ClientSession
+    """
+    # Make a GET request to PyPI to get the project's latest release.
+    response: dict = await get_data(endpoint=RELEASE_ENDPOINT, session=session)
+    release: dict = process_response(response_data=response, valid_key="tag_name")
+
+    if release:
+        remote_version: str = release.get("tag_name")
+        markup_release_notes: str = release.get("body")
+        markdown_release_notes = Markdown(markup=markup_release_notes)
+
+        # Splitting the version strings into components
+        remote_parts: list = remote_version.split(".")
+
+        update_message: str = f"%s update ({remote_version}) available"
+
+        # ------------------------------------------------------------------------- #
+
+        # Check for differences in version parts
+        if remote_parts[0] != Version.major:
+            update_message = update_message % "MAJOR"
+
+        # ------------------------------------------------------------------------- #
+
+        elif remote_parts[1] != Version.minor:
+            update_message = update_message % "MINOR"
+
+        # ------------------------------------------------------------------------- #
+
+        elif remote_parts[2] != Version.patch:
+            update_message = update_message % "PATCH"
+
+        # ------------------------------------------------------------------------- #
+
+        if update_message:
+            console.log(update_message)
+            rich.print(markdown_release_notes)
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_profile(
@@ -124,7 +175,7 @@ async def get_profile(
     return process_response(response_data=profile_data, valid_key="created_at")
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_repos(
@@ -168,7 +219,7 @@ async def get_repos(
     return process_response(response_data=repositories)
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_accounts(
@@ -219,4 +270,25 @@ async def get_accounts(
     return process_response(response_data=accounts)
 
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+async def get_events(
+    limit: int,
+    events_type: Literal["user", "org"],
+    events_source: str,
+    session: aiohttp.ClientSession,
+) -> list[dict]:
+    events_mapping: dict = {
+        "user": f"{USER_DATA_ENDPOINT}/{events_source}/events",
+        "org": f"{ORGS_DATA_ENDPOINT}/{events_source}/events",
+    }
+
+    events_endpoint: str = events_mapping.get(events_type)
+    events_endpoint += f"?per_page={limit}"
+
+    if not events_endpoint:
+        raise ValueError(f"Invalid events type in {events_mapping}: {events_type}")
+
+    events: list = await get_data(endpoint=events_endpoint, session=session)
+    return process_response(response_data=events)
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

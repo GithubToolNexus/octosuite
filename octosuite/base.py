@@ -10,16 +10,17 @@ from ._api import (
     REPOS_DATA_ENDPOINT,
     ORGS_DATA_ENDPOINT,
     USER_DATA_ENDPOINT,
+    get_events,
 )
+from ._parsers import parse_repos, parse_events, parse_accounts
 from .data import (
     Account,
-    process_repositories,
     Repository,
     User,
-    process_accounts,
     Organisation,
     UserOrg,
     Content,
+    Event,
 )
 
 
@@ -94,7 +95,7 @@ class OctoUser:
             session=session,
         )
 
-        return process_accounts(accounts=raw_followers)
+        return parse_accounts(accounts=raw_followers)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -108,7 +109,7 @@ class OctoUser:
             session=session,
         )
 
-        return process_accounts(accounts=raw_followings)
+        return parse_accounts(accounts=raw_followings)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -135,7 +136,7 @@ class OctoUser:
             limit=limit,
             session=session,
         )
-        return process_repositories(repositories=repositories)
+        return parse_repos(repos=repositories)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -148,7 +149,17 @@ class OctoUser:
             limit=limit,
             session=session,
         )
-        return process_repositories(repositories=repositories)
+        return parse_repos(repos=repositories)
+
+    async def events(self, limit: int, session: aiohttp.ClientSession) -> list[Event]:
+        user_events: list = await get_events(
+            limit=limit,
+            events_type="user",
+            events_source=self.username,
+            session=session,
+        )
+
+        return parse_events(events=user_events)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -235,7 +246,7 @@ class OctoRepo:
             limit=limit,
             session=session,
         )
-        return process_repositories(repositories=repositories)
+        return parse_repos(repos=repositories)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -250,7 +261,7 @@ class OctoRepo:
             session=session,
         )
 
-        return process_accounts(accounts=raw_stargazers)
+        return parse_accounts(accounts=raw_stargazers)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -265,7 +276,7 @@ class OctoRepo:
             session=session,
         )
 
-        return process_accounts(accounts=raw_contributors)
+        return parse_accounts(accounts=raw_contributors)
 
     async def contents(
         self, session: aiohttp.ClientSession, path: str = "/"
@@ -344,7 +355,7 @@ class OctoOrg:
             limit=limit,
             session=session,
         )
-        return process_repositories(repositories=repositories)
+        return parse_repos(repos=repositories)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -373,7 +384,7 @@ class OctoOrg:
             session=session,
         )
         if raw_members:
-            return process_accounts(accounts=raw_members)
+            return parse_accounts(accounts=raw_members)
 
     # ---------------------------------------------------------------------------------- #
 
