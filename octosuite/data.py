@@ -6,6 +6,20 @@ from dataclasses import dataclass
 
 
 @dataclass
+class Gist:
+    description: str
+    files: dict
+    comments: int
+    id: str
+    node_id: str
+    created_at: str
+    updated_at: str
+
+
+# -------------------------------------------------------------------------------------- #
+
+
+@dataclass
 class Event:
     type: str
     repository: str

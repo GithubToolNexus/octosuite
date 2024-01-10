@@ -1,4 +1,90 @@
-from octosuite.data import Event, Account, Repository
+from typing import Union, Literal
+
+from octosuite.data import Event, Account, Repository, User, Organisation, Gist
+
+
+def parse_profile(
+    profile: dict, profile_type: Literal["user", "org", "repo"]
+) -> Union[User, Organisation, Repository]:
+    type_mapping: dict = {
+        "user": User(
+            name=profile.get("name"),
+            username=profile.get("login"),
+            bio=profile.get("bio"),
+            email=profile.get("email"),
+            id=profile.get("id"),
+            node_id=profile.get("node_id"),
+            avatar_url=profile.get("avatar_url"),
+            blog=profile.get("blog"),
+            location=profile.get("location"),
+            followers=profile.get("followers"),
+            following=profile.get("following"),
+            twitter_x_username=profile.get("twitter_username"),
+            public_gists=profile.get("public_gists"),
+            public_repositories=profile.get("public_repos"),
+            organisation=profile.get("company"),
+            is_open_to_work=profile.get("hireable"),
+            is_site_admin=profile.get("site_admin"),
+            profile_url=profile.get("html_url"),
+            joined_at=profile.get("created_at"),
+            update_at=profile.get("updated_at"),
+        ),
+        "org": Organisation(
+            name=profile.get("name"),
+            login=profile.get("login"),
+            id=profile.get("id"),
+            node_id=profile.get("node_id"),
+            avatar_url=profile.get("avatar_url"),
+            email=profile.get("email"),
+            about=profile.get("description"),
+            blog=profile.get("blog"),
+            location=profile.get("location"),
+            followers=profile.get("followers"),
+            following=profile.get("following"),
+            twitter_x_username=profile.get("twitter_username"),
+            public_repositories=profile.get("public_repos"),
+            public_gists=profile.get("public_gists"),
+            type=profile.get("type"),
+            is_verified=profile.get("is_verified"),
+            has_organisation_projects=profile.get("has_organization_projects"),
+            has_repository_projects=profile.get("has_repository_projects"),
+            url=profile.get("html_url"),
+            created_at=profile.get("created_at"),
+            updated_at=profile.get("updated_at"),
+        ),
+        "repo": Repository(
+            name=profile.get("full_name"),
+            id=profile.get("id"),
+            node_id=profile.get("node_id"),
+            description=profile.get("description"),
+            stars=profile.get("stargazers_count"),
+            forks=profile.get("forks"),
+            watchers=profile.get("watchers"),
+            default_branch=profile.get("default_branch"),
+            language=profile.get("language"),
+            open_issues=profile.get("open_issues"),
+            homepage=profile.get("homepage"),
+            license=profile.get("license"),
+            topics=profile.get("topics"),
+            is_fork=profile.get("fork"),
+            allow_forking=profile.get("allow_forking"),
+            is_archived=profile.get("archived"),
+            is_template=profile.get("is_template"),
+            has_wiki=profile.get("has_wiki"),
+            has_pages=profile.get("has_pages"),
+            has_projects=profile.get("has_projects"),
+            has_issues=profile.get("has_issues"),
+            has_downloads=profile.get("has_downloads"),
+            clone_url=profile.get("clone_url"),
+            ssh_url=profile.get("ssh_url"),
+            pushed_at=profile.get("pushed_at"),
+            created_at=profile.get("created_at"),
+            updated_at=profile.get("updated_at"),
+        ),
+    }
+
+    if "node_id" in profile:
+        return type_mapping.get(profile_type)
 
 
 def parse_repos(repos: list[dict]) -> list[Repository]:
@@ -70,3 +156,21 @@ def parse_events(events: list[dict]) -> list[Event]:
         )
 
     return events_list
+
+
+def parse_gists(gists: list[dict]) -> list[Gist]:
+    gists_list: list = []
+    for gist in gists:
+        gists_list.append(
+            Gist(
+                id=gist.get("id"),
+                node_id=gist.get("node_id"),
+                files=gist.get("files"),
+                description=gist.get("description"),
+                comments=gist.get("comments"),
+                created_at=gist.get("created_at"),
+                updated_at=gist.get("updated_at"),
+            )
+        )
+
+    return gists_list

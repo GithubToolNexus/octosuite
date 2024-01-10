@@ -12,7 +12,13 @@ from ._api import (
     USER_DATA_ENDPOINT,
     get_events,
 )
-from ._parsers import parse_repos, parse_events, parse_accounts
+from ._parsers import (
+    parse_repos,
+    parse_events,
+    parse_accounts,
+    parse_profile,
+    parse_gists,
+)
 from .data import (
     Account,
     Repository,
@@ -21,6 +27,7 @@ from .data import (
     UserOrg,
     Content,
     Event,
+    Gist,
 )
 
 
@@ -39,29 +46,7 @@ class OctoUser:
         user: dict = await get_profile(
             profile_source=self.username, profile_type="user", session=session
         )
-        if "node_id" in user:
-            return User(
-                name=user.get("name"),
-                username=user.get("login"),
-                bio=user.get("bio"),
-                email=user.get("email"),
-                id=user.get("id"),
-                node_id=user.get("node_id"),
-                avatar_url=user.get("avatar_url"),
-                blog=user.get("blog"),
-                location=user.get("location"),
-                followers=user.get("followers"),
-                following=user.get("following"),
-                twitter_x_username=user.get("twitter_username"),
-                public_gists=user.get("public_gists"),
-                public_repositories=user.get("public_repos"),
-                organisation=user.get("company"),
-                is_open_to_work=user.get("hireable"),
-                is_site_admin=user.get("site_admin"),
-                profile_url=user.get("html_url"),
-                joined_at=user.get("created_at"),
-                update_at=user.get("updated_at"),
-            )
+        return parse_profile(profile=user, profile_type="user")
 
     # ---------------------------------------------------------------------------------- #
 
@@ -151,6 +136,8 @@ class OctoUser:
         )
         return parse_repos(repos=repositories)
 
+    # ---------------------------------------------------------------------------------- #
+
     async def events(self, limit: int, session: aiohttp.ClientSession) -> list[Event]:
         user_events: list = await get_events(
             limit=limit,
@@ -160,6 +147,15 @@ class OctoUser:
         )
 
         return parse_events(events=user_events)
+
+    # ---------------------------------------------------------------------------------- #
+
+    async def gists(self, limit: int, session: aiohttp.ClientSession) -> list[Gist]:
+        user_gists: list = await get_data(
+            endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/gists?per_page={limit}",
+            session=session,
+        )
+        return parse_gists(gists=user_gists)
 
     # ---------------------------------------------------------------------------------- #
 
@@ -203,36 +199,7 @@ class OctoRepo:
             profile_type="repository",
             session=session,
         )
-        if "node_id" in repo:
-            return Repository(
-                name=repo.get("full_name"),
-                id=repo.get("id"),
-                node_id=repo.get("node_id"),
-                description=repo.get("description"),
-                stars=repo.get("stargazers_count"),
-                forks=repo.get("forks"),
-                watchers=repo.get("watchers"),
-                default_branch=repo.get("default_branch"),
-                language=repo.get("language"),
-                open_issues=repo.get("open_issues"),
-                homepage=repo.get("homepage"),
-                license=repo.get("license"),
-                topics=repo.get("topics"),
-                is_fork=repo.get("fork"),
-                allow_forking=repo.get("allow_forking"),
-                is_archived=repo.get("archived"),
-                is_template=repo.get("is_template"),
-                has_wiki=repo.get("has_wiki"),
-                has_pages=repo.get("has_pages"),
-                has_projects=repo.get("has_projects"),
-                has_issues=repo.get("has_issues"),
-                has_downloads=repo.get("has_downloads"),
-                clone_url=repo.get("clone_url"),
-                ssh_url=repo.get("ssh_url"),
-                pushed_at=repo.get("pushed_at"),
-                created_at=repo.get("created_at"),
-                updated_at=repo.get("updated_at"),
-            )
+        return parse_profile(profile=repo, profile_type="repo")
 
     # ---------------------------------------------------------------------------------- #
 
@@ -319,30 +286,7 @@ class OctoOrg:
             profile_source=self._organisation,
             session=session,
         )
-        if "node_id" in org:
-            return Organisation(
-                name=org.get("name"),
-                login=org.get("login"),
-                id=org.get("id"),
-                node_id=org.get("node_id"),
-                avatar_url=org.get("avatar_url"),
-                email=org.get("email"),
-                about=org.get("description"),
-                blog=org.get("blog"),
-                location=org.get("location"),
-                followers=org.get("followers"),
-                following=org.get("following"),
-                twitter_x_username=org.get("twitter_username"),
-                public_repositories=org.get("public_repos"),
-                public_gists=org.get("public_gists"),
-                type=org.get("type"),
-                is_verified=org.get("is_verified"),
-                has_organisation_projects=org.get("has_organization_projects"),
-                has_repository_projects=org.get("has_repository_projects"),
-                url=org.get("html_url"),
-                created_at=org.get("created_at"),
-                updated_at=org.get("updated_at"),
-            )
+        return parse_profile(profile=org, profile_type="org")
 
     # ---------------------------------------------------------------------------------- #
 

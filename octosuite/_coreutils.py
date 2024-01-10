@@ -6,7 +6,7 @@ from typing import Union
 import pandas as pd
 from rich.console import Console
 
-from .data import Account, User, Organisation, Repository, Event, UserOrg
+from .data import Account, User, Organisation, Repository, Event, UserOrg, Gist
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -17,7 +17,7 @@ def dataframe(
         str,
         dict,
         list,
-        list[Union[Account, UserOrg, Repository, Event]],
+        list[Union[Account, UserOrg, Repository, Event, Gist]],
         User,
         Repository,
         Organisation,
@@ -82,7 +82,7 @@ def dataframe(
         data = [{"key": key, "value": value} for key, value in data.__dict__.items()]
 
     elif isinstance(data, list) and all(
-        isinstance(item, (Account, Event, Repository, UserOrg)) for item in data
+        isinstance(item, (Account, Event, Gist, Repository, UserOrg)) for item in data
     ):
         # Each object in the list is converted to its dictionary representation
         data = [item.__dict__ for item in data]
@@ -92,21 +92,22 @@ def dataframe(
         # No transformation needed; the data is ready for DataFrame creation
         pass
 
+    # If data is a string, print it
     elif isinstance(data, str):
         console.log(data)
+        return
 
-    if data is not str:
-        # Set pandas display option to show all rows
-        pd.set_option("display.max_rows", None)
+    # Set pandas display option to show all rows
+    pd.set_option("display.max_rows", None)
 
-        # Create a DataFrame from the processed data
-        df = pd.DataFrame(data)
+    # Create a DataFrame from the processed data
+    df = pd.DataFrame(data)
 
-        # Save the DataFrame to CSV or JSON if specified
-        save_dataframe()
+    # Save the DataFrame to CSV or JSON if specified
+    save_dataframe()
 
-        # Print the DataFrame, excluding the 'raw_data' column if it exists
-        print(df.loc[:, df.columns != "raw_data"])
+    # Print the DataFrame, excluding the 'raw_data' column if it exists
+    print(df.loc[:, df.columns != "raw_data"])
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

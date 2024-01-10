@@ -102,15 +102,9 @@ def create_parser() -> argparse.ArgumentParser:
         action="store_true",
     )
     user_parser.add_argument(
-        "-ee",
-        "--events",
-        help="get user's public events",
-        action="store_true",
-    )
-    user_parser.add_argument(
         "-g",
         "--gists",
-        help="get user's public gists",
+        help="get user's public gists (code snippets)",
         action="store_true",
     )
     user_parser.add_argument(
@@ -123,6 +117,12 @@ def create_parser() -> argparse.ArgumentParser:
         "-f",
         "--followers",
         help="get user's followers",
+        action="store_true",
+    )
+    user_parser.add_argument(
+        "-ee",
+        "--events",
+        help="get user's public events",
         action="store_true",
     )
     user_parser.add_argument(
@@ -280,6 +280,7 @@ async def stage(args: argparse.Namespace):
     func_mapping: dict = {
         "user": [
             ("orgs", lambda session: user.orgs(limit=limit, session=session)),
+            ("gists", lambda session: user.gists(limit=limit, session=session)),
             ("events", lambda session: user.events(limit=limit, session=session)),
             ("emails", lambda session: user.emails(session=session)),
             ("profile", lambda session: user.profile(session=session)),
