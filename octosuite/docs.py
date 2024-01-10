@@ -64,7 +64,7 @@ octosuite user torvalds --repos
 
 ## Get a User's Public Gists
 ```
-octosuite user torvalds --gists
+octosuite user octocat --gists
 ```
 
 ## Get a User's Organisations
@@ -79,7 +79,7 @@ octosuite user torvalds --events
 
 ## Get a User's Starred Repositories
 ```
-octosuite user torvalds --starred
+octosuite user octocat --starred
 ```
 
 ## Check if User follows a Second Specified User
