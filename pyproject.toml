@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "octosuite"
-version = "4.0.0.0"
+version = "4.0.0"
 description = "An All-In-One framework for gathering Open-Source Intelligence on GitHub entities."
 readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
@@ -26,6 +26,7 @@ repository = "https://github.com/bellingcat/octosuite.git"
 [tool.poetry.dependencies]
 python = "^3.10"
 aiohttp = "*"
+pandas = "*"
 rich = "*"
 rich-argparse = "*"
 
