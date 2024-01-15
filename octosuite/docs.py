@@ -16,20 +16,27 @@ class Version:
     major: str = "4"
     minor: str = "0"
     patch: str = "0"
-    full: str = f"{major}.{minor}"
+    version: str = f"{major}.{minor}.{patch}"
+    release: str = f"{major}.{minor}"
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 DESCRIPTION: str = f"""
-# OctoSuite CLI {Version.full}
-> An **All-In-One** framework for gathering **OSINT** on GitHub entities."""
+# OctoSuite (CLI) {Version.release}
+> **GitHub** Data Analysis Framework."""
 
 # -------------------------------------------------------------------------------------- #
 
-EPILOG: str = f"""
-# Copyright © {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR})
+COPYRIGHT: str = (
+    f"Copyright © {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR}). All rights reserved."
+)
+
+# -------------------------------------------------------------------------------------- #
+
+LICENSE: str = f"""
+# {COPYRIGHT}
 
 ```
 GNU General Public License v3 (GPLv3)
@@ -190,7 +197,7 @@ octosuite search QUERY --commits
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
-# Construct path to the program's directory
-PROGRAM_DATA_DIRECTORY: str = os.path.expanduser(os.path.join("~", "octosuite-data"))
+# Construct path to the program's data directory
+DATA_DIRECTORY: str = os.path.expanduser(os.path.join("~", "octosuite-data"))
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

@@ -140,7 +140,7 @@ async def get_updates(session: aiohttp.ClientSession):
 
 async def get_profile(
     profile_source: str,
-    profile_type: Literal["user", "organisation", "repository"],
+    profile_type: Literal["user", "org", "repo"],
     session: aiohttp.ClientSession,
     additional_source: str = None,
 ) -> dict:
@@ -153,7 +153,7 @@ async def get_profile(
     :type profile_type: str
     :param session: Aiohttp session to use for the request.
     :type session: aiohttp.ClientSession
-    :param additional_source: Additional profile source (optional, used with repository profile)
+    :param additional_source: Additional profile source (optional, used with repo profile)
     :type additional_source: str
     :return: A dictionary object containing profile data.
     :rtype: dict
@@ -161,8 +161,8 @@ async def get_profile(
     # Use a dictionary for direct mapping
     source_mapping: dict = {
         "user": f"{GITHUB_API_ENDPOINT}/users/{profile_source}",
-        "organisation": f"{GITHUB_API_ENDPOINT}/orgs/{profile_source}",
-        "repository": f"{REPOS_DATA_ENDPOINT}/{profile_source}/{additional_source}",
+        "org": f"{GITHUB_API_ENDPOINT}/orgs/{profile_source}",
+        "repo": f"{REPOS_DATA_ENDPOINT}/{profile_source}/{additional_source}",
     }
 
     # Get the endpoint directly from the dictionary

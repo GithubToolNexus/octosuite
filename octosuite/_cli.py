@@ -17,9 +17,10 @@ from .docs import (
     USER_EXAMPLES,
     ORG_EXAMPLES,
     REPO_EXAMPLES,
-    PROGRAM_DATA_DIRECTORY,
+    DATA_DIRECTORY,
     DESCRIPTION,
-    EPILOG,
+    LICENSE,
+    COPYRIGHT,
 )
 
 
@@ -37,23 +38,18 @@ def create_parser() -> argparse.ArgumentParser:
 
     main_parser = argparse.ArgumentParser(
         description=Markdown(DESCRIPTION, style="argparse.text"),
-        epilog=Markdown(EPILOG, style="argparse.text"),
+        epilog=Markdown(LICENSE, style="argparse.text"),
         formatter_class=RichHelpFormatter,
     )
     main_parser.add_argument(
         "-l", "--limit", help="output data limit", default=100, type=int
     )
     main_parser.add_argument(
-        "-c",
-        "--csv",
-        metavar="FILENAME",
-        help="write output to a csv file",
-    )
-    main_parser.add_argument(
-        "-j",
-        "--json",
-        metavar="FILENAME",
-        help="write output to a json file",
+        "-e",
+        "--export",
+        type=str,
+        metavar="FILETYPES",
+        help="a comma-separated list of file types to export the output to (supported: [green]csv,html,json,xml[/])",
     )
     main_parser.add_argument(
         "-u",
@@ -64,7 +60,7 @@ def create_parser() -> argparse.ArgumentParser:
     main_parser.add_argument(
         "-v",
         "--version",
-        version=f"OctoSuite CLI/Library {Version.full}",
+        version=Markdown(f"Octosuite {Version.release} {COPYRIGHT}"),
         action="version",
     )
     subparsers = main_parser.add_subparsers(dest="entity", help="target entity")
@@ -259,18 +255,18 @@ def create_parser() -> argparse.ArgumentParser:
 async def stage(args: argparse.Namespace):
     # ---------------------------------------------------------------------------------- #
 
-    from .base import OctoUser, OctoOrg, OctoRepo
+    from .base import GitHubUser, GitHubOrg, GitHubRepo
 
     # ---------------------------------------------------------------------------------- #
 
     limit: int = args.limit
 
-    user = OctoUser(username=args.username if hasattr(args, "username") else None)
-    org = OctoOrg(
+    user = GitHubUser(username=args.username if hasattr(args, "username") else None)
+    org = GitHubOrg(
         organisation=args.organisation if hasattr(args, "organisation") else None
     )
 
-    repo = OctoRepo(
+    repo = GitHubRepo(
         repo_name=args.repo_name if hasattr(args, "repo_name") else None,
         repo_owner=args.repo_owner if hasattr(args, "repo_owner") else None,
     )
@@ -314,6 +310,8 @@ async def stage(args: argparse.Namespace):
                 "stargazers",
                 lambda session: repo.stargazers(limit=limit, session=session),
             ),
+            ("releases", lambda session: repo.releases(limit=limit, session=session)),
+            ("issues", lambda session: repo.issues(limit=limit, session=session)),
         ],
         "org": [
             ("profile", lambda session: org.profile(session=session)),
@@ -346,15 +344,20 @@ async def stage(args: argparse.Namespace):
                     if function_data:
                         # -------------------------------------------------------------- #
 
-                        file_dir = None
-                        if args.csv or args.json:
-                            file_dir = os.path.join(
-                                PROGRAM_DATA_DIRECTORY, args.entity, action
+                        directory: str = ""
+                        if args.export:
+                            # Create path to main directory in which entity data files will be exported
+                            directory: str = os.path.join(
+                                DATA_DIRECTORY, args.entity, action
                             )
+
+                            # Create file directories for supported data file types
                             pathfinder(
                                 directories=[
-                                    os.path.join(file_dir, "csv"),
-                                    os.path.join(file_dir, "json"),
+                                    os.path.join(directory, "csv"),
+                                    os.path.join(directory, "html"),
+                                    os.path.join(directory, "json"),
+                                    os.path.join(directory, "xml"),
                                 ]
                             )
 
@@ -362,9 +365,8 @@ async def stage(args: argparse.Namespace):
 
                         dataframe(
                             data=function_data,
-                            save_csv=args.csv,
-                            save_json=args.json,
-                            to_dir=file_dir,
+                            export_to=args.export.split(",") if args.export else None,
+                            export_dir=directory,
                         )
 
                         # -------------------------------------------------------------- #
@@ -392,7 +394,7 @@ def run():
     )
     if args.entity:
         console.log(
-            f"[bold]OctoSuite CLI[/] {Version.full} started at {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}..."
+            f"[bold]OctoSuite[/] (CLI) {Version.release} started at {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}..."
         )
         try:
             asyncio.run(stage(args=args))

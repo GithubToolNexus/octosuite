@@ -1,12 +1,52 @@
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 import os
-from typing import Union
+from datetime import datetime
+from typing import Union, Literal
 
 import pandas as pd
 from rich.console import Console
 
-from .data import Account, User, Organisation, Repository, Event, UserOrg, Gist
+from .data import Account, User, Organisation, Repository, Event, Org, Gist
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+def pathfinder(directories: list[str]):
+    """
+    Creates directories in knewkarma-data directory of the user's home folder.
+
+    :param directories: A list of file directories to create.
+    :type directories: list[str]
+    """
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+def filename_timestamp() -> str:
+    """
+    Generates a timestamp string suitable for file naming, based on the current date and time.
+    The format of the timestamp is adapted based on the operating system.
+
+    :return: The formatted timestamp as a string. The format is "%d-%B-%Y-%I-%M-%S%p" for Windows
+             and "%d-%B-%Y-%I:%M:%S%p" for non-Windows systems.
+    :rtype: str
+
+    Example
+    -------
+    - Windows: "20-July-1969-08-17-45PM"
+    - Non-Windows: "20-July-1969-08:17:45PM" (format may vary based on the current date and time)
+    """
+    now = datetime.now()
+    return (
+        now.strftime("%d-%B-%Y-%I-%M-%S%p")
+        if os.name == "nt"
+        else now.strftime("%d-%B-%Y-%I:%M:%S%p")
+    )
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -17,14 +57,13 @@ def dataframe(
         str,
         dict,
         list,
-        list[Union[Account, UserOrg, Repository, Event, Gist]],
+        list[Union[Account, Org, Repository, Event, Gist]],
         User,
         Repository,
         Organisation,
     ],
-    save_csv: str = None,
-    save_json: str = None,
-    to_dir: str = None,
+    export_to: list[Literal["csv", "html", "json", "xml"]] = None,
+    export_dir: str = None,
 ):
     """
     Converts and prints provided data into a pandas DataFrame and optionally saves it as JSON or CSV file.
@@ -32,14 +71,10 @@ def dataframe(
     :param data: Data to be converted. Can be a single object (Community, User, WikiPage),
                  a dictionary, or a list of objects (Comment, Community, Post, PreviewCommunity, User).
     :type data: Union[Community, Dict, User, WikiPage, List[Union[Comment, Community, Post, PreviewCommunity, User]]]
-    :param save_csv: Optional. If provided, saves the DataFrame as a CSV file. Can be a boolean
-                     (True for default naming) or a string (specific file name).
-    :type save_csv: str
-    :param save_json: Optional. If provided, saves the DataFrame as a JSON file. Can be a boolean
-                      (True for default naming) or a string (specific file name).
-    :type save_json: str
-    :param to_dir: Directory path where the JSON/CSV file, will be stored (if saved).
-    :type to_dir: str
+    :param export_to: Optional. A list of file types to export the dataframe to.
+    :type export_to: list[Literal]
+    :param export_dir: Optional. Directory to which the exported dataframe files will be saved.
+    :type export_dir: str
     :return: A pandas DataFrame constructed from the provided data. Excludes any 'raw_data'
              column from the dataframe.
     :rtype: pd.DataFrame
@@ -51,29 +86,6 @@ def dataframe(
         For lists containing Comment, Community, Post, PreviewCommunity and User objects,
         each object is converted to its dictionary representation.
     """
-    from rich import print
-
-    # ---------------------------------------------------------------------------------- #
-
-    def save_dataframe():
-        """
-        Saves a pandas DataFrame to JSON and/or CSV files.
-        """
-        if save_csv:
-            csv_filename = f"{save_csv.upper()}.csv"
-            csv_filepath = os.path.join(to_dir, "csv", csv_filename)
-            df.to_csv(csv_filepath, index=False)
-            console.log(
-                f"{os.path.getsize(csv_filepath)} bytes written to [link file://{csv_filepath}]{csv_filepath}"
-            )
-
-        if save_json:
-            json_filename = f"{save_json.upper()}.json"
-            json_filepath = os.path.join(to_dir, "json", json_filename)
-            df.to_json(json_filepath, orient="records", lines=True, indent=4)
-            console.log(
-                f"{os.path.getsize(json_filepath)} bytes written to [link file://{json_filepath}]{json_filepath}"
-            )
 
     # ---------------------------------------------------------------------------------- #
 
@@ -82,7 +94,7 @@ def dataframe(
         data = [{"key": key, "value": value} for key, value in data.__dict__.items()]
 
     elif isinstance(data, list) and all(
-        isinstance(item, (Account, Event, Gist, Repository, UserOrg)) for item in data
+        isinstance(item, (Account, Event, Gist, Repository, Org)) for item in data
     ):
         # Each object in the list is converted to its dictionary representation
         data = [item.__dict__ for item in data]
@@ -103,8 +115,14 @@ def dataframe(
     # Create a DataFrame from the processed data
     df = pd.DataFrame(data)
 
-    # Save the DataFrame to CSV or JSON if specified
-    save_dataframe()
+    # Export the data frane to files
+    if export_to:
+        export_dataframe(
+            df=df,
+            filename=filename_timestamp(),
+            directory=export_dir,
+            formats=export_to,
+        )
 
     # Print the DataFrame, excluding the 'raw_data' column if it exists
     print(df.loc[:, df.columns != "raw_data"])
@@ -113,15 +131,57 @@ def dataframe(
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def pathfinder(directories: list[str]):
+def export_dataframe(
+    df: pd.DataFrame,
+    filename: str,
+    directory: str,
+    formats: list[Literal["csv", "html", "json", "xml"]],
+):
     """
-    Creates directories in knewkarma-data directory of the user's home folder.
+    Exports a pandas dataframe to the specified file types.
 
-    :param directories: A list of file directories to create.
-    :type directories: list[str]
+    :param df: Pandas dataframe to export.
+    :type df: pandas.DataFrame
+    :param filename: A name for the exported files.
+    :type filename: str
+    :param directory: Directory to which exported files will be saved.
+    :type directory: str
+    :param formats: List of file formats in which the dataframe will be exported.
+    :type formats: list[Literal]
     """
-    for directory in directories:
-        os.makedirs(directory, exist_ok=True)
+    file_mapping: dict = {
+        "csv": lambda: df.to_csv(
+            os.path.join(directory, "csv", f"{filename}.csv"), encoding="utf-8"
+        ),
+        "html": lambda: df.to_html(
+            os.path.join(directory, "html", f"{filename}.html"),
+            escape=False,
+            encoding="utf-8",
+        ),
+        "json": lambda: df.to_json(
+            os.path.join(directory, "json", f"{filename}.json"),
+            encoding="utf-8",
+            orient="records",
+            lines=True,
+            force_ascii=False,
+            indent=4,
+        ),
+        "xml": lambda: df.to_xml(
+            os.path.join(directory, "xml", f"{filename}.xml"), parser="etree"
+        ),
+    }
+
+    for file_format in formats:
+        if file_format in file_mapping:
+            filepath: str = os.path.join(
+                directory, file_format, f"{filename}.{file_format}"
+            )
+            file_mapping.get(file_format)()
+            console.log(
+                f"{os.path.getsize(filepath)} bytes written to [link file://{filepath}]{filepath}"
+            )
+        else:
+            console.log(f"Unsupported file format: {file_format}")
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

@@ -5,10 +5,10 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "octosuite"
 version = "4.0.0"
-description = "An All-In-One framework for gathering Open-Source Intelligence on GitHub entities."
+description = "GitHub Data Analysis Framework."
 readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
-keywords = ["github", "python", "github-api", "framework", "osint", "osint-framework", "osint-python", "osint-tool"]
+keywords = ["github", "github-api", "framework", "data-analysis"]
 authors = ["Richard Mwewa <rly0nheart@duck.com>"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -20,8 +20,8 @@ classifiers = [
     "Natural Language :: English"
 ]
 homepage = "https://www.bellingcat.com"
-documentation = "https://github.com/bellingcat/octosuite/wiki"
-repository = "https://github.com/bellingcat/octosuite.git"
+documentation = "https://octosuite-wiki.readthedocs.io"
+repository = "https://github.com/bellingcat/octosuite"
 
 [tool.poetry.dependencies]
 python = "^3.10"

@@ -1,1 +1,9 @@
-from .base import OctoOrg, OctoRepo, OctoUser
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+from .base import GitHubUser, GitHubOrg, GitHubRepo
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+__all__: list = ["GitHubUser", "GitHubOrg", "GitHubRepo"]
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

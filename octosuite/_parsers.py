@@ -1,11 +1,30 @@
 from typing import Union, Literal
 
-from octosuite.data import Event, Account, Repository, User, Organisation, Gist
+from octosuite.data import (
+    Event,
+    Account,
+    Repository,
+    User,
+    Organisation,
+    Gist,
+    Release,
+    Issue,
+)
 
 
 def parse_profile(
     profile: dict, profile_type: Literal["user", "org", "repo"]
 ) -> Union[User, Organisation, Repository]:
+    """
+    Parses a GitHub entity's profile into an Object.
+
+    :param profile: Raw profile data to be parsed.
+    :type profile: dict
+    :param profile_type: Type of the profile being parsed.
+    :type profile_type: Literal
+    :return: A User, Organisation or Repository object parsed with profile data.
+    :rtype: Union[User, Organisation, Repository]
+    """
     type_mapping: dict = {
         "user": User(
             name=profile.get("name"),
@@ -174,3 +193,44 @@ def parse_gists(gists: list[dict]) -> list[Gist]:
         )
 
     return gists_list
+
+
+def parse_releases(releases: list[dict]) -> list[Release]:
+    releases_list: list = []
+    for release in releases:
+        releases_list.append(
+            Release(
+                author=release.get("author").get("login"),
+                tag=release.get("tag_name"),
+                body=release.get("body"),
+                id=release.get("id"),
+                node_id=release.get("node_id"),
+                branch=release.get("target_commitish"),
+                is_prerelease=release.get("prerelease"),
+                url=release.get("html_url"),
+                created_at=release.get("created_at"),
+                published_at=release.get("published_at"),
+            )
+        )
+
+    return releases_list
+
+
+def parse_issues(issues: list[dict]) -> list[Issue]:
+    issues_list: list = []
+    for issue in issues:
+        issues_list.append(
+            Issue(
+                author=issue.get("user").get("login"),
+                number=issue.get("number"),
+                title=issue.get("title"),
+                body=issue.get("body"),
+                id=issue.get("id"),
+                node_id=issue.get("node_id"),
+                url=issue.get("html_url"),
+                created_at=issue.get("created_at"),
+                updated_at=issue.get("updated_at"),
+            )
+        )
+
+    return issues_list

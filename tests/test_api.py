@@ -42,7 +42,7 @@ async def test_get_profile():
         # ---------------------------------------------------------------- #
 
         organisation: dict = await get_profile(
-            profile_type="organisation",
+            profile_type="org",
             profile_source=TEST_ORGANISATION,
             session=session,
         )
@@ -57,7 +57,7 @@ async def test_get_profile():
         repository: dict = await get_profile(
             profile_source=TEST_USERNAME,
             additional_source=TEST_REPOSITORY,
-            profile_type="repository",
+            profile_type="repo",
             session=session,
         )
 

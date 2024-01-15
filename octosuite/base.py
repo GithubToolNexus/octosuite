@@ -18,23 +18,27 @@ from ._parsers import (
     parse_accounts,
     parse_profile,
     parse_gists,
+    parse_releases,
+    parse_issues,
 )
 from .data import (
     Account,
     Repository,
     User,
     Organisation,
-    UserOrg,
+    Org,
     Content,
     Event,
     Gist,
+    Release,
+    Issue,
 )
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-class OctoUser:
+class GitHubUser:
     # ---------------------------------------------------------------------------------- #
 
     def __init__(self, username: str):
@@ -169,7 +173,7 @@ class OctoUser:
         orgs_list: list = []
         for org in user_orgs:
             orgs_list.append(
-                UserOrg(
+                Org(
                     login=org.get("login"),
                     id=org.get("id"),
                     node_id=org.get("node_id"),
@@ -183,7 +187,7 @@ class OctoUser:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-class OctoRepo:
+class GitHubRepo:
     # ---------------------------------------------------------------------------------- #
 
     def __init__(self, repo_name: str, repo_owner: str):
@@ -196,7 +200,7 @@ class OctoRepo:
         repo: dict = await get_profile(
             profile_source=self.repo_owner,
             additional_source=self.repo_name,
-            profile_type="repository",
+            profile_type="repo",
             session=session,
         )
         return parse_profile(profile=repo, profile_type="repo")
@@ -245,6 +249,8 @@ class OctoRepo:
 
         return parse_accounts(accounts=raw_contributors)
 
+    # ---------------------------------------------------------------------------------- #
+
     async def contents(
         self, session: aiohttp.ClientSession, path: str = "/"
     ) -> list[Content]:
@@ -270,11 +276,34 @@ class OctoRepo:
 
         return contents_lists
 
+    # ---------------------------------------------------------------------------------- #
+
+    async def releases(
+        self, limit: int, session: aiohttp.ClientSession
+    ) -> list[Release]:
+        repo_releases: list = await get_data(
+            endpoint=f"{REPOS_DATA_ENDPOINT}/{self.repo_owner}/{self.repo_name}/releases?per_page={limit}",
+            session=session,
+        )
+
+        if repo_releases:
+            return parse_releases(releases=repo_releases)
+
+    # ---------------------------------------------------------------------------------- #
+
+    async def issues(self, limit: int, session: aiohttp.ClientSession) -> list[Issue]:
+        repo_issues: list = await get_data(
+            endpoint=f"{REPOS_DATA_ENDPOINT}/{self.repo_owner}/{self.repo_name}/issues?per_page={limit}",
+            session=session,
+        )
+        if repo_issues:
+            return parse_issues(issues=repo_issues)
+
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-class OctoOrg:
+class GitHubOrg:
     def __init__(self, organisation: str):
         self._organisation = organisation
 
@@ -282,7 +311,7 @@ class OctoOrg:
 
     async def profile(self, session: aiohttp.ClientSession) -> Organisation:
         org: dict = await get_profile(
-            profile_type="organisation",
+            profile_type="org",
             profile_source=self._organisation,
             session=session,
         )
