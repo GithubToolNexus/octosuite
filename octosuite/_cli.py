@@ -10,7 +10,13 @@ from rich.markdown import Markdown
 from rich_argparse import RichHelpFormatter
 
 from ._api import get_updates
-from ._coreutils import console, dataframe, pathfinder
+from ._coreutils import (
+    console,
+    pathfinder,
+    create_dataframe,
+    export_dataframe,
+    filename_timestamp,
+)
 from .docs import (
     SEARCH_EXAMPLES,
     Version,
@@ -344,7 +350,10 @@ async def stage(args: argparse.Namespace):
                     if function_data:
                         # -------------------------------------------------------------- #
 
-                        directory: str = ""
+                        dataframe = create_dataframe(data=function_data)
+                        # Print the DataFrame, excluding the 'raw_data' column if it exists
+                        console.print(dataframe.loc[:, dataframe.columns != "raw_data"])
+
                         if args.export:
                             # Create path to main directory in which entity data files will be exported
                             directory: str = os.path.join(
@@ -361,13 +370,12 @@ async def stage(args: argparse.Namespace):
                                 ]
                             )
 
-                        # -------------------------------------------------------------- #
-
-                        dataframe(
-                            data=function_data,
-                            export_to=args.export.split(",") if args.export else None,
-                            export_dir=directory,
-                        )
+                            export_dataframe(
+                                dataframe=dataframe,
+                                filename=filename_timestamp(),
+                                directory=directory,
+                                formats=args.export.split(","),
+                            )
 
                         # -------------------------------------------------------------- #
                     is_executed = True

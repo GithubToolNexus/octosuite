@@ -1,3 +1,5 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
 from typing import Union, Literal
 
 from octosuite.data import (
@@ -10,6 +12,9 @@ from octosuite.data import (
     Release,
     Issue,
 )
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_profile(
@@ -106,6 +111,9 @@ def parse_profile(
         return type_mapping.get(profile_type)
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
 def parse_repos(repos: list[dict]) -> list[Repository]:
     repos_list: list = []
     for repo in repos:
@@ -143,6 +151,9 @@ def parse_repos(repos: list[dict]) -> list[Repository]:
     return repos_list
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
 def parse_accounts(accounts: list[dict]) -> list[Account]:
     accounts_list: list = []
     for account in accounts:
@@ -162,6 +173,9 @@ def parse_accounts(accounts: list[dict]) -> list[Account]:
     return accounts_list
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
 def parse_events(events: list[dict]) -> list[Event]:
     events_list: list = []
     for event in events:
@@ -175,6 +189,9 @@ def parse_events(events: list[dict]) -> list[Event]:
         )
 
     return events_list
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_gists(gists: list[dict]) -> list[Gist]:
@@ -193,6 +210,9 @@ def parse_gists(gists: list[dict]) -> list[Gist]:
         )
 
     return gists_list
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_releases(releases: list[dict]) -> list[Release]:
@@ -216,6 +236,9 @@ def parse_releases(releases: list[dict]) -> list[Release]:
     return releases_list
 
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
 def parse_issues(issues: list[dict]) -> list[Issue]:
     issues_list: list = []
     for issue in issues:
@@ -234,3 +257,6 @@ def parse_issues(issues: list[dict]) -> list[Issue]:
         )
 
     return issues_list
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

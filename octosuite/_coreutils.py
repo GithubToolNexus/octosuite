@@ -52,7 +52,7 @@ def filename_timestamp() -> str:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def dataframe(
+def create_dataframe(
     data: Union[
         str,
         dict,
@@ -62,8 +62,6 @@ def dataframe(
         Repository,
         Organisation,
     ],
-    export_to: list[Literal["csv", "html", "json", "xml"]] = None,
-    export_dir: str = None,
 ):
     """
     Converts and prints provided data into a pandas DataFrame and optionally saves it as JSON or CSV file.
@@ -71,10 +69,6 @@ def dataframe(
     :param data: Data to be converted. Can be a single object (Community, User, WikiPage),
                  a dictionary, or a list of objects (Comment, Community, Post, PreviewCommunity, User).
     :type data: Union[Community, Dict, User, WikiPage, List[Union[Comment, Community, Post, PreviewCommunity, User]]]
-    :param export_to: Optional. A list of file types to export the dataframe to.
-    :type export_to: list[Literal]
-    :param export_dir: Optional. Directory to which the exported dataframe files will be saved.
-    :type export_dir: str
     :return: A pandas DataFrame constructed from the provided data. Excludes any 'raw_data'
              column from the dataframe.
     :rtype: pd.DataFrame
@@ -113,26 +107,16 @@ def dataframe(
     pd.set_option("display.max_rows", None)
 
     # Create a DataFrame from the processed data
-    df = pd.DataFrame(data)
+    dataframe = pd.DataFrame(data)
 
-    # Export the data frane to files
-    if export_to:
-        export_dataframe(
-            df=df,
-            filename=filename_timestamp(),
-            directory=export_dir,
-            formats=export_to,
-        )
-
-    # Print the DataFrame, excluding the 'raw_data' column if it exists
-    print(df.loc[:, df.columns != "raw_data"])
+    return dataframe
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def export_dataframe(
-    df: pd.DataFrame,
+    dataframe: pd.DataFrame,
     filename: str,
     directory: str,
     formats: list[Literal["csv", "html", "json", "xml"]],
@@ -140,8 +124,8 @@ def export_dataframe(
     """
     Exports a pandas dataframe to the specified file types.
 
-    :param df: Pandas dataframe to export.
-    :type df: pandas.DataFrame
+    :param dataframe: Pandas dataframe to export.
+    :type dataframe: pandas.DataFrame
     :param filename: A name for the exported files.
     :type filename: str
     :param directory: Directory to which exported files will be saved.
@@ -150,15 +134,15 @@ def export_dataframe(
     :type formats: list[Literal]
     """
     file_mapping: dict = {
-        "csv": lambda: df.to_csv(
+        "csv": lambda: dataframe.to_csv(
             os.path.join(directory, "csv", f"{filename}.csv"), encoding="utf-8"
         ),
-        "html": lambda: df.to_html(
+        "html": lambda: dataframe.to_html(
             os.path.join(directory, "html", f"{filename}.html"),
             escape=False,
             encoding="utf-8",
         ),
-        "json": lambda: df.to_json(
+        "json": lambda: dataframe.to_json(
             os.path.join(directory, "json", f"{filename}.json"),
             encoding="utf-8",
             orient="records",
@@ -166,7 +150,7 @@ def export_dataframe(
             force_ascii=False,
             indent=4,
         ),
-        "xml": lambda: df.to_xml(
+        "xml": lambda: dataframe.to_xml(
             os.path.join(directory, "xml", f"{filename}.xml"), parser="etree"
         ),
     }

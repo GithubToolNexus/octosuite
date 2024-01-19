@@ -8,7 +8,7 @@ version = "4.0.0"
 description = "GitHub Data Analysis Framework."
 readme = "README.md"
 license = "GNU General Public License v3 (GPLv3)"
-keywords = ["github", "github-api", "framework", "data-analysis"]
+keywords = ["github-api", "github", "data-analysis"]
 authors = ["Richard Mwewa <rly0nheart@duck.com>"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",

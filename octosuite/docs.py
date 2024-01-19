@@ -58,52 +58,52 @@ USER_EXAMPLES: str = """
 ```
 octosuite user torvalds --profile
 ```
-
+***
 ## Get Emails from a User's PushEvents
 ```
 octosuite user torvalds --emails
 ```
-
+***
 ## Get a User's Public Repositories
 ```
 octosuite user torvalds --repos
 ```
-
+***
 ## Get a User's Public Gists
 ```
 octosuite user octocat --gists
 ```
-
+***
 ## Get a User's Organisations
 ```
 octosuite user torvalds --orgs
 ```
-
+***
 ## Get a User's Public Events
 ```
 octosuite user torvalds --events
 ```
-
+***
 ## Get a User's Starred Repositories
 ```
 octosuite user octocat --starred
 ```
-
+***
 ## Check if User follows a Second Specified User
 ```
 octosuite user torvalds --follows --secondary-user SECONDARY_USERNAME
 ```
-
+***
 ## Get a User's Followers
 ```
 octosuite user torvalds --followers
 ```
-
+***
 ## Get Accounts followed by User
 ```
 octosuite user torvalds --following
 ```
-
+***
 ## Check If Target Follows The Specified User
 ```
 octosuite user wang920509 --follows torvalds
@@ -118,22 +118,22 @@ ORG_EXAMPLES: str = """
 ```
 octosuite org github --profile
 ```
-
+***
 ## Get an Organisation's Public Repositories
 ```
 octosuite org github --repos
 ```
-
+***
 ## Get an Organisation's Public Events
 ```
 octosuite org github --events
 ```
-
+***
 ## Get an Organisation's Public Members
 ```
 octosuite org github --members
 ```
-
+***
 ## CHeck If User Is a Public Member of the Target Organisation
 ```
 octosuite org DROPCitizenShip --is-member torvalds
@@ -148,22 +148,22 @@ REPO_EXAMPLES: str = """
 ```
 octosuite repo linux torvalds --profile
 ```
-
+***
 ## Get a Repository's Forks
 ```
 octosuite repo linux torvalds --forks
 ```
-
+***
 ## Get a Repository's Stargazers
 ```
 octosuite repo linux torvalds --stargazers
 ```
-
+***
 ## Get a Repository's Contents (from root directory)
 ```
 octosuite repo linux torvalds --contents
 ```
-
+***
 ## Get a Repository's Contents (from a specified directory)
 ```
 octosuite repo linux torvalds --contents kernel
@@ -178,17 +178,17 @@ SEARCH_EXAMPLES: str = """
 ```
 octosuite search QUERY --users
 ```
-
+***
 ## Search Issues
 ```
 octosuite search QUERY --issues
 ```
-
+***
 ## Search Topics
 ```
 octosuite search QUERY --topics
 ```
-
+***
 ## Search Commits
 ```
 octosuite search QUERY --commits

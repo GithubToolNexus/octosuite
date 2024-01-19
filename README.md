@@ -1,7 +1,4 @@
-![octosuite](https://github.com/bellingcat/octosuite/assets/74001397/fe28e7ec-2e59-4f5c-ad94-7e159bc9978a)
-
-
-An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitHub** entities.
+# OctoSuite
 
 [![Upload Python Package](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/python-publish.yml)
 [![CodeQL](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml/badge.svg)](https://github.com/bellingcat/octosuite/actions/workflows/codeql.yml)
@@ -9,7 +6,14 @@ An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitH
 ![PyPI](https://img.shields.io/pypi/v/octosuite?style=flat&logo=pypi)
 [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/_rly0nheart)
 
-# Features
+**OctoSuite** (/ˈɒk.toʊ.swiːt/) is an all-in-one **GitHub** data analysis framework designed to provide
+insights and a thorough
+understanding of GitHub entities (e.i, **Users**, **Repositories** and **Organisations**). It offers a wide array of
+functionalities and tools including a **Command-Line Interface (CLI)**, a **Python Library** and a **Graphical User
+Interface (GUI)**, enabling users to fetch and analyse GitHub data effectively and efficiently.
+
+# Feature Overview
+
 * **OctoSuite** can get the following data from **GitHub** entities:
     * **<ins>Users</ins>**:
         * *Profile*
@@ -46,7 +50,8 @@ An **All-In-One** framework for gathering **Open-Source Intelligence** on **GitH
 [Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation, usage and uninstallation
 instructions.
 
-# TODO
+# Roadmap
+
 - [ ] Rewrite the GUI in Visual Basic .NET (in progress)
 
 
