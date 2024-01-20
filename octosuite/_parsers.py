@@ -11,6 +11,8 @@ from octosuite.data import (
     Gist,
     Release,
     Issue,
+    Commit,
+    Topic,
 )
 
 
@@ -257,6 +259,47 @@ def parse_issues(issues: list[dict]) -> list[Issue]:
         )
 
     return issues_list
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+def parse_commits(commits: list[dict]) -> list[Commit]:
+    commits_list: list = []
+    for commit in commits:
+        commits_list.append(
+            Commit(
+                message=commit.get("commit").get("message"),
+                author=commit.get("commit").get("author").get("name"),
+                author_email=commit.get("commit").get("author").get("email"),
+                repository=commit.get("repository").get("full_name"),
+                url=commit.get("html_url"),
+                date=commit.get("commit").get("author").get("date"),
+            )
+        )
+
+    return commits_list
+
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+def parse_topics(topics: list[dict]) -> list[Topic]:
+    topics_list: list = []
+    for topic in topics:
+        topics_list.append(
+            Topic(
+                name=topic.get("name"),
+                display_name=topic.get("display_name"),
+                short_description=topic.get("short_description"),
+                description=topic.get("description"),
+                created_by=topic.get("created_by"),
+                created_at=topic.get("created_at"),
+                updated_at=topic.get("updated_at"),
+            )
+        )
+
+    return topics_list
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

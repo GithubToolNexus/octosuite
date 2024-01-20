@@ -40,10 +40,11 @@ Interface (GUI)**, enabling users to fetch and analyse GitHub data effectively a
         * *Releases*
         * *Contents of a specified path*
 * Target Discovery:
-    * **<ins>Search Users</ins>**
-    * **<ins>Search Issues</ins>**
-    * **<ins>Search Topics</ins>**
-    * **<ins>Search Commits</ins>**
+    * *Search Users*
+    * *Search Repositories*
+    * *Search Issues*
+    * *Search Topics*
+    * *Search Commits*
 
 # Documentation
 

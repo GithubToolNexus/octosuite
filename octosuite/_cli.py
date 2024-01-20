@@ -9,6 +9,7 @@ import aiohttp
 from rich.markdown import Markdown
 from rich_argparse import RichHelpFormatter
 
+from . import GitHubSearch
 from ._api import get_updates
 from ._coreutils import (
     console,
@@ -234,7 +235,7 @@ def create_parser() -> argparse.ArgumentParser:
     search_parser = subparsers.add_parser(
         "search",
         help="search operations",
-        description=Markdown("# Entity/Target Discovery"),
+        description=Markdown("# Target Discovery"),
         epilog=Markdown(SEARCH_EXAMPLES),
         formatter_class=RichHelpFormatter,
     )
@@ -242,6 +243,9 @@ def create_parser() -> argparse.ArgumentParser:
     search_parser.add_argument("query", help="search query")
     search_parser.add_argument(
         "-u", "--users", help="search users", action="store_true"
+    )
+    search_parser.add_argument(
+        "-r", "--repos", help="search repositories", action="store_true"
     )
     search_parser.add_argument(
         "-i", "--issues", help="search issues", action="store_true"
@@ -261,7 +265,7 @@ def create_parser() -> argparse.ArgumentParser:
 async def stage(args: argparse.Namespace):
     # ---------------------------------------------------------------------------------- #
 
-    from .base import GitHubUser, GitHubOrg, GitHubRepo
+    from ._base import GitHubUser, GitHubOrg, GitHubRepo
 
     # ---------------------------------------------------------------------------------- #
 
@@ -276,6 +280,9 @@ async def stage(args: argparse.Namespace):
         repo_name=args.repo_name if hasattr(args, "repo_name") else None,
         repo_owner=args.repo_owner if hasattr(args, "repo_owner") else None,
     )
+
+    query = args.query if hasattr(args, "query") else None
+    search = GitHubSearch()
 
     # ---------------------------------------------------------------------------------- #
 
@@ -330,6 +337,38 @@ async def stage(args: argparse.Namespace):
                 ),
             ),
             ("members", lambda session: org.members(limit=limit, session=session)),
+        ],
+        "search": [
+            (
+                "users",
+                lambda session: search.users(
+                    query=query,
+                    limit=limit,
+                    session=session,
+                ),
+            ),
+            (
+                "repos",
+                lambda session: search.repos(query=query, limit=limit, session=session),
+            ),
+            (
+                "issues",
+                lambda session: search.issues(
+                    query=query, limit=limit, session=session
+                ),
+            ),
+            (
+                "commits",
+                lambda session: search.commits(
+                    query=query, limit=limit, session=session
+                ),
+            ),
+            (
+                "topics",
+                lambda session: search.topics(
+                    query=query, limit=limit, session=session
+                ),
+            ),
         ],
     }
 

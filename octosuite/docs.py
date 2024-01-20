@@ -176,22 +176,26 @@ SEARCH_EXAMPLES: str = """
 # Examples
 ## Search Users
 ```
-octosuite search QUERY --users
+octosuite search john --users
+```
+## Search Repositories
+```
+octosuite search octo --repos
 ```
 ***
 ## Search Issues
 ```
-octosuite search QUERY --issues
+octosuite search error --issues
 ```
 ***
 ## Search Topics
 ```
-octosuite search QUERY --topics
+octosuite search git --topics
 ```
 ***
 ## Search Commits
 ```
-octosuite search QUERY --commits
+octosuite search fix --commits
 ```
 """
 

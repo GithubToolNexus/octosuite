@@ -158,6 +158,33 @@ class Issue:
 
 
 @dataclass
+class Commit:
+    message: str
+    repository: str
+    url: str
+    author: str
+    author_email: str
+    date: str
+
+
+# -------------------------------------------------------------- #
+
+
+@dataclass
+class Topic:
+    name: str
+    display_name: str
+    short_description: str
+    description: str
+    created_by: str
+    created_at: str
+    updated_at: str
+
+
+# -------------------------------------------------------------- #
+
+
+@dataclass
 class Repository:
     name: str
     description: str

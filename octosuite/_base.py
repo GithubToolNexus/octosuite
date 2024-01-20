@@ -11,6 +11,7 @@ from ._api import (
     ORGS_DATA_ENDPOINT,
     USER_DATA_ENDPOINT,
     get_events,
+    get_search,
 )
 from ._parsers import (
     parse_repos,
@@ -20,6 +21,8 @@ from ._parsers import (
     parse_gists,
     parse_releases,
     parse_issues,
+    parse_commits,
+    parse_topics,
 )
 from .data import (
     Account,
@@ -32,6 +35,8 @@ from .data import (
     Gist,
     Release,
     Issue,
+    Commit,
+    Topic,
 )
 
 
@@ -39,24 +44,49 @@ from .data import (
 
 
 class GitHubUser:
+    """Represents a GitHub user, and provides methods fro getting data from the specified User."""
+
     # ---------------------------------------------------------------------------------- #
 
     def __init__(self, username: str):
-        self.username = username
+        """
+        Initialises a GitHubUser instance for fetching profile, repos, emails, followers, following,
+        follows, starred, events, gists and orgs from a specified user.
+
+        :param username: Username to get data from.
+        :type username: str
+        """
+        self._username = username
 
     # ---------------------------------------------------------------------------------- #
 
     async def profile(self, session: aiohttp.ClientSession) -> User:
+        """
+        Asynchronously gets a user's profile.
+
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A User object containing a user's profile data.
+        :rtype: User
+        """
         user: dict = await get_profile(
-            profile_source=self.username, profile_type="user", session=session
+            profile_source=self._username, profile_type="user", session=session
         )
         return parse_profile(profile=user, profile_type="user")
 
     # ---------------------------------------------------------------------------------- #
 
     async def emails(self, session: aiohttp.ClientSession) -> set[str]:
+        """
+        Asynchronously gets emails from PushEvents on a user's repositories.
+
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A set of emails from PushEvents
+        :rtype: set
+        """
         events = await get_data(
-            endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/events", session=session
+            endpoint=f"{USER_DATA_ENDPOINT}/{self._username}/events", session=session
         )
         emails = set()
         for event in events:
@@ -77,9 +107,19 @@ class GitHubUser:
     async def followers(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
+        """
+        Asynchronously gets a user's followers.
+
+        :param limit: Maximum number of followers to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Account objects, each containing data of a follower.
+        :rtype: list[Account]
+        """
         raw_followers: list = await get_accounts(
             accounts_type="user_followers",
-            accounts_source=self.username,
+            accounts_source=self._username,
             limit=limit,
             session=session,
         )
@@ -91,9 +131,19 @@ class GitHubUser:
     async def following(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Account]:
+        """
+        Asynchronously gets accounts that a user is following.
+
+        :param limit: Maximum number of accounts to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of account objects, each containing data of an account.
+        :rtype: list[Account]
+        """
         raw_followings: list = await get_accounts(
             accounts_type="user_followings",
-            accounts_source=self.username,
+            accounts_source=self._username,
             limit=limit,
             session=session,
         )
@@ -103,13 +153,23 @@ class GitHubUser:
     # ---------------------------------------------------------------------------------- #
 
     async def follows(self, user: str, session: aiohttp.ClientSession) -> str:
+        """
+        Asynchronously checks the following status of the target user with the specified second user.
+
+        :param user: A user to check the following status with.
+        :type user: str
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A confirmation of the follow status between the two users.
+        :rtype: str
+        """
         async with session.get(
-            f"{USER_DATA_ENDPOINT}/{self.username}/following/{user}"
+            f"{USER_DATA_ENDPOINT}/{self._username}/following/{user}"
         ) as response:
             status: str = (
-                f"Target (@{self.username}) FOLLOWS user (@{user})."
+                f"Target (@{self._username}) FOLLOWS user (@{user})."
                 if response.status == 204
-                else f"Target (@{self.username}) DOES NOT follow user (@{user}). "
+                else f"Target (@{self._username}) DOES NOT follow user (@{user}). "
                 f"Also, check if one of or both provided usernames are valid."
             )
             return status
@@ -119,8 +179,18 @@ class GitHubUser:
     async def starred(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
+        """
+        Asynchronously gets a user's starred repositories.
+
+        :param limit: Maximum number of repositories to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Repository objects, each containing data of a repository.
+        :rtype: list[Repository]
+        """
         repositories: list = await get_repos(
-            repos_source=self.username,
+            repos_source=self._username,
             repos_type="user_starred",
             limit=limit,
             session=session,
@@ -132,8 +202,18 @@ class GitHubUser:
     async def repos(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Repository]:
+        """
+        Asynchronously gets a user's repositories.
+
+        :param limit: Maximum number of repositories to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Repository objects, each containing data of a repository.
+        :rtype: list[Repository]
+        """
         repositories: list = await get_repos(
-            repos_source=self.username,
+            repos_source=self._username,
             repos_type="user_repos",
             limit=limit,
             session=session,
@@ -143,10 +223,20 @@ class GitHubUser:
     # ---------------------------------------------------------------------------------- #
 
     async def events(self, limit: int, session: aiohttp.ClientSession) -> list[Event]:
+        """
+        Asynchronously gets a user's events.
+
+        :param limit: Maximum number of events to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Event objects, each containing data of an event.
+        :rtype: list[Event]
+        """
         user_events: list = await get_events(
             limit=limit,
             events_type="user",
-            events_source=self.username,
+            events_source=self._username,
             session=session,
         )
 
@@ -155,8 +245,18 @@ class GitHubUser:
     # ---------------------------------------------------------------------------------- #
 
     async def gists(self, limit: int, session: aiohttp.ClientSession) -> list[Gist]:
+        """
+        Asynchronously gets a user's gists.
+
+        :param limit: Maximum number of gists to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Gist objects, each containing data of a gist.
+        :rtype: list[Gist]
+        """
         user_gists: list = await get_data(
-            endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/gists?per_page={limit}",
+            endpoint=f"{USER_DATA_ENDPOINT}/{self._username}/gists?per_page={limit}",
             session=session,
         )
         return parse_gists(gists=user_gists)
@@ -166,8 +266,18 @@ class GitHubUser:
     async def orgs(
         self, limit: int, session: aiohttp.ClientSession
     ) -> list[Organisation]:
+        """
+        Asynchronously gets a user's organisations.
+
+        :param limit: Maximum number of organisations to return.
+        :type limit: int
+        :param session: An aiohttp session to use for the request.
+        :type session: aiohttp.ClientSession
+        :return: A list of Organisation objects, each containing data of an organisation.
+        :rtype: list[Organisation]
+        """
         user_orgs = await get_data(
-            endpoint=f"{USER_DATA_ENDPOINT}/{self.username}/orgs?per_page={limit}",
+            endpoint=f"{USER_DATA_ENDPOINT}/{self._username}/orgs?per_page={limit}",
             session=session,
         )
         orgs_list: list = []
@@ -188,6 +298,8 @@ class GitHubUser:
 
 
 class GitHubRepo:
+    """Represents a GitHub repository, and provides methods for getting data from the specified repository."""
+
     # ---------------------------------------------------------------------------------- #
 
     def __init__(self, repo_name: str, repo_owner: str):
@@ -359,7 +471,73 @@ class GitHubOrg:
         if raw_members:
             return parse_accounts(accounts=raw_members)
 
-    # ---------------------------------------------------------------------------------- #
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+
+
+class GitHubSearch:
+    @staticmethod
+    async def users(
+        query: str, limit: int, session: aiohttp.ClientSession
+    ) -> list[Account]:
+        results: list = await get_search(
+            search_type="users", query=query, limit=limit, session=session
+        )
+
+        if results:
+            return parse_accounts(accounts=results)
+
+        # ---------------------------------------------------------------------------------- #
+
+    @staticmethod
+    async def repos(
+        query: str, limit: int, session: aiohttp.ClientSession
+    ) -> list[Repository]:
+        results: list = await get_search(
+            search_type="repos", query=query, limit=limit, session=session
+        )
+
+        if results:
+            return parse_repos(repos=results)
+
+        # ---------------------------------------------------------------------------------- #
+
+    @staticmethod
+    async def issues(
+        query: str, limit: int, session: aiohttp.ClientSession
+    ) -> list[Issue]:
+        results: list = await get_search(
+            search_type="issues", query=query, limit=limit, session=session
+        )
+
+        if results:
+            return parse_issues(issues=results)
+
+        # ---------------------------------------------------------------------------------- #
+
+    @staticmethod
+    async def commits(
+        query: str, limit: int, session: aiohttp.ClientSession
+    ) -> list[Commit]:
+        results: list = await get_search(
+            search_type="commits", query=query, limit=limit, session=session
+        )
+
+        if results:
+            return parse_commits(commits=results)
+
+        # ---------------------------------------------------------------------------------- #
+
+    @staticmethod
+    async def topics(
+        query: str, limit: int, session: aiohttp.ClientSession
+    ) -> list[Topic]:
+        results: list = await get_search(
+            search_type="topics", query=query, limit=limit, session=session
+        )
+
+        if results:
+            return parse_topics(topics=results)
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

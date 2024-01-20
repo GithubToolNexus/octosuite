@@ -15,6 +15,7 @@ GITHUB_API_ENDPOINT: str = "https://api.github.com"
 ORGS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/orgs"
 REPOS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/repos"
 USER_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/users"
+SEARCH_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/search"
 RELEASE_ENDPOINT: str = f"{REPOS_DATA_ENDPOINT}/bellingcat/octosuite/releases/latest"
 
 
@@ -289,6 +290,30 @@ async def get_events(
 
     events: list = await get_data(endpoint=events_endpoint, session=session)
     return process_response(response_data=events)
+
+
+async def get_search(
+    search_type: Literal["users", "repos", "issues", "commits", "topics"],
+    query: str,
+    limit: int,
+    session: aiohttp.ClientSession,
+) -> list[dict]:
+    search_mapping: dict = {
+        "users": f"{SEARCH_DATA_ENDPOINT}/users?q={query}",
+        "repos": f"{SEARCH_DATA_ENDPOINT}/repositories?q={query}",
+        "issues": f"{SEARCH_DATA_ENDPOINT}/issues?q={query}",
+        "commits": f"{SEARCH_DATA_ENDPOINT}/commits?q={query}",
+        "topics": f"{SEARCH_DATA_ENDPOINT}/topics?q={query}",
+    }
+
+    search_endpoint: str = search_mapping.get(search_type)
+    search_endpoint += f"&per_page={limit}"
+
+    if not search_endpoint:
+        raise ValueError(f"Invalid search type in {search_mapping}: {search_type}")
+
+    results: dict = await get_data(endpoint=search_endpoint, session=session)
+    return process_response(response_data=results.get("items"))
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
