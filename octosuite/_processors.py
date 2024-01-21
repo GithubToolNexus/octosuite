@@ -19,11 +19,11 @@ from octosuite.data import (
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_profile(
+def process_profile(
     profile: dict, profile_type: Literal["user", "org", "repo"]
 ) -> Union[User, Organisation, Repository]:
     """
-    Parses a GitHub entity's profile into an Object.
+    Processes a GitHub entity's profile into an Object.
 
     :param profile: Raw profile data to be parsed.
     :type profile: dict
@@ -116,7 +116,15 @@ def parse_profile(
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_repos(repos: list[dict]) -> list[Repository]:
+def process_repos(repos: list[dict]) -> list[Repository]:
+    """
+    Processes raw repositories into a list of Repository objects.
+
+    :param repos: A list of repositories to process.
+    :type repos: list[dict]
+    :return: A list of Repository objects, each containing processed repository data.
+    :rtype: list[Repository]
+    """
     repos_list: list = []
     for repo in repos:
         repos_list.append(
@@ -156,7 +164,15 @@ def parse_repos(repos: list[dict]) -> list[Repository]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_accounts(accounts: list[dict]) -> list[Account]:
+def process_accounts(accounts: list[dict]) -> list[Account]:
+    """
+    Processes a list of raw accounts into a list of Account objects.
+
+    :param accounts: A list of accounts to process.
+    :type accounts: list[dict]
+    :return: A list of Account objects, each containing processed account data.
+    :rtype: list[Account]
+    """
     accounts_list: list = []
     for account in accounts:
         accounts_list.append(
@@ -178,7 +194,15 @@ def parse_accounts(accounts: list[dict]) -> list[Account]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_events(events: list[dict]) -> list[Event]:
+def process_events(events: list[dict]) -> list[Event]:
+    """
+    Processes a list of raw events into a list of Event objects.
+
+    :param events: A list of events to process.
+    :type events: list[dict]
+    :return: A list of Event objects, each containing processed event data.
+    :rtype: list[Event]
+    """
     events_list: list = []
     for event in events:
         events_list.append(
@@ -196,7 +220,15 @@ def parse_events(events: list[dict]) -> list[Event]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_gists(gists: list[dict]) -> list[Gist]:
+def process_gists(gists: list[dict]) -> list[Gist]:
+    """
+    Processes a list of raw gists into a list of Gist objects.
+
+    :param gists: A list of gists to process.
+    :type gists: list[dict]
+    :return: A list of Gist objects, each containing processed gist data.
+    :rtype: list[Gist]
+    """
     gists_list: list = []
     for gist in gists:
         gists_list.append(
@@ -217,7 +249,15 @@ def parse_gists(gists: list[dict]) -> list[Gist]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_releases(releases: list[dict]) -> list[Release]:
+def process_releases(releases: list[dict]) -> list[Release]:
+    """
+    Processes a list of raw releases into a list of Release objects.
+
+    :param releases: A list of releases to process.
+    :type releases: list[dict]
+    :return: A list of Release objects, each containing processed release data.
+    :rtype: list[Release]
+    """
     releases_list: list = []
     for release in releases:
         releases_list.append(
@@ -241,7 +281,15 @@ def parse_releases(releases: list[dict]) -> list[Release]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_issues(issues: list[dict]) -> list[Issue]:
+def process_issues(issues: list[dict]) -> list[Issue]:
+    """
+    Processes a list of raw issues into a list of Issue objects.
+
+    :param issues: A list of issues to process.
+    :type issues: list[dict]
+    :return: A list of Issue objects, each containing processed issue data.
+    :rtype: list[Issue]
+    """
     issues_list: list = []
     for issue in issues:
         issues_list.append(
@@ -264,7 +312,15 @@ def parse_issues(issues: list[dict]) -> list[Issue]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_commits(commits: list[dict]) -> list[Commit]:
+def process_commits(commits: list[dict]) -> list[Commit]:
+    """
+    Processes a list of raw commits into a list of Commit objects.
+
+    :param commits: A list of commits to process.
+    :type commits: list[dict]
+    :return: A list of Commit objects, each containing processed commit data.
+    :rtype: list[Commit]
+    """
     commits_list: list = []
     for commit in commits:
         commits_list.append(
@@ -284,7 +340,15 @@ def parse_commits(commits: list[dict]) -> list[Commit]:
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
-def parse_topics(topics: list[dict]) -> list[Topic]:
+def process_topics(topics: list[dict]) -> list[Topic]:
+    """
+    Processes a list of raw topics into a list of Topic objects.
+
+    :param topics: A list of topics to process.
+    :type topics: list[dict]
+    :return: A list of Topic objects, each containing processed topic data.
+    :rtype: list[Topic]
+    """
     topics_list: list = []
     for topic in topics:
         topics_list.append(

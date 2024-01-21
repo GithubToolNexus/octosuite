@@ -99,3 +99,7 @@ async def test_get_accounts():
         assert len(repo_stargazers) == 32
         assert isinstance(repo_stargazers[0], dict)
         assert repo_stargazers[0].get("type") == "User"
+
+
+# TODO
+# Add more tests

@@ -263,6 +263,7 @@ def create_parser() -> argparse.ArgumentParser:
 
 
 async def stage(args: argparse.Namespace):
+    """Stages and prepares the CLI"""
     # ---------------------------------------------------------------------------------- #
 
     from ._base import GitHubUser, GitHubOrg, GitHubRepo
@@ -390,8 +391,7 @@ async def stage(args: argparse.Namespace):
                         # -------------------------------------------------------------- #
 
                         dataframe = create_dataframe(data=function_data)
-                        # Print the DataFrame, excluding the 'raw_data' column if it exists
-                        console.print(dataframe.loc[:, dataframe.columns != "raw_data"])
+                        console.print(dataframe)
 
                         if args.export:
                             # Create path to main directory in which entity data files will be exported
@@ -429,6 +429,7 @@ async def stage(args: argparse.Namespace):
 
 
 def run():
+    """Main entrypoint of OctoSuite CLI"""
     parser = create_parser()
     args = parser.parse_args()
 
