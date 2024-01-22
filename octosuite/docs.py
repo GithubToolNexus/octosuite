@@ -30,7 +30,7 @@ DESCRIPTION: str = f"""
 # -------------------------------------------------------------------------------------- #
 
 COPYRIGHT: str = (
-    f"Copyright © {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR}). All rights reserved."
+    f"© {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR}). All rights reserved."
 )
 
 # -------------------------------------------------------------------------------------- #
