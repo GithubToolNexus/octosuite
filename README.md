@@ -51,8 +51,22 @@ Interface (GUI)**, enabling users to fetch and analyse GitHub data effectively a
 [Refer to the Wiki](https://github.com/bellingcat/octosuite/wiki) for installation, usage and uninstallation
 instructions.
 
-# Roadmap
+# TODO
 
-- [ ] Rewrite the GUI in Visual Basic .NET (in progress)
+- [ ] Rewrite the GUI in Visual Basic .NET
+
+## Star History
+
+<a href="https://star-history.com/#bellingcat/octosuite&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=bellingcat/octosuite&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=bellingcat/octosuite&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=bellingcat/octosuite&type=Date" />
+ </picture>
+</a>
+
+# License
+
+GNU General Public License v3 (GPLv3) © [Richard Mwewa](https://rly0nheart.github.io)
 
 
