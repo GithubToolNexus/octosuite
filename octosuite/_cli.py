@@ -1,5 +1,3 @@
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
 import argparse
 import asyncio
 import os
@@ -7,18 +5,19 @@ from datetime import datetime
 
 import aiohttp
 from rich.markdown import Markdown
+from rich.status import Status
 from rich_argparse import RichHelpFormatter
 
-from . import GitHubSearch
-from ._api import get_updates
-from ._coreutils import (
+from ._utils import (
     console,
     pathfinder,
     create_dataframe,
     export_dataframe,
     filename_timestamp,
+    system_info,
 )
-from .docs import (
+from .api import get_updates
+from .help import (
     SEARCH_EXAMPLES,
     Version,
     USER_EXAMPLES,
@@ -31,9 +30,6 @@ from .docs import (
 )
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def create_parser() -> argparse.ArgumentParser:
     """
     Creates and configures an argument parser for the command line arguments.
@@ -41,7 +37,6 @@ def create_parser() -> argparse.ArgumentParser:
     :return: A configured argparse.ArgumentParser object ready to parse the command line arguments.
     :rtype: argparse.ArgumentParser
     """
-    # ---------------------------------------------------------------------------------- #
 
     main_parser = argparse.ArgumentParser(
         description=Markdown(DESCRIPTION, style="argparse.text"),
@@ -71,8 +66,6 @@ def create_parser() -> argparse.ArgumentParser:
         action="version",
     )
     subparsers = main_parser.add_subparsers(dest="entity", help="target entity")
-
-    # ---------------------------------------------------------------------------------- #
 
     # User mode
     user_parser = subparsers.add_parser(
@@ -141,8 +134,6 @@ def create_parser() -> argparse.ArgumentParser:
         type=str,
     )
 
-    # ---------------------------------------------------------------------------------- #
-
     # Org mode
     org_parser = subparsers.add_parser(
         "org",
@@ -184,8 +175,6 @@ def create_parser() -> argparse.ArgumentParser:
         help="get an organisation's public members",
         action="store_true",
     )
-
-    # ---------------------------------------------------------------------------------- #
 
     # Repo mode
     repo_parser = subparsers.add_parser(
@@ -229,8 +218,6 @@ def create_parser() -> argparse.ArgumentParser:
         "-r", "--releases", help="get a repository's releases", action="store_true"
     )
 
-    # ---------------------------------------------------------------------------------- #
-
     # Search mode
     search_parser = subparsers.add_parser(
         "search",
@@ -259,33 +246,25 @@ def create_parser() -> argparse.ArgumentParser:
     return main_parser
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 async def stage(args: argparse.Namespace):
     """Stages and prepares the CLI"""
-    # ---------------------------------------------------------------------------------- #
 
-    from ._base import GitHubUser, GitHubOrg, GitHubRepo
-
-    # ---------------------------------------------------------------------------------- #
+    from ._core import User, Organisation, Repository, Search
 
     limit: int = args.limit
 
-    user = GitHubUser(username=args.username if hasattr(args, "username") else None)
-    org = GitHubOrg(
+    user = User(username=args.username if hasattr(args, "username") else None)
+    org = Organisation(
         organisation=args.organisation if hasattr(args, "organisation") else None
     )
 
-    repo = GitHubRepo(
+    repo = Repository(
         repo_name=args.repo_name if hasattr(args, "repo_name") else None,
         repo_owner=args.repo_owner if hasattr(args, "repo_owner") else None,
     )
 
     query = args.query if hasattr(args, "query") else None
-    search = GitHubSearch()
-
-    # ---------------------------------------------------------------------------------- #
+    search = Search()
 
     func_mapping: dict = {
         "user": [
@@ -373,8 +352,6 @@ async def stage(args: argparse.Namespace):
         ],
     }
 
-    # ---------------------------------------------------------------------------------- #
-
     if args.entity in func_mapping:
         async with aiohttp.ClientSession() as request_session:
             if args.updates:
@@ -388,7 +365,6 @@ async def stage(args: argparse.Namespace):
                     function_data = await function(session=request_session)
 
                     if function_data:
-                        # -------------------------------------------------------------- #
 
                         dataframe = create_dataframe(data=function_data)
                         console.print(dataframe)
@@ -416,16 +392,12 @@ async def stage(args: argparse.Namespace):
                                 formats=args.export.split(","),
                             )
 
-                        # -------------------------------------------------------------- #
                     is_executed = True
 
             if not is_executed:
                 console.log(
                     f"octosuite {args.entity}: missing one or more expected argument(s)."
                 )
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def run():
@@ -441,17 +413,22 @@ def run():
 ┗┛┗┗┗┛┗┛┗┻┗┗┗ """
     )
     if args.entity:
-        console.log(
-            f"[bold]OctoSuite[/] (CLI) {Version.release} started at {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}..."
-        )
-        try:
-            asyncio.run(stage(args=args))
-        except KeyboardInterrupt:
-            console.log("User interruption detected (Ctrl+C)")
-        finally:
-            console.log(f"Stopped in {datetime.now() - start_time} seconds.")
+        system_info()
+        with Status(
+            status=f"Started on {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}...",
+            spinner="dots2",
+            console=console,
+        ):
+            try:
+                asyncio.run(stage(args=args))
+            except KeyboardInterrupt:
+                console.log(
+                    "[yellow]✘[/] User interruption detected ([yellow]Ctrl+C[/])"
+                )
+            finally:
+                elapsed_time = datetime.now() - start_time
+                console.log(
+                    f"[green]✔[/] Done! {elapsed_time.total_seconds():.2f} seconds elapsed."
+                )
     else:
         parser.print_usage()
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

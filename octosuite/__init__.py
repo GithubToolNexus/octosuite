@@ -1,9 +1,4 @@
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+from ._core import User, Organisation, Repository, Search
 
-from ._base import GitHubUser, GitHubOrg, GitHubRepo, GitHubSearch
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-__all__: list = ["GitHubUser", "GitHubOrg", "GitHubRepo", "GitHubSearch"]
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+__all__: list = ["User", "Organisation", "Repository", "Search"]

@@ -1,16 +1,47 @@
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
 import os
 from datetime import datetime
 from typing import Union, Literal
 
 import pandas as pd
 from rich.console import Console
+from rich.table import Table
 
-from .data import Account, User, Organisation, Repository, Event, Org, Gist
 
+def system_info():
+    """
+    Displays system information in a table format.
+    """
+    import getpass
+    import platform
+    import sys
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+    import psutil
+
+    from .version import Version
+
+    table = Table(show_header=False, show_edge=False, highlight=True)
+    table.add_column("header", style="dim")
+    table.add_column("header")
+
+    table.add_row("OctoSuite", Version.full)
+    table.add_row("Python", sys.version)
+    table.add_row("Username", getpass.getuser())
+    table.add_row("System", f"{platform.system()} {platform.version()}")
+    table.add_row(
+        "CPU", f"{psutil.cpu_count(logical=True)} cores, {platform.processor()}"
+    )
+    table.add_row(
+        "Disk",
+        f"{psutil.disk_usage('/').free / (1024**3):.2f} GB free"
+        f" / {psutil.disk_usage('/').total / (1024**3):.2f} GB",
+    )
+    table.add_row(
+        "Memory",
+        f"{psutil.virtual_memory().available / (1024**3):.2f} GB free"
+        f" / {psutil.virtual_memory().total / (1024**3):.2f} GB",
+    )
+
+    console.print(table)
 
 
 def pathfinder(directories: list[str]):
@@ -22,9 +53,6 @@ def pathfinder(directories: list[str]):
     """
     for directory in directories:
         os.makedirs(directory, exist_ok=True)
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def filename_timestamp() -> str:
@@ -49,20 +77,13 @@ def filename_timestamp() -> str:
     )
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def create_dataframe(
     data: Union[
         str,
         dict,
-        list,
-        list[Union[Account, Org, Repository, Event, Gist]],
-        User,
-        Repository,
-        Organisation,
+        list[dict],
     ],
-):
+) -> Union[pd.DataFrame, None]:
     """
     Converts and prints provided data into a pandas DataFrame and optionally saves it as JSON or CSV file.
 
@@ -70,33 +91,18 @@ def create_dataframe(
                  a dictionary, or a list of objects (Comment, Community, Post, PreviewCommunity, User).
     :type data: Union[Community, Dict, User, WikiPage, List[Union[Comment, Community, Post, PreviewCommunity, User]]]
     :return: A pandas DataFrame constructed from the provided data. Excludes any 'raw_data'
-             column from the dataframe.
-    :rtype: pd.DataFrame
-
-    Note
-    ----
-        This function internally converts User, Community, and WikiPage objects into a
-        list of dictionaries before DataFrame creation.
-        For lists containing Comment, Community, Post, PreviewCommunity and User objects,
-        each object is converted to its dictionary representation.
+             column from the dataframe, or None.
+    :rtype: Union[pd.DataFrame, None]
     """
 
     # ---------------------------------------------------------------------------------- #
 
-    if isinstance(data, (User, Repository, Organisation)):
-        # Transform each attribute of the object into a dictionary entry
-        data = [{"key": key, "value": value} for key, value in data.__dict__.items()]
+    if isinstance(data, dict):
+        data = [{"key": key, "value": value} for key, value in data.items()]
 
-    elif isinstance(data, list) and all(
-        isinstance(item, (Account, Event, Gist, Repository, Org)) for item in data
-    ):
+    elif isinstance(data, list) and all(isinstance(item, dict) for item in data):
         # Each object in the list is converted to its dictionary representation
         data = [item.__dict__ for item in data]
-
-    # If data is already a dictionary or a list, use it directly for DataFrame creation
-    elif isinstance(data, (dict, list)):
-        # No transformation needed; the data is ready for DataFrame creation
-        pass
 
     # If data is a string, print it
     elif isinstance(data, str):
@@ -110,9 +116,6 @@ def create_dataframe(
     dataframe = pd.DataFrame(data)
 
     return dataframe
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def export_dataframe(
@@ -168,8 +171,4 @@ def export_dataframe(
             console.log(f"Unsupported file format: {file_format}")
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-console = Console(color_system="auto", log_time_format="[%I:%M:%S%p]")
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+console = Console(color_system="auto", log_time=False)

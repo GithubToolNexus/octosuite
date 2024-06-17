@@ -3,24 +3,13 @@
 import os
 from datetime import date
 
+from .version import Version
+
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 AUTHOR: str = "Richard Mwewa"
 ABOUT_AUTHOR: str = "https://rly0nheart.github.io"
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
-class Version:
-    major: str = "4"
-    minor: str = "0"
-    patch: str = "0"
-    version: str = f"{major}.{minor}.{patch}"
-    release: str = f"{major}.{minor}"
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 DESCRIPTION: str = f"""
