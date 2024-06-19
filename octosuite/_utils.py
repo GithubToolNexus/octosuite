@@ -102,7 +102,7 @@ def create_dataframe(
 
     elif isinstance(data, list) and all(isinstance(item, dict) for item in data):
         # Each object in the list is converted to its dictionary representation
-        data = [item.__dict__ for item in data]
+        data = [item for item in data]
 
     # If data is a string, print it
     elif isinstance(data, str):
@@ -172,3 +172,6 @@ def export_dataframe(
 
 
 console = Console(color_system="auto", log_time=False)
+
+# Construct path to the program's data directory
+DATA_DIRECTORY: str = os.path.expanduser(os.path.join("~", "octosuite-data"))

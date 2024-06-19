@@ -89,7 +89,10 @@ def parse_profile(profile: dict, profile_type: Literal["user", "org", "repo"]) -
         },
     }
 
-    return type_mapping.get(profile_type)
+    if profile:
+        return type_mapping.get(profile_type)
+    else:
+        return {}
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -137,7 +140,11 @@ def parse_repos(repos: list[dict]) -> list[dict]:
                 "updated_at": repo.get("updated_at"),
             }
         )
-    return repos_list
+
+    if repos:
+        return repos_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -167,7 +174,10 @@ def parse_accounts(accounts: list[dict]) -> list[dict]:
             }
         )
 
-    return accounts_list
+    if accounts:
+        return accounts_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -193,7 +203,10 @@ def parse_events(events: list[dict]) -> list[dict]:
             }
         )
 
-    return events_list
+    if events:
+        return events_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -222,7 +235,10 @@ def parse_gists(gists: list[dict]) -> list[dict]:
             }
         )
 
-    return gists_list
+    if gists:
+        return gists_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -254,7 +270,10 @@ def parse_releases(releases: list[dict]) -> list[dict]:
             }
         )
 
-    return releases_list
+    if releases:
+        return releases_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -285,7 +304,10 @@ def parse_issues(issues: list[dict]) -> list[dict]:
             }
         )
 
-    return issues_list
+    if issues:
+        return issues_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -313,7 +335,10 @@ def parse_commits(commits: list[dict]) -> list[dict]:
             }
         )
 
-    return commits_list
+    if commits:
+        return commits_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -342,7 +367,10 @@ def parse_topics(topics: list[dict]) -> list[dict]:
             }
         )
 
-    return topics_list
+    if topics:
+        return topics_list
+    else:
+        return [{}]
 
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

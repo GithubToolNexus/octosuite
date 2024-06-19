@@ -23,6 +23,9 @@ homepage = "https://www.bellingcat.com"
 documentation = "https://octosuite-wiki.readthedocs.io"
 repository = "https://github.com/bellingcat/octosuite"
 
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/bellingcat/octosuite/issues"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 psutil = "^5.9.4"

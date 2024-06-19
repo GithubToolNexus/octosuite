@@ -15,19 +15,11 @@ from ._utils import (
     export_dataframe,
     filename_timestamp,
     system_info,
+    DATA_DIRECTORY,
 )
 from .api import get_updates
-from .help import (
-    SEARCH_EXAMPLES,
-    Version,
-    USER_EXAMPLES,
-    ORG_EXAMPLES,
-    REPO_EXAMPLES,
-    DATA_DIRECTORY,
-    DESCRIPTION,
-    LICENSE,
-    COPYRIGHT,
-)
+from .help import Help
+from .version import Version
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -39,8 +31,8 @@ def create_parser() -> argparse.ArgumentParser:
     """
 
     main_parser = argparse.ArgumentParser(
-        description=Markdown(DESCRIPTION, style="argparse.text"),
-        epilog=Markdown(LICENSE, style="argparse.text"),
+        description=Markdown(Help.description, style="argparse.text"),
+        epilog=Markdown(Help.copyright, style="argparse.text"),
         formatter_class=RichHelpFormatter,
     )
     main_parser.add_argument(
@@ -62,7 +54,7 @@ def create_parser() -> argparse.ArgumentParser:
     main_parser.add_argument(
         "-v",
         "--version",
-        version=Markdown(f"Octosuite {Version.release} {COPYRIGHT}"),
+        version=Markdown(f"Octosuite {Version.release} {Help.copyright}"),
         action="version",
     )
     subparsers = main_parser.add_subparsers(dest="entity", help="target entity")
@@ -72,7 +64,7 @@ def create_parser() -> argparse.ArgumentParser:
         "user",
         help="user operations",
         description=Markdown("# User Investigation"),
-        epilog=Markdown(USER_EXAMPLES),
+        epilog=Markdown(Help.examples["user"]),
         formatter_class=RichHelpFormatter,
     )
     user_parser.add_argument("username", help="username to query")
@@ -139,7 +131,7 @@ def create_parser() -> argparse.ArgumentParser:
         "org",
         help="organisation operations",
         description=Markdown("# Organisation Investigation"),
-        epilog=Markdown(ORG_EXAMPLES),
+        epilog=Markdown(Help.examples["org"]),
         formatter_class=RichHelpFormatter,
     )
     org_parser.add_argument("organisation", help="organisation to query")
@@ -181,7 +173,7 @@ def create_parser() -> argparse.ArgumentParser:
         "repo",
         help="repository operations",
         description=Markdown("# Repository Investigation"),
-        epilog=Markdown(REPO_EXAMPLES),
+        epilog=Markdown(Help.examples["repo"]),
         formatter_class=RichHelpFormatter,
     )
     repo_parser.add_argument("repo_name", help="repository name to query")
@@ -223,7 +215,7 @@ def create_parser() -> argparse.ArgumentParser:
         "search",
         help="search operations",
         description=Markdown("# Target Discovery"),
-        epilog=Markdown(SEARCH_EXAMPLES),
+        epilog=Markdown(Help.examples["search"]),
         formatter_class=RichHelpFormatter,
     )
 

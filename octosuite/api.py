@@ -7,7 +7,7 @@ import rich
 from rich.markdown import Markdown
 
 from ._utils import console
-from .help import Version
+from .version import Version
 
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
@@ -41,14 +41,14 @@ async def get_data(session: aiohttp.ClientSession, endpoint: str) -> Union[dict,
                 return await response.json()
             else:
                 error_message = await response.json()
-                console.log(f"[yellow]✘[/] An API error occurred: {error_message}")
+                console.log(f"[red]✘[/] An API error occurred: {error_message}")
                 return {}
 
     except aiohttp.ClientConnectionError as error:
-        console.log(f"[yellow]✘[/] An HTTP error occurred: [red]{error}[/]")
+        console.log(f"[red]✘[/] An HTTP error occurred: [red]{error}[/]")
         return {}
     except Exception as error:
-        console.log(f"[yellow]✘[/] An unknown error occurred: [red]{error}[/]")
+        console.log(f"[red]✘[/] An unknown error occurred: [red]{error}[/]")
         return {}
 
 

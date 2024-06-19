@@ -1,47 +1,35 @@
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-import os
 from datetime import date
 
-from .version import Version
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+class Help:
+    """
+    Container for documentation-related data for OctoSuite.
 
+    Attributes:
+          author (str): A markdown-formatted string of author name and url.
+          copyright (str): Copyright notice for the current year, including the author's details.
+          summary (str): A brief description of Knew Karma as a tool for Reddit data analysis.
+          description (str): A full description of Knew Karma as a CLI, Library,
+                and GUI program for Reddit data analysis.
+          examples (dict): Usage examples for different operations within Knew Karma.
+    """
 
-AUTHOR: str = "Richard Mwewa"
-ABOUT_AUTHOR: str = "https://rly0nheart.github.io"
+    author: str = "[Richard Mwewa](https://rly0nheart.github.io)"
+    copyright: str = (
+        f"© Copyright 2022-{date.today().year} {author}. All rights reserved."
+    )
 
-
-DESCRIPTION: str = f"""
-# OctoSuite (CLI) {Version.release}
-> **GitHub** Data Analysis Framework."""
-
-# -------------------------------------------------------------------------------------- #
-
-COPYRIGHT: str = (
-    f"© {date.today().year} [{AUTHOR}]({ABOUT_AUTHOR}). All rights reserved."
-)
-
-# -------------------------------------------------------------------------------------- #
-
-LICENSE: str = f"""
-# {COPYRIGHT}
-
-```
-GNU General Public License v3 (GPLv3)
-
-OctoSuite is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-OctoSuite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with OctoSuite If not, see <https://www.gnu.org/licenses/>. 
-```
+    summary: str = f"**OctoSuite**: *A GitHub Data Analysis Framework* — by {author}"
+    description: str = """
+**OctoSuite** (/ˈɒk.toʊ.swiːt/) is an all-in-one **GitHub** data analysis framework designed to provide
+insights and a thorough understanding of GitHub entities (e.i, **Users**, **Repositories** and **Organisations**). 
+It offers a wide array of functionalities and tools including a **Command-Line Interface (CLI)**, 
+a **Python Library** and a **Graphical User
+Interface (GUI)**, enabling users to fetch and analyse GitHub data effectively and efficiently.
 """
 
-# -------------------------------------------------------------------------------------- #
-
-USER_EXAMPLES: str = """
+    examples: dict = {
+        "user": """
 # Examples
 ## Get a User's Profile
 ```
@@ -97,11 +85,8 @@ octosuite user torvalds --following
 ```
 octosuite user wang920509 --follows torvalds
 ```
-"""
-
-# -------------------------------------------------------------------------------------- #
-
-ORG_EXAMPLES: str = """
+""",
+        "org": """
 # Examples
 ## Get an Organisation's Profile
 ```
@@ -127,11 +112,8 @@ octosuite org github --members
 ```
 octosuite org DROPCitizenShip --is-member torvalds
 ```
-"""
-
-# -------------------------------------------------------------------------------------- #
-
-REPO_EXAMPLES: str = """
+    """,
+        "repo": """
 # Examples
 ## Get a Repository's profile
 ```
@@ -157,11 +139,8 @@ octosuite repo linux torvalds --contents
 ```
 octosuite repo linux torvalds --contents kernel
 ```
-"""
-
-# -------------------------------------------------------------------------------------- #
-
-SEARCH_EXAMPLES: str = """
+    """,
+        "search": """
 # Examples
 ## Search Users
 ```
@@ -186,11 +165,5 @@ octosuite search git --topics
 ```
 octosuite search fix --commits
 ```
-"""
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-# Construct path to the program's data directory
-DATA_DIRECTORY: str = os.path.expanduser(os.path.join("~", "octosuite-data"))
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+""",
+    }
