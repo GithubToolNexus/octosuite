@@ -1,11 +1,13 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:latest
+FROM python:latest
 
 WORKDIR /app
 
 COPY . .
 
-RUN pip install --upgrade pip && pip install .
+RUN pip install --upgrade pip
 
-ENTRYPOINT ["octosuite"]
+RUN pip install poetry && poetry install
+
+ENTRYPOINT ["poetry", "run", "octosuite"]
