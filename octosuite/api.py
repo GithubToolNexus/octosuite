@@ -1,5 +1,3 @@
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
 from typing import Union, Literal
 
 import aiohttp
@@ -9,17 +7,12 @@ from rich.markdown import Markdown
 from ._utils import console
 from .version import Version
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
 GITHUB_API_ENDPOINT: str = "https://api.github.com"
 ORGS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/orgs"
 REPOS_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/repos"
 USER_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/users"
 SEARCH_DATA_ENDPOINT: str = f"{GITHUB_API_ENDPOINT}/search"
 RELEASE_ENDPOINT: str = f"{REPOS_DATA_ENDPOINT}/bellingcat/octosuite/releases/latest"
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_data(session: aiohttp.ClientSession, endpoint: str) -> Union[dict, list]:
@@ -50,9 +43,6 @@ async def get_data(session: aiohttp.ClientSession, endpoint: str) -> Union[dict,
     except Exception as error:
         console.log(f"[red]✘[/] An unknown error occurred: [red]{error}[/]")
         return {}
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def process_response(
@@ -87,9 +77,6 @@ def process_response(
         )
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 async def get_updates(session: aiohttp.ClientSession):
     """
     Asynchronously gets and compares the current program version with the remote version.
@@ -113,30 +100,19 @@ async def get_updates(session: aiohttp.ClientSession):
 
         update_message: str = f"%s update ({remote_version}) available"
 
-        # ------------------------------------------------------------------------- #
-
         # Check for differences in version parts
         if remote_parts[0] != Version.major:
             update_message = update_message % "MAJOR"
 
-        # ------------------------------------------------------------------------- #
-
         elif remote_parts[1] != Version.minor:
             update_message = update_message % "MINOR"
-
-        # ------------------------------------------------------------------------- #
 
         elif remote_parts[2] != Version.patch:
             update_message = update_message % "PATCH"
 
-        # ------------------------------------------------------------------------- #
-
         if update_message:
             console.log(update_message)
             rich.print(markdown_release_notes)
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_profile(
@@ -174,9 +150,6 @@ async def get_profile(
 
     profile_data: dict = await get_data(endpoint=endpoint, session=session)
     return process_response(response_data=profile_data, valid_key="created_at")
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_repos(
@@ -218,9 +191,6 @@ async def get_repos(
 
     repositories: list = await get_data(endpoint=endpoint, session=session)
     return process_response(response_data=repositories)
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 async def get_accounts(
@@ -314,6 +284,3 @@ async def get_search(
 
     results: dict = await get_data(endpoint=search_endpoint, session=session)
     return process_response(response_data=results.get("items"))
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

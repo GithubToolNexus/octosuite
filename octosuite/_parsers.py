@@ -95,9 +95,6 @@ def parse_profile(profile: dict, profile_type: Literal["user", "org", "repo"]) -
         return {}
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def parse_repos(repos: list[dict]) -> list[dict]:
     """
     Parses raw repositories into a list of dict objects.
@@ -147,9 +144,6 @@ def parse_repos(repos: list[dict]) -> list[dict]:
         return [{}]
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def parse_accounts(accounts: list[dict]) -> list[dict]:
     """
     Parses a list of raw accounts into a list of dict objects.
@@ -180,9 +174,6 @@ def parse_accounts(accounts: list[dict]) -> list[dict]:
         return [{}]
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def parse_events(events: list[dict]) -> list[dict]:
     """
     Parses a list of raw events into a list of dict objects.
@@ -207,9 +198,6 @@ def parse_events(events: list[dict]) -> list[dict]:
         return events_list
     else:
         return [{}]
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_gists(gists: list[dict]) -> list[dict]:
@@ -239,9 +227,6 @@ def parse_gists(gists: list[dict]) -> list[dict]:
         return gists_list
     else:
         return [{}]
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_releases(releases: list[dict]) -> list[dict]:
@@ -276,9 +261,6 @@ def parse_releases(releases: list[dict]) -> list[dict]:
         return [{}]
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def parse_issues(issues: list[dict]) -> list[dict]:
     """
     Parses a list of raw issues into a list of dict objects.
@@ -310,9 +292,6 @@ def parse_issues(issues: list[dict]) -> list[dict]:
         return [{}]
 
 
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-
-
 def parse_commits(commits: list[dict]) -> list[dict]:
     """
     Parses a list of raw commits into a list of dict objects.
@@ -339,9 +318,6 @@ def parse_commits(commits: list[dict]) -> list[dict]:
         return commits_list
     else:
         return [{}]
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
 
 def parse_topics(topics: list[dict]) -> list[dict]:
@@ -371,6 +347,3 @@ def parse_topics(topics: list[dict]) -> list[dict]:
         return topics_list
     else:
         return [{}]
-
-
-# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #

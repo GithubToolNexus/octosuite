@@ -407,7 +407,7 @@ def run():
     if args.entity:
         system_info()
         with Status(
-            status=f"Started on {start_time.strftime('%a %b %d %Y, %I:%M:%S%p')}...",
+            status=f"Initialising[yellow]...[/]",
             spinner="dots2",
             console=console,
         ):
